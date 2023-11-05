@@ -1,0 +1,398 @@
+{
+  "name": "Verilog-Hdl-Format",
+  "displayName": "Verilog Hdl Format",
+  "description": "[公开版]verilog代码格式化,例化,TB,ucf转XDC,verilog语法检测。verilog,ucf,高云cst,xdc,tcl,modelsim-do语法高亮,定义悬停,modelsim do 文件转换快速仿真,",
+  "version": "0.3.20231030",
+  "publisher": "Jiang-Percy",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "homepage": "https://github.com/1391074994/Verilog-Hdl-Format",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1391074994/Verilog-Hdl-Format.git"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "icon": "images/duck.png",
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "verilog",
+        "path": "./snippets/verilog.json"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "verilog-simplealign.simple_align",
+        "key": "ctrl+l",
+        "when": "editorTextFocus"
+      }
+    ],
+    "commands": [
+      {
+        "command": "verilog-simplealign.simple_align",
+        "title": "verilog"
+      },
+      {
+        "command": "extension.convertCode",
+        "title": "Convert_instance"
+      },
+      {
+        "command": "extension.testbench",
+        "title": "Convert_testbench"
+      },
+      {
+        "command": "extension.ucf_to_xdc_normal_order",
+        "title": "Convert UCF to XDC NORMAL ORDER"
+      },
+      {
+        "command": "extension.ucf_to_xdc_sort_order",
+        "title": "Convert UCF to XDC SORT ORDER"
+      },
+      {
+        "command": "verilog.lint",
+        "title": "Verilog: Rerun lint tool"
+      },
+      {
+        "command": "extension.extractData",
+        "title": "Extract Data"
+      },
+      {
+        "command": "your-extension.command",
+        "title": "Your Extension Command"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "verilog",
+        "scopeName": "source.verilog",
+        "path": "./syntaxes/verilog.tmLanguage.json"
+      },
+      {
+        "language": "xdc",
+        "scopeName": "source.xdc",
+        "path": "./syntaxes/xdc.tmLanguage.json"
+      },
+      {
+        "language": "cst",
+        "scopeName": "source.cst",
+        "path": "./syntaxes/cst.tmLanguage.json"
+      },
+      {
+        "language": "ucf",
+        "scopeName": "source.ucf",
+        "path": "./syntaxes/ucf.tmLanguage.json"
+      },
+      {
+        "language": "tcl",
+        "scopeName": "source.tcl",
+        "path": "./syntaxes/tcl.tmLanguage.json"
+      },
+      {
+        "language": "do",
+        "scopeName": "source.do",
+        "path": "./syntaxes/do.tmLanguage.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "verilog",
+        "aliases": [
+          "Verilog",
+          "verilog"
+        ],
+        "extensions": [
+          ".v",
+          ".vh",
+          ".sv",
+          ".svh"
+        ],
+        "configuration": "./config/language-configuration.json"
+      },
+      {
+        "id": "xdc",
+        "aliases": [
+          "Xilinx Constraints Language"
+        ],
+        "extensions": [
+          ".xdc"
+        ],
+        "configuration": "./config/language-configuration.json"
+      },
+      {
+        "id": "cst",
+        "aliases": [
+          "CST"
+        ],
+        "extensions": [
+          ".cst"
+        ],
+        "configuration": "./config/language-configuration.json"
+      },
+      {
+        "id": "ucf",
+        "aliases": [
+          "UCF",
+          "ucf"
+        ],
+        "extensions": [
+          ".ucf"
+        ],
+        "configuration": "./config/language-configuration.json"
+      },
+      {
+        "id": "tcl",
+        "aliases": [
+          "TCL",
+          "tcl"
+        ],
+        "extensions": [
+          ".tcl"
+        ],
+        "configuration": "./config/language-configuration.json"
+      },
+      {
+        "id": "do",
+        "aliases": [
+          "modelsim-do"
+        ],
+        "extensions": [
+          ".do"
+        ],
+        "configuration": "./config/language-configuration.json"
+      }
+    ],
+    "configuration": {
+
+      "title": "Verilog Format linter",
+      "properties": {
+        "myExtension.authorVariable": {
+          "type": "string",
+          "default": "jiang quan cai",
+          "description": "The author variable used in the code snippet"
+        },
+
+        "extractData.customOptions": {
+          "type": "array",
+          "description": "Custom options for data extraction",
+          "default":[
+          "log -r /*  #log 全部波形数据     ",       
+          "radix hex  #设置为十六进制  eage: radix [-binary | -octal | -decimal | -unsigned | -ascii | time] | -showbase | -symbolic]",
+          "view wave  #打开wave窗口        ", 
+          "view structure #显示结构        ",
+          "view signals #显示信号          ",  
+          "do wave.do  # 运行保存的波形文件",
+          "run 10ms  #运行10ms            "
+          ],
+          "items": {
+              "type": "string"
+          }
+      },
+      "extension.userName": {
+        "type": "string",
+        "title": "User name",
+        "default":[
+          "Jiang Quan Cai"   
+          ],
+        "description": "Your name or username, which will be included in the output file."
+      },
+
+        "verilog.linting.path": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "A path to the installation of linter."
+        },
+        "verilog.linting.linter": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "xvlog",
+            "iverilog",
+            "verilator",
+            "modelsim",
+            "slang",
+            "none"
+          ],
+          "default": "none",
+          "description": "Select the verilog linter. Possible values are 'iverilog', 'verilator', 'modelsim', 'xvlog', 'slang' or 'none'."
+        },
+        "verilog.linting.iverilog.arguments": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add Icarus Verilog arguments here (like macros). They will be added to Icarus Verilog while linting (The command \"-t null\" will be added by the linter by default)."
+        },
+        "verilog.linting.iverilog.includePath": {
+          "scope": "window",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "A list of directory paths to use while Icarus Verilog linting."
+        },
+        "verilog.linting.iverilog.verilogHDL.standard": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "Verilog-95",
+            "Verilog-2001",
+            "Verilog-2005"
+          ],
+          "enumDescriptions": [
+            "IEEE1364-1995, specified by -g1995 option in Icarus Verilog",
+            "IEEE1364-2001, specified by -g2001 option in Icarus Verilog",
+            "IEEE1364-2005, specified by -g2005 option in Icarus Verilog"
+          ],
+          "default": "Verilog-2005",
+          "description": "Select the standard rule to be used when Icarus Verilog linting for Verilog-HDL files."
+        },
+        "verilog.linting.iverilog.systemVerilog.standard": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "SystemVerilog2005",
+            "SystemVerilog2009",
+            "SystemVerilog2012"
+          ],
+          "enumDescriptions": [
+            "IEEE1800-2005, specified by -g2005-sv option in Icarus Verilog",
+            "IEEE1800-2009, specified by -g2009 option in Icarus Verilog",
+            "IEEE1800-2012, specified by -g2012 option in Icarus Verilog"
+          ],
+          "default": "SystemVerilog2012",
+          "description": "Select the standard rule to be used when Icarus Verilog linting for SystemVerilog files."
+        },
+        "verilog.linting.iverilog.runAtFileLocation": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, Icarus Verilog will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
+        },
+        "verilog.linting.modelsim.runAtFileLocation": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, Modelsim will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
+        },
+        "verilog.linting.modelsim.arguments": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add Modelsim arguments here. They will be added to Modelsim while linting."
+        },
+        "verilog.linting.modelsim.work": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add Modelsim work library here."
+        },
+        "verilog.linting.slang.arguments": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add Slang arguments here (like macros). They will be added to Slang while linting (The command \"-I=<document folder>\" will be added by the linter by default)."
+        },
+        "verilog.linting.slang.includePath": {
+          "scope": "window",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "A list of directory paths to use while Slang linting."
+        },
+        "verilog.linting.slang.runAtFileLocation": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, Slang will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
+        },
+        "verilog.linting.slang.useWSL": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, run slang in WSL."
+        },
+        "verilog.linting.verilator.arguments": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add Verilator arguments here (like macros). They will be added to Verilator while linting (The command \"--lint-only -I<document folder>\" will be added by the linter by default)."
+        },
+        "verilog.linting.verilator.includePath": {
+          "scope": "window",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "A list of directory paths to use while Verilator linting."
+        },
+        "verilog.linting.verilator.runAtFileLocation": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, Verilator will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
+        },
+        "verilog.linting.verilator.useWSL": {
+          "scope": "window",
+          "type": "boolean",
+          "default": false,
+          "description": "If enabled, run verilator in WSL."
+        },
+        "verilog.linting.xvlog.arguments": {
+          "scope": "window",
+          "type": "string",
+          "default": "",
+          "description": "Add xvlog arguments here. They will be added to xvlog while linting."
+        },
+        "verilog.linting.xvlog.includePath": {
+          "scope": "window",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "description": "A list of directory paths to use while xvlog linting."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "webpack",
+    "lint": "eslint src --ext ts",
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "package": "vsce package",
+    "watch": "webpack --watch",
+    "makeBsv": "antlr4ts -visitor syntaxes/bsv.g4 -o src/bsvjs",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "test": "node ./out/src/test/bsv.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.82.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.47.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "graceful-fs": "^4.2.11"
+  }
+}

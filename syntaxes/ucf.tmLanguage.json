@@ -1,0 +1,41 @@
+{
+    "name": "UCF",
+    "scopeName": "source.ucf",
+    "fileTypes": ["ucf"],
+    "patterns": [
+      {
+        "include": "#comments"
+      },
+      {
+        "include": "#constraints"
+      },
+      {
+        "begin": "\\b(LOC|NET|LOCATED|IODELAY|DELAY|PERIOD|TSU|TSD|TIMEGRP|OFFSET|IN|OUT|BIDIR|POWER_UP|PULLUP|PULLDOWN|NOCONNECT|DRIVE|SLEW|IOSTANDARD|DIFFERENTIAL|RLOC|IOBDELAY|CLOCK_DEDICATED_ROUTE)\\b",
+        "end": "(\\s|;|$)",
+        "name": "keyword.control.ucf"
+      },
+      {
+        "match": "\\b([0-9]+(\\.[0-9]*)?|\\.[0-9]+)\\b",
+        "name": "constant.numeric.ucf"
+      }
+    ],
+    "repository": {
+      "comments": {
+        "patterns": [
+          {
+            "name": "comment.line.ucf",
+            "match": "^\\s*#.*$"
+          }
+        ]
+      },
+      "constraints": {
+        "patterns": [
+          {
+            "name": "entity.name.section.ucf",
+            "match": "^[^\\s]+$"
+          }
+        ]
+      }
+    }
+  }
+  

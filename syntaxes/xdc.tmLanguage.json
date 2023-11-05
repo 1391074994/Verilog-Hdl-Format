@@ -1,0 +1,77 @@
+{
+  "name": "Xilinx XDC",
+  "scopeName": "source.xdc",
+  "fileTypes": ["xdc"],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.xdc",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.block.xdc",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.xdc",
+          "match": "\\b(create_clock|set_property|create_generated_clock|set_false_path)\\b"
+        },
+        {
+          "name": "keyword.constraint.xdc",
+          "match": "\\b(LOC|IOSTANDARD|SLEW|DRIVE|PACKAGE_PIN)\\b"
+        },
+        {
+          "name": "keyword.property.xdc",
+          "match": "\\b(CLOCK_PERIOD|DISABLE_SIGNAL_CHECK)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.xdc",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.xdc",
+          "match": "\\b(and|or|not|xor|<<|>>|==|!=|<=|>=)\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.xdc",
+          "match": "[\\[\\]{},;.]"
+        }
+      ]
+    }
+  }
+}

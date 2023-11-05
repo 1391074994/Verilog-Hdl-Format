@@ -1,0 +1,86 @@
+{
+  "name": "CST",
+  "scopeName": "source.cst",
+  "fileTypes": ["cst"],
+  "patterns": [
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#directive"
+    },
+    {
+      "include": "#variable"
+    }
+  ],
+  "repository": {
+    "keyword": {
+      "patterns": [
+        {
+          "match": "\\b(IO_LOC|IO_PORT|INS_LOC|IO_TYPE|BUFG|PULL_MODE|INS_RLOC|GROUP|REL_GROUP|GRP_LOC|LOC_RESERVE|CLOCK_LOC|BUFS|USE_VREF_DRIVER|LOCAL_CLOCK|CLK|TOPSIDE|BOTTOMS|LEFTSIDE|RIGHTSIDE|CONSTRAINT|PROPERTY|GROUP|INSTANCE|NET|CLOCK|PORT|TIMING|DELAY|PROPERTY|REGION|PACKAGE|FROM|TO|WITH|AND|OR|LOGIC|SR|CE)\\b",
+          "name": "keyword.control.cst"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block.cst"
+        },
+        {
+          "match": "//.*",
+          "name": "comment.line.cst"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.cst"
+        },
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.cst"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "match": "\\b\\d+\\b",
+          "name": "constant.numeric.cst"
+        }
+      ]
+    },
+    "directive": {
+      "patterns": [
+        {
+          "match": "^\\s*\\$\\w+",
+          "name": "keyword.other.directive.cst"
+        }
+      ]
+    },
+    "variable": {
+      "patterns": [
+        {
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b",
+          "name": "variable.cst"
+        }
+      ]
+    }
+  }
+}

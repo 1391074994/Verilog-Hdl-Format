@@ -1,0 +1,450 @@
+{
+	"module": {
+		"prefix": "module",
+		"body": [
+			"`timescale 1ns / 1ps",
+			"//****************************************Copyright (c)***********************************// ",
+			"//Copyright(C) CETC Ce Kong ",
+			"//All rights reserved ",
+			"//----------------------------------------------------------------------------------------",
+			"// File name:           ",
+			"// Last modified Date:  $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+			"// Last Version:        V1.0",
+			"// Descriptions:        ",
+			"//----------------------------------------------------------------------------------------",
+			"// Created by:          ",
+			"// Created date:        $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+			"// Version:             V1.0",
+			"// TEXT NAME:           $TM_FILENAME ",
+			"// PATH:                $TM_FILEPATH ",
+			"// Descriptions:        ",
+			"//",
+			"//----------------------------------------------------------------------------------------",
+			"//****************************************************************************************//",
+			"",
+			"module ${TM_FILENAME_BASE}(",
+			"    input                               clk                        ,",
+			"    input                               rst_n                      ",
+			");",
+			"                                                                   ",             
+			"                                                                   ",
+			"endmodule                                                          ",
+			"$2"
+		
+	],
+	"description": "Insert a module without parameter"
+	},
+
+	"geli": {
+		"prefix": "geli",
+		"body": [
+				"//---------------------------------------------------------------------------------------",
+				"//---------------------------------------------------------------------------------------"
+	],
+	"description": "annotation"
+	},
+
+
+	"jishuqi": {
+		"prefix": "jishuqi",
+		"body": [
+            "    reg                [  $2:0]         $1_cnt                       ;",
+            "    always @(posedge clk or negedge rst_n)",
+            "        begin",
+            "            if(!rst_n)",
+            "                $1_cnt <= 'd0   ;",
+            "            else if($1_cnt <= 'd7 )",
+            "                $1_cnt <= $1_cnt + 1'b1;",
+            "            else",
+            "                $1_cnt <= $1_cnt  ;",
+            "        end",
+            "    $3"
+	],
+	"description": "jishuqi"
+	},
+
+
+	"shangshenyan": {
+        "prefix": "shangshenyan",
+        "body": [
+        "    reg                [   1:0]         $1_hop                     ;",          
+        "    always @(posedge clk or negedge rst_n)                         ",     
+        "        begin                                                      ",     
+        "            if(!rst_n)                                             ",     
+        "                $1_hop <= 2'b00;                                   ",                          
+        "            else                                                   ",                       
+        "                $1_hop <= {$1_hop[1:0],$1} ;                       ",                                               
+        "        end                                                        "                           
+	],
+	"description": "shangshenyan"
+	},
+
+
+	"tb": {
+        "prefix": "tb,testbench",
+        "body": [
+            "`timescale 1ns / 1ps",
+            "//****************************************Copyright (c)***********************************// ",
+            "//Copyright(C) CETC Ce Kong ",
+            "//All rights reserved ",
+            "//----------------------------------------------------------------------------------------",
+            "// File name:           ",
+            "// Last modified Date:  $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+            "// Last Version:        V1.0",
+            "// Descriptions:        ",
+            "//----------------------------------------------------------------------------------------",
+            "// Created by:           ",
+            "// Created date:        $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+            "// Version:             V1.0",
+            "// Descriptions:        ",
+            "//",
+            "//----------------------------------------------------------------------------------------",
+            "//****************************************************************************************//",
+            "",
+            " "		,
+            "module tb();",
+            "    reg             clk                                    ; ",
+            "    reg             rst_n                                  ; ",
+            "    initial"                                               ,
+            "        begin"                                             ,
+            "            #2                                             ",
+            "                    rst_n = 0   ;                          ",
+            "                    clk = 0     ;                          ",
+            "            #10                                            ",
+            "                    rst_n = 1   ;                          ",
+            "        end                                                ",
+            "                                                           ",
+            "    parameter   CLK_FREQ = 100;//Mhz                       ",
+            "    always # ( 1000/CLK_FREQ/2 ) clk = ~clk ;              ",
+            "                                                           ",
+            "                                                           ",
+            "$2",                                               
+            "endmodule                                                  "
+
+	],
+	"description": "tb"
+	},
+
+
+
+	"zhuangtaiji": {
+        "prefix": "zhuangtaiji",
+        "body": [
+            "    localparam                          st_idle                 = 1;",
+            "    localparam                          st_done                 = 10;",
+            "                                                          ",
+            "    reg                [   7:0]         cur_state                  ;",
+            "    reg                [   7:0]         next_state                 ;",
+            "//(三段式状态机)同步时序描述状态转移",
+            "    always @(posedge clk or negedge rst_n)",
+            "        begin",
+            "            if(rst_n == 1'b0)",
+            "                cur_state <= st_idle;",
+            "            else",
+            "                cur_state <= next_state;",
+            "        end",
+            "//组合逻辑判断状态转移条件",
+            "    always @( * ) begin",
+            "        case(cur_state)",
+            "            st_idle:",
+            "                begin",
+            "                    if(   $1     )",
+            "                        next_state =         ;",
+            "                    else",
+            "                        next_state = st_idle;",
+            "                end",
+            "        ",
+            "            default: next_state= st_idle;",
+            "        endcase",
+            "    end",
+            "//时序电路描述状态输出",
+            "    $2"       
+	],
+	"description": "tb"
+	},
+
+	"always": {
+        "prefix": "always",
+        "body": [
+			"    always @(posedge clk or negedge rst_n)           ",
+			"        begin                                        ",
+			"            if(!rst_n)                               ",
+			"                                                     ",
+			"            else if()                                ",
+			"                                                     ",
+			"            else                                     ",
+			"        end                                          "
+	],
+	"description": "Insert an always block"
+	},
+
+	"dapai": {
+          "prefix": "dapai",
+          "body": [
+          "    always @(posedge clk or negedge rst_n)   ",   
+          "        begin                               ",	                               
+          "            if(!rst_n)                      ",                            
+          "                begin                       ",	
+          "                                             ",
+          "                end                         ",	                             
+          "            else                            ",	
+          "                begin                       ",	
+          "                                             ",
+          "                end                         ",	                          
+          "        end                              "   
+	],
+	"description": "Insert an dapai"
+	},
+
+
+
+
+    "assign": {
+        "prefix": "assign",
+        "body": ["assign $1 = $2;"]
+    },
+
+
+	"alwaysposclk": {
+		"prefix": ["alclk", "alwaysposclk"],
+		"body": [
+			"always @(posedge clk $1) begin",
+			"\t$2",
+			"end"
+		],
+		"description": "always @(posedge clk)"
+	},
+	"alwaysnegclk": {
+		"prefix": ["alnegclk", "alwaysnegclk"],
+		"body": [
+			"always @(negedge clk $1) begin",
+			"\t$2",
+			"end"
+		],
+		"description": "always @(negedge clk)"
+	},
+	"begin/end": {
+		"prefix": "begin",
+		"body": [
+			"begin",
+			"\t$1",
+			"end"
+		],
+		"description": "Insert a begin ... end block"
+	},
+	"end": {
+		"prefix": "end",
+		"body": "end",
+		"description": "Insert end keyword"
+	},
+	"initial": {
+		"prefix": "initial",
+		"body": [
+			"initial begin",
+			"\t$0",
+			"end"
+		],
+		"description": "initial begin ... end"
+	},
+	"case": {
+		"prefix": "case",
+		"body": [
+			"case (${1:param})",
+			"\t$2: $3",
+			"\tdefault: $4",
+			"endcase"
+		],
+		"description": "case () ... endcase"
+	},
+	"reg": {
+		"prefix": "reg",
+		"body": [
+			"reg $1;"
+		],
+		"description": "reg reg_name;"
+	},
+	"regarray": {
+		"prefix": ["regarray", "reg ["],
+		"body": [
+			"reg [$1:$2] $3;"
+		],
+		"description": "reg [N:0] reg_name;"
+	},
+	"regmemory": {
+		"prefix": ["regmemory","memory"],
+		"body": [
+			"reg [$1:$2] $3 [$4:$5];"
+		],
+		"description": "reg [N:0] reg_name [0:M];"
+	},
+	"wire": {
+		"prefix": "wire",
+		"body": [
+			"wire $1;"
+		],
+		"description": "wire wire_name;"
+	},
+	"wirearray": {
+		"prefix": ["wirearray", "wire ["],
+		"body": [
+			"wire [$1:$2] $3;"
+		],
+		"description": "wire [N:0] wire_name;"
+	},
+	"array": {
+		"prefix": "array",
+		"body": "[${1:8}:${2:0}]$0",
+		"description": "insert [x:y]"
+	},
+	"parameter": {
+		"prefix": "parameter",
+		"body": [
+			"parameter $1 = $2;"
+		],
+		"description": "paramter var = val;"
+	},
+	"localparam": {
+		"prefix": "localparam",
+		"body": "localparam $1 = $2;",
+		"description": "localparam var = val"
+	},
+	"integer": {
+		"prefix": "integer",
+		"body": "integer $1;",
+		"description": "integer int_name"
+	},
+	"signed": {
+		"prefix": "signed",
+		"body": "signed $1 $2;",
+		"description": "signed datatype name"
+	},
+	"include": {
+		"prefix": ["include", "`include"],
+		"body": [
+			"`include \"$1\""
+		],
+		"description": "`include \"..\""
+	},
+	"define": {
+		"prefix": ["def", "define", "`define"],
+		"body": [
+			"`define ${1:macro}"
+		],
+		"description": "`define macro"
+	},
+	"ifdef": {
+		"prefix": ["ifdef", "`ifdef"],
+		"body": "`ifdef ${1:macro}",
+		"description": "`ifdef macro"
+	},
+	"ifndef": {
+		"prefix": ["ifndef", "`ifndef"],
+		"body": "`ifndef ${1:macro}",
+		"description": "`ifndef macro"
+	},
+	"elsif": {
+		"prefix": ["elsif", "`elsif"],
+		"body": "`elsif ${1:macro}",
+		"description": "`elsif macro"
+	},
+	"endif": {
+		"prefix": ["endif", "`endif"],
+		"body": "`endif ${1:macro}",
+		"description": "`endif macro"
+	},
+	"undef": {
+		"prefix": ["undef", "`undef"],
+		"body": "`undef ${1:macro}",
+		"description": "`undef macro"
+	},
+	"timescale": {
+		"prefix": ["ts", "timescale", "`timescale"],
+		"body": [
+			"`timescale ${1:1ps}/${2:1ps}$0"
+		]
+	},
+	"default_nettype": {
+		"prefix": ["default_nettype", "`default_nettype"],
+		"body": "`default_nettype ${1:none}",
+		"description": "Set default nettype"
+	},
+	"ternary": {
+		"prefix": "ternary",
+		"body": [
+			"$1 ? $2 : $3"
+		],
+		"description": "a ? b : c"
+	},
+	"if": {
+		"prefix": "if",
+		"body": [
+			"if (${1:conditions}) begin",
+			"\t$0",
+			"end"
+		],
+		"description": "if (...) begin ... end"
+	},
+	"ifelse": {
+		"prefix": "ifelse",
+		"body": [
+			"if (${1:conditions}) begin",
+			"\t$2",
+			"end else begin",
+			"\t$3",
+			"end"
+		],
+		"description": "if (...) begin ... end else begin ... end"
+	},
+	"for loop": {
+		"prefix": "for",
+		"body": [
+			"for ($1 = $2; $3; $4) begin",
+			"\t$0",
+			"end"
+		],
+		"description": "for (...) begin ... end"
+	},
+	"while loop": {
+		"prefix": "while",
+		"body": [
+			"while ($1) begin",
+			"\t$2",
+			"end"
+		],
+		"description": "while (...) begin ... end"
+	},
+	"forever": {
+		"prefix": "forever",
+		"body": [
+			"forever begin",
+			"\t$0",
+			"end"
+		],
+		"description": "forever begin ... end"
+	},
+	"function": {
+		"prefix": "function",
+		"body": [
+			"function $1;",
+			"\t$2;",
+			"\t$3",
+			"endfunction"
+		],
+		"description": "function (...) ... endfunction"
+	},
+	"generate": {
+		"prefix": "generate",
+		"body": [
+			"generate",
+			"\t$1",
+			"endgenerate"
+		],
+		"description": "generate (...) ... endgenerate"
+	},
+	"genvar": {
+		"prefix": "genvar",
+		"body": "genvar $1",
+		"description": "genvar i"
+	}
+
+}

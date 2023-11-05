@@ -1,0 +1,38 @@
+{
+    "name": "Modelsim DO",
+    "scopeName": "source.do",
+    "fileTypes": ["do"],
+    "patterns": [
+      {
+        "include": "#comment"
+      },
+      {
+        "include": "#command"
+      }
+    ],
+    "repository": {
+      "comment": {
+        "patterns": [
+          {
+            "match": "--.*$",
+            "name": "comment.line.double-dash.modelsim-do"
+          },
+
+          {
+            "begin": "#",
+            "end": "$",
+            "name": "comment.block.number-sign.modelsim-do"
+          }
+        ]
+      },
+      "command": {
+        "patterns": [
+          {
+            "match": "\\b(set_property|add_wave|abort|add|add_cmdhelpadd_menu|add_menucb|add_menuitem|add_menurb|add_separator|add_submenu|addTime|after|alias|append|apply_button_adder|array|batch_mode|bd|bedit|bell|bgerror|binary|bind|bindtags|body|bp|break|button|call|canvas|catch|cd|cdbg|change|change_menu_cmd|check|checkbutton|checkpoint|class|clipboard|clock|close|code|concat|config|configure|cont|context|continue|dde|Debugging|delete|describe|destroy|disable_menu|disable_menuitem|disablebp|divTime|do|down|drivers|dumplog64|echo|edit|elite_edition|enable_menu|enable_menuitem|enablebp|encoding|ensemble|entry|env|environment|environment_nosource|eof|eqTime|error|eval|event|exa|examine|exec|execution|exit|expr|fblocked|fconfigure|fcopy|file|fileevent|find|findExec|flush|focus|font|for|force|foreach|format|formatTime|frame|get_menu_path|getactivecursortime|getactivemarkertime|gets|ginfo|glob|global|grab|grid|gteTime|gtTime|help|history|http|if|image|incr|incrTcl|info|int64ToReal|int64ToStr|interp|intToTime|jobspy|join|label|lappend|layout|lecho|left|lindex|linsert|list|listbox|llength|load|local|log|lower|lrange|lremove|lreplace|lsearch|lset|lshift|lsort|lsublist|lteTime|ltTime|luniq|max|menu|menubutton|message|msgcat|mulTime|namespace|namespaceOf|neqTime|next|noforce|nolog|notepad|notrace|noview|nowhen|onbreak|onElabError|onerror|onfinish|open|openlog|option|pack|package|panedwindow|parray|pathOf|pause|pedit|personal_edition|pid|place|pop|precision|PrefSource|geometry|HDLFileTypes|HighlightErrorColor|highlightExecutableLines|tabs|user_hook|verilogFileTypes|vhdlFileTypes|WarnSourceChanged|printenv|proc|project|property|push|puterr|puts|pwd|qhdel|qhdir|qhlib|questasim|quietly|quit|qverilog|qvhcom|qvlcom|radiobutton|radix|raise|read|readers|RealToTime|regexp|registry|regsub|rename|renamelog|report|restart|restore|resume|return|right|rincr|run|runStatus|sbrk|scale|scaleTime|scan|sccom|scgenmod|scope|scrollbar|sdfcom|search|searchlog|see|seek|seetime|selection|send|set|setenv|shift|show|simNamespaceIsOpen|simstats|simstatslist|simtime|slave_mode|socket|source|spinbox|split|status|step|stop|string|subst|subTime|suppress|switch|tabset|tb|tcheck_set|tcheck_status|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tell|text|time|tix|Tk|tk|tk_chooseColor|tk_chooseDirectory|tk_dialog|tk_getOpenFile|tk_getSaveFile|tk_menuSetFocus|tk_messageBox|tk_popup|tk_textCopy|tk_textCut|tk_textPaste|tkwait|toggle|toplevel|trace|transcribe|transcript|truncate|tssi2mti|typespec|ui_VVMode|unknown|unset|unsetenv|up|update|uplevel|upvar|usual|validTime|variable|vcd|vcd2wlf|vcom|vdbg|vdel|vdir|vencrypt|verror|vgencomp|vhencrypt|view|virtual|vlib|vlog|vmake|vmap|vopt|vsim|vsim_break|vsimAuth|vsimDate|vsimId|vsimVersion|vsimVersionString|vsource|vwait|when|where|while|winfo|wlf2log|wlf2vcd|wlfman|wlfrecover|wm|write|xml2ucdb|zdebugging|after|append|array|bgerror|binary|break|catch|cd|clock|close|concat|continue|dde|encoding|eof|error|eval|exec|exit|expr|fblocked|fconfigure|fcopy|file|fileevent|flush|for|foreach|format|gets|glob|global|history|http|if|incr|info|interp|join|lappend|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|msgcat|namespace|open|package|parray|pid|proc|puts|pwd|read|regexp|registry|regsub|rename|return|scan|seek|set|socket|source|split|string|subst|switch|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tell|time|trace|unset|update|uplevel|upvar|variable|vwait|while)\\b",
+            "name": "keyword.control.modelsim-do"
+          }
+        ]
+      }
+    }
+  }
+  
