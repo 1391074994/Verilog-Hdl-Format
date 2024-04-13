@@ -38,8 +38,26 @@ function convertCode(code: string): string {
   const variableMatches = preprocessedCode.matchAll(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)\s*(\w+)/g);
   const variableNames = Array.from(variableMatches, match => match[5]);
 
+  // 识别到模块名称后的参数
+  // const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\w+)\s*=\s*([\w+\-()]+)/g);
+  // const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\w+)\s*=\s*(\w+),?/g);
+  const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g);
+  const parameterPairs = Array.from(parameterMatches, match => ({param1: match[1], param2: match[2]}));
+
+  // 构建参数字符串
+  let parametersStr = '';
+  if (parameterPairs.length > 0) {
+    parametersStr += "#(\n";
+    for (const pair of parameterPairs) {
+      parametersStr += `   .${pair.param1.padEnd(15)}(${pair.param2.padEnd(15)}),\n`;
+    }
+    // 去掉最后一行的","
+    parametersStr = parametersStr.replace(/,\n$/, '\n');
+    parametersStr += ")\n";
+  }
+
   // 转换成目标格式
-  let convertedCodeModule = `${moduleName} u_${moduleName}(\n`;
+  let convertedCodeModule = `${moduleName}${parametersStr} u_${moduleName}(\n`;
   for (const variableName of variableNames) {
     convertedCodeModule += `    .${variableName.padEnd(35)}(${variableName.padEnd(26)}),\n`;
   } 
@@ -49,33 +67,56 @@ function convertCode(code: string): string {
   const preprocessedCodeModule = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
   const variableMatchesModule = preprocessedCodeModule.matchAll(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed|)?\s*((?:\[[^\]]+\])?)?\s*(\w+)/g);
   const convertedCodePort = Array.from(variableMatchesModule, match => {
+    // let type = '';
+    // let size = '';
+    // if (match[1] === 'output'|| match[1] === 'inout' ) {
+    //   type = 'wire';
+    //   size = match[4] !== undefined ? match[4] : '';
+    // } else if (match[1] === 'input') {
+    //   type = 'reg';
+    //   size = match[4] !== undefined ? match[4] : '';
+    // }
+    // return `${''.padEnd(4)}${type.padEnd(19)}${size.padEnd(17)}${match[5].padEnd(27)};`;
+
     let type = '';
     let size = '';
-    if (match[1] === 'output'|| match[1] === 'inout' ) {
+    let m_signed = '';
+    if (match[1] === 'output' || match[1] === 'inout') {
       type = 'wire';
       size = match[4] !== undefined ? match[4] : '';
     } else if (match[1] === 'input') {
       type = 'reg';
       size = match[4] !== undefined ? match[4] : '';
     }
-    return `${''.padEnd(4)}${type.padEnd(19)}${size.padEnd(17)}${match[5].padEnd(27)};`;
+    if (match[3] === 'signed') {
+      m_signed = 'signed ';
+    }
+    // return `${''.padEnd(4)}${type.padEnd(19)}${size.padEnd(17)}${match[5].padEnd(27)};`;
+    return `${''.padEnd(4)}${type.padEnd(19)}${m_signed.padEnd(7)}${size.padEnd(17)}${match[5].padEnd(27)};`;
+    
   }).join('\n');
 
-  const finalCode = "`timescale 1ns / 1ps\n" +
+  const finalCode = 
+    "`timescale 1ns / 1ps\n" +
+    "//****************************************VSCODE PLUG-IN**********************************//\n" +
+    "//----------------------------------------------------------------------------------------\n" +
+    "// IDE :                   VSCODE plug-in \n" +
+    "// VSCODE plug-in version: Verilog-Hdl-Format-"+ version +"\n" +
+    "// VSCODE plug-in author : Jiang Percy\n" +
+    "//----------------------------------------------------------------------------------------\n" +
     "//****************************************Copyright (c)***********************************//\n" +
-    "//Copyright(C) CETC Ce Kong\n" +
-    "//All rights reserved\n" +
+    "// Copyright(C)            "+ companyName + "\n" +
+    "// All rights reserved     \n"+
+    "// File name:              " + moduleName + "_tb.v\n" +
+    "// Last modified Date:     " + getCurrentDateTime() + "\n" +
+    "// Last Version:           V1.0\n" +
+    "// Descriptions:           \n" +
     "//----------------------------------------------------------------------------------------\n" +
-    "// File name:           " + moduleName + "_tb.v\n" +
-    "// Last modified Date:  " + getCurrentDateTime() + "\n" +
-    "// Last Version:        V1.0\n" +
-    "// Descriptions:\n" +
-    "//----------------------------------------------------------------------------------------\n" +
-    "// Created by:          " + userName + "\n" +
-    "// Created date:        " + getCurrentDateTime() + "\n" +
-    "// Version:             V1.0\n" +
-    "// Descriptions:\n" +
-    "//\n" +
+    "// Created by:             " + userName + "\n" +
+    "// Created date:           " + getCurrentDateTime() + "\n" +
+    "// Version:                V1.0\n" +
+    "// Descriptions:           \n" +
+    "//                         \n" +
     "//----------------------------------------------------------------------------------------\n" +
     "//****************************************************************************************//\n\n" +
     "module    " + moduleName+ "_tb();" + "\n" + 
@@ -103,7 +144,10 @@ function convertCode(code: string): string {
 // 在你的脚本中获取用户自定义配置
 // const vscode = require('vscode');
 const userName = vscode.workspace.getConfiguration().get('extension.userName') as string[];
-
+// let userName = vscode.workspace.getConfiguration('extension').get('userName');
+let companyName = vscode.workspace.getConfiguration('extension').get('companyName');
+let extension = vscode.extensions.getExtension('Jiang-Percy.Verilog-Hdl-Format');
+let version = extension ? extension.packageJSON.version : 'unknown';
 // 调用函数并输出结果
 // console.log(convertCode("your-code-here", userName));
 

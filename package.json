@@ -1,8 +1,8 @@
 {
   "name": "Verilog-Hdl-Format",
   "displayName": "Verilog Hdl Format",
-  "description": "[公开版]verilog代码格式化,例化,TB,ucf转XDC,verilog语法检测。verilog,ucf,高云cst,xdc,tcl,modelsim-do语法高亮,定义悬停,modelsim do 文件转换快速仿真,",
-  "version": "0.3.20231030",
+  "description": "[公开版]verilog代码格式化,例化,TB,ucf转XDC,verilog语法检测,verilog文件树。verilog,ucf,高云cst,xdc,tcl,modelsim-do语法高亮;定义悬停,跳转;modelsim do 文件转换快速仿真,",
+  "version": "1.9.20240413",
   "publisher": "Jiang-Percy",
   "engines": {
     "vscode": "^1.82.0"
@@ -19,6 +19,13 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "themes": [
+      {
+          "label": "jiang percy verilog themes",
+          "uiTheme": "vs-dark",
+          "path": "./themes/jiang_percy_verilog_themes.json"
+      }
+    ],
     "snippets": [
       {
         "language": "verilog",
@@ -30,12 +37,112 @@
         "command": "verilog-simplealign.simple_align",
         "key": "ctrl+l",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "verilog-simplealign.always_valuation_func",
+        "key": "ctrl+U",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "extension.incrementSelection",
+        "key": "ctrl+alt+i",
+        "mac": "cmd+alt+i",
+        "when": "editorTextFocus"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "verilogContainer",
+          "title": "Verilog-Hdl-Format:TreeView",
+          "icon": "images/container.png"
+        }
+      ]
+    },
+    "views": {
+      "verilogContainer": [
+        {
+          "id": "verilogModuleTree",
+          "name": "VERILOG MODULE TREE",
+          "title": "Refresh Verilog Modules"
+        },
+        {
+          "id": "feedback",
+          "name": "BUG反馈/修改建议→联系qq群:819816965",
+          "visibility": "collapsed"
+        }
+      ]
+    },
+
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.findVerilogModules",
+          "group": "navigation",
+          "when": "editorTextFocus"
+        },
+        {
+          "when": "resourceLangId == verilog",
+          "command": "extension.gotoDefinitionModule",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == verilog",
+          "command": "extension.gotoDefinitionPin",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == verilog",
+          "command": "extension.gotoDefinitionreg",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "extension.findVerilogModules",
+          "when": "view == verilogModuleTree",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "verilogModuleTree.openFileInExplorer",
+          "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
+          "group": "navigation"
+        },
+        {
+          "command": "verilogModuleTree.openFileInVSCodeExplorer",
+          "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
+          "group": "navigation"
+        },
+        {
+          "command": "verilogModuleTree.openFileInNewEditor",
+          "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
+          "group": "navigation"
+        },
+        {
+          "command": "verilogModuleTree.openFileInMainEditor",
+          "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
+          "group": "navigation"
+        }
+    ]
+    },
     "commands": [
       {
         "command": "verilog-simplealign.simple_align",
         "title": "verilog"
+      },
+      {
+        "command": "verilog-simplealign.always_valuation_func",
+        "title": "always_valuation_func"
+      },
+      {
+        "command": "extension.createModule",
+        "title": "Create_Module"
+      },
+      {
+        "command": "extension.createTB",
+        "title": "Create_Testbench"
       },
       {
         "command": "extension.convertCode",
@@ -54,16 +161,57 @@
         "title": "Convert UCF to XDC SORT ORDER"
       },
       {
-        "command": "verilog.lint",
+        "command": "FPGA_verilog.lint",
         "title": "Verilog: Rerun lint tool"
       },
       {
         "command": "extension.extractData",
-        "title": "Extract Data"
+        "title": "Conver Modelsim do"
       },
       {
-        "command": "your-extension.command",
-        "title": "Your Extension Command"
+        "command": "extension.incrementSelection",
+        "title": "Increment Selection"
+      },
+      {
+        "command": "extension.decrementSelection",
+        "title": "Decrement Selection"
+      },
+      {
+        "command": "extension.reverseSelection",
+        "title": "Reverse Selection"
+      },
+      {
+        "command": "extension.findVerilogModules",
+        "title": "%Find Verilog Modules%",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "verilogModuleTree.openFileInNewEditor",
+        "title": "%openFileInNewEditor%"
+      },
+      {
+        "command": "verilogModuleTree.openFileInMainEditor",
+        "title": "%openFileInMainEditor%"
+      },
+      {
+        "command": "extension.gotoDefinitionModule",
+        "title": "%gotoDefinitionModule%"
+      },
+      {
+        "command": "extension.gotoDefinitionPin",
+        "title": "%GoTogotoDefinitionPin%"
+      },
+      {
+        "command": "extension.gotoDefinitionreg",
+        "title": "%gotoDefinitionreg%"
+      },
+      {
+        "command": "verilogModuleTree.openFileInExplorer",
+        "title": "%Open File in Explorer%"
+      },
+      {
+        "command": "verilogModuleTree.openFileInVSCodeExplorer",
+        "title": "%Open File in VSCode Explorer%"
       }
     ],
     "grammars": [
@@ -121,7 +269,7 @@
         "extensions": [
           ".xdc"
         ],
-        "configuration": "./config/language-configuration.json"
+        "configuration": "./config/language-configuration_tcl.json"
       },
       {
         "id": "cst",
@@ -131,7 +279,7 @@
         "extensions": [
           ".cst"
         ],
-        "configuration": "./config/language-configuration.json"
+        "configuration": "./config/language-configuration_tcl.json"
       },
       {
         "id": "ucf",
@@ -142,7 +290,7 @@
         "extensions": [
           ".ucf"
         ],
-        "configuration": "./config/language-configuration.json"
+        "configuration": "./config/language-configuration_tcl.json"
       },
       {
         "id": "tcl",
@@ -153,7 +301,7 @@
         "extensions": [
           ".tcl"
         ],
-        "configuration": "./config/language-configuration.json"
+        "configuration": "./config/language-configuration_tcl.json"
       },
       {
         "id": "do",
@@ -163,51 +311,141 @@
         "extensions": [
           ".do"
         ],
-        "configuration": "./config/language-configuration.json"
+        "configuration": "./config/language-configuration_tcl.json"
       }
     ],
     "configuration": {
-
-      "title": "Verilog Format linter",
+      "title": "%verilog-hdl-format-setting.title%",
       "properties": {
-        "myExtension.authorVariable": {
-          "type": "string",
-          "default": "jiang quan cai",
-          "description": "The author variable used in the code snippet"
-        },
-
         "extractData.customOptions": {
           "type": "array",
           "description": "Custom options for data extraction",
-          "default":[
-          "log -r /*  #log 全部波形数据     ",       
-          "radix hex  #设置为十六进制  eage: radix [-binary | -octal | -decimal | -unsigned | -ascii | time] | -showbase | -symbolic]",
-          "view wave  #打开wave窗口        ", 
-          "view structure #显示结构        ",
-          "view signals #显示信号          ",  
-          "do wave.do  # 运行保存的波形文件",
-          "run 10ms  #运行10ms            "
+          "default": [
+            "#log 全部波形数据",
+            "log -r /*       ",
+            "#设置数值显示的方式  eage: radix [-binary | -octal | -decimal | -unsigned | -ascii | time] | -showbase | -symbolic]",
+            "radix hex ",
+            "#打开wave窗口",
+            "view wave",
+            "#显示结构",
+            "view structure",
+            "#显示信号",
+            "view signals",
+            "# 运行保存的波形文件",
+            "do wave.do",
+            "#运行时间",
+            "run 10ms"
           ],
           "items": {
-              "type": "string"
+            "type": "string"
           }
-      },
-      "extension.userName": {
-        "type": "string",
-        "title": "User name",
-        "default":[
-          "Jiang Quan Cai"   
+        },
+        "extension.userName": {
+          "type": "string",
+          "title": "User name",
+          "default": [
+            "Please Write You Name "
           ],
-        "description": "Your name or username, which will be included in the output file."
-      },
-
-        "verilog.linting.path": {
+          "description": "Your Organization  or username, which will be included in the output file."
+        },
+        "extension.companyName": {
+          "type": "string",
+          "title": "Company name",
+          "default": [
+            "Please Write Company name"
+          ],
+          "description": "Your Organization or company,which will be included in the output file."
+        },
+        "verilogModuleFinder.excludeFolders": {
+          "type": "array",
+          "default": [
+            "ip",
+            "core"
+          ],
+          "description": "Exclude folders with specific names",
+          "items": {
+            "type": "string"
+          }
+        },
+        "simpleAlign.num1": {
+          "type": "number",
+          "title": "simpleAlign.num1",
+          "default": 4,
+          "description": "Your simpleAlign.num1."
+        },
+        "simpleAlign.num2": {
+          "type": "number",
+          "title": "simpleAlign.num2",
+          "default": 6,
+          "description": "Your simpleAlign.num2."
+        },
+        "simpleAlign.num3": {
+          "type": "number",
+          "title": "simpleAlign.num3",
+          "default": 17,
+          "description": "Your simpleAlign.num3."
+        },
+        "simpleAlign.num4": {
+          "type": "number",
+          "title": "simpleAlign.num4",
+          "default": 27,
+          "description": "Your simpleAlign.num4."
+        },
+        "simpleAlign.num5.upbound": {
+          "type": "number",
+          "title": "upbound.width",
+          "default": 4,
+          "description": "Your simpleAlign.upbound."
+        },
+        "simpleAlign.num6.lowbound": {
+          "type": "number",
+          "title": "lowbound.width",
+          "default": 2,
+          "description": "Your simpleAlign.lowbound."
+        },
+        "simpleAlign.width_always": {
+          "type": "number",
+          "title": "simpleAlign.width_always",
+          "default": 4,
+          "description": "Your simpleAlign.width_always."
+        },
+        "simpleAlign.width_begin_end": {
+          "type": "number",
+          "title": "simpleAlign.width_begin_end",
+          "default": 8,
+          "description": "Your simpleAlign.width_begin_end."
+        },
+        "simpleAlign.width_if": {
+          "type": "number",
+          "title": "simpleAlign.width_if",
+          "default": 12,
+          "description": "Your simpleAlign.width_if."
+        },
+        "simpleAlign.width_else": {
+          "type": "number",
+          "title": "simpleAlign.width_else",
+          "default": 12,
+          "description": "Your simpleAlign.width_else."
+        },
+        "simpleAlign.width_else_if": {
+          "type": "number",
+          "title": "simpleAlign.width_else_if",
+          "default": 12,
+          "description": "Your simpleAlign.width_else_if."
+        },
+        "simpleAlign.width_always_valuation": {
+          "type": "number",
+          "title": "simpleAlign.width_always_valuation",
+          "default": 16,
+          "description": "Your simpleAlign.width_always_valuation."
+        },
+        "FPGA_verilog.linting.path": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "A path to the installation of linter."
         },
-        "verilog.linting.linter": {
+        "FPGA_verilog.linting.linter": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -221,13 +459,13 @@
           "default": "none",
           "description": "Select the verilog linter. Possible values are 'iverilog', 'verilator', 'modelsim', 'xvlog', 'slang' or 'none'."
         },
-        "verilog.linting.iverilog.arguments": {
+        "FPGA_verilog.linting.iverilog.arguments": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add Icarus Verilog arguments here (like macros). They will be added to Icarus Verilog while linting (The command \"-t null\" will be added by the linter by default)."
         },
-        "verilog.linting.iverilog.includePath": {
+        "FPGA_verilog.linting.iverilog.includePath": {
           "scope": "window",
           "type": "array",
           "items": {
@@ -236,7 +474,7 @@
           "uniqueItems": true,
           "description": "A list of directory paths to use while Icarus Verilog linting."
         },
-        "verilog.linting.iverilog.verilogHDL.standard": {
+        "FPGA_verilog.linting.iverilog.verilogHDL.standard": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -252,7 +490,7 @@
           "default": "Verilog-2005",
           "description": "Select the standard rule to be used when Icarus Verilog linting for Verilog-HDL files."
         },
-        "verilog.linting.iverilog.systemVerilog.standard": {
+        "FPGA_verilog.linting.iverilog.systemVerilog.standard": {
           "scope": "window",
           "type": "string",
           "enum": [
@@ -268,37 +506,37 @@
           "default": "SystemVerilog2012",
           "description": "Select the standard rule to be used when Icarus Verilog linting for SystemVerilog files."
         },
-        "verilog.linting.iverilog.runAtFileLocation": {
+        "FPGA_verilog.linting.iverilog.runAtFileLocation": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, Icarus Verilog will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
         },
-        "verilog.linting.modelsim.runAtFileLocation": {
+        "FPGA_verilog.linting.modelsim.runAtFileLocation": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, Modelsim will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
         },
-        "verilog.linting.modelsim.arguments": {
+        "FPGA_verilog.linting.modelsim.arguments": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add Modelsim arguments here. They will be added to Modelsim while linting."
         },
-        "verilog.linting.modelsim.work": {
+        "FPGA_verilog.linting.modelsim.work": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add Modelsim work library here."
         },
-        "verilog.linting.slang.arguments": {
+        "FPGA_verilog.linting.slang.arguments": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add Slang arguments here (like macros). They will be added to Slang while linting (The command \"-I=<document folder>\" will be added by the linter by default)."
         },
-        "verilog.linting.slang.includePath": {
+        "FPGA_verilog.linting.slang.includePath": {
           "scope": "window",
           "type": "array",
           "items": {
@@ -307,25 +545,25 @@
           "uniqueItems": true,
           "description": "A list of directory paths to use while Slang linting."
         },
-        "verilog.linting.slang.runAtFileLocation": {
+        "FPGA_verilog.linting.slang.runAtFileLocation": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, Slang will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
         },
-        "verilog.linting.slang.useWSL": {
+        "FPGA_verilog.linting.slang.useWSL": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, run slang in WSL."
         },
-        "verilog.linting.verilator.arguments": {
+        "FPGA_verilog.linting.verilator.arguments": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add Verilator arguments here (like macros). They will be added to Verilator while linting (The command \"--lint-only -I<document folder>\" will be added by the linter by default)."
         },
-        "verilog.linting.verilator.includePath": {
+        "FPGA_verilog.linting.verilator.includePath": {
           "scope": "window",
           "type": "array",
           "items": {
@@ -334,25 +572,25 @@
           "uniqueItems": true,
           "description": "A list of directory paths to use while Verilator linting."
         },
-        "verilog.linting.verilator.runAtFileLocation": {
+        "FPGA_verilog.linting.verilator.runAtFileLocation": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, Verilator will be run at the file location for linting. Else it will be run at workspace folder. Disabled by default."
         },
-        "verilog.linting.verilator.useWSL": {
+        "FPGA_verilog.linting.verilator.useWSL": {
           "scope": "window",
           "type": "boolean",
           "default": false,
           "description": "If enabled, run verilator in WSL."
         },
-        "verilog.linting.xvlog.arguments": {
+        "FPGA_verilog.linting.xvlog.arguments": {
           "scope": "window",
           "type": "string",
           "default": "",
           "description": "Add xvlog arguments here. They will be added to xvlog while linting."
         },
-        "verilog.linting.xvlog.includePath": {
+        "FPGA_verilog.linting.xvlog.includePath": {
           "scope": "window",
           "type": "array",
           "items": {
@@ -360,6 +598,12 @@
           },
           "uniqueItems": true,
           "description": "A list of directory paths to use while xvlog linting."
+        },
+        "FPGA_verilog.ctags.path": {
+          "scope": "window",
+          "type": "string",
+          "default": "none",
+          "description": "A path to the installation of Universal Ctags."
         }
       }
     }
@@ -393,6 +637,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "antlr4ts": "^0.5.0-alpha.4",
     "graceful-fs": "^4.2.11"
   }
 }

@@ -26,9 +26,9 @@ export default class VerilatorLinter extends BaseLinter {
 
   private updateConfig() {
     this.linterInstalledPath = <string>(
-      vscode.workspace.getConfiguration().get('verilog.linting.path')
+      vscode.workspace.getConfiguration().get('FPGA_verilog.linting.path')
     );
-    this.configuration = vscode.workspace.getConfiguration('verilog.linting.verilator');
+    this.configuration = vscode.workspace.getConfiguration('FPGA_verilog.linting.verilator');
     this.arguments = <string>this.configuration.get('arguments');
     let path = <string[]>this.configuration.get('includePath');
     this.includePath = path.map((includePath: string) => this.resolvePath(includePath));

@@ -1,0 +1,11 @@
+{
+    "gotoDefinitionModule": "转到例化模块",
+    "GoTogotoDefinitionPin":"转到例化PIN角",
+    "Find Verilog Modules":"刷新verilog文件树显示",
+    "gotoDefinitionreg":"转到定义",
+    "verilog-hdl-format-setting.title":"verilog-hdl-format插件设置",
+    "openFileInNewEditor":"在侧边栏编辑器打开",
+    "openFileInMainEditor":"在主界面新的编辑器打开",
+    "Open File in Explorer":"在windows文件资源管理器显示",
+    "Open File in VSCode Explorer":"在VSCODE文件资源管理器显示"
+}

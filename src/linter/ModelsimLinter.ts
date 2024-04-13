@@ -21,16 +21,16 @@ export default class ModelsimLinter extends BaseLinter {
   }
 
   private getConfig() {
-    this.modelsimPath = <string>vscode.workspace.getConfiguration().get('verilog.linting.path');
+    this.modelsimPath = <string>vscode.workspace.getConfiguration().get('FPGA_verilog.linting.path');
     //get custom arguments
     this.modelsimArgs = <string>(
-      vscode.workspace.getConfiguration().get('verilog.linting.modelsim.arguments')
+      vscode.workspace.getConfiguration().get('FPGA_verilog.linting.modelsim.arguments')
     );
     this.modelsimWork = <string>(
-      vscode.workspace.getConfiguration().get('verilog.linting.modelsim.work')
+      vscode.workspace.getConfiguration().get('FPGA_verilog.linting.modelsim.work')
     );
     this.runAtFileLocation = <boolean>(
-      vscode.workspace.getConfiguration().get('verilog.linting.modelsim.runAtFileLocation')
+      vscode.workspace.getConfiguration().get('FPGA_verilog.linting.modelsim.runAtFileLocation')
     );
   }
 

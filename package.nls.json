@@ -1,0 +1,13 @@
+{
+    "gotoDefinitionModule": "skip To Definition Module",
+    "GoTogotoDefinitionPin":"skip To Definition Pin",
+    "Find Verilog Modules":"Refresh the verilog file tree display",
+    "gotoDefinitionreg":"sgotoDefinitionreg",
+    "verilog-hdl-format-setting.title":"verilog-hdl-format-setting",
+    "openFileInNewEditor":"open File In sidebar Editor",
+    "openFileInMainEditor":"open File In Main New Editor",
+    "Open File in Explorer":"Open File in Windows Explorer",
+    "Open File in VSCode Explorer":"Open File in VSCode Explorer"
+    
+
+}

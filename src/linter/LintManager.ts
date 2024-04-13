@@ -55,7 +55,7 @@ export default class LintManager {
   }
 
   configLinter() {
-    let linterName = vscode.workspace.getConfiguration('verilog.linting').get<string>('linter');
+    let linterName = vscode.workspace.getConfiguration('FPGA_verilog.linting').get<string>('linter');
 
     if (this.linter !== null) {
       if (this.linter.name === linterName) {

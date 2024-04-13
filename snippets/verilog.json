@@ -1,26 +1,32 @@
 {
+
 	"module": {
 		"prefix": "module",
 		"body": [
-			"`timescale 1ns / 1ps",
-			"//****************************************Copyright (c)***********************************// ",
-			"//Copyright(C) CETC Ce Kong ",
-			"//All rights reserved ",
-			"//----------------------------------------------------------------------------------------",
-			"// File name:           ",
-			"// Last modified Date:  $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-			"// Last Version:        V1.0",
-			"// Descriptions:        ",
-			"//----------------------------------------------------------------------------------------",
-			"// Created by:          ",
-			"// Created date:        $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-			"// Version:             V1.0",
-			"// TEXT NAME:           $TM_FILENAME ",
-			"// PATH:                $TM_FILEPATH ",
-			"// Descriptions:        ",
-			"//",
-			"//----------------------------------------------------------------------------------------",
-			"//****************************************************************************************//",
+			"`timescale 1ns / 1ps " ,
+			"//****************************************VSCODE PLUG-IN**********************************// " ,
+			"//---------------------------------------------------------------------------------------- " 
+			"// IDE :                   VSCODE      " ,
+			"// VSCODE plug-in version: Verilog-Hdl-Format-1.8.20240408",
+			"// VSCODE plug-in author : Jiang Percy " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"//****************************************Copyright (c)***********************************// " ,
+			"// Copyright(C)            COMPANY_NAME",
+			"// All rights reserved      ",
+			"// File name:               " ,
+			"// Last modified Date:     $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND " ,
+			"// Last Version:           V1.0 " ,
+			"// Descriptions:            " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"// Created by:             USER_NAME",
+			"// Created date:           $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND " ,
+			"// Version:                V1.0 " ,
+			"// TEXT NAME:              $TM_FILENAME " ,
+			"// PATH:                   $TM_FILEPATH " ,
+			"// Descriptions:            " ,
+			"//                          " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"//****************************************************************************************// ",
 			"",
 			"module ${TM_FILENAME_BASE}(",
 			"    input                               clk                        ,",
@@ -32,9 +38,59 @@
 			"$2"
 		
 	],
-	"description": "Insert a module without parameter"
+	"description": "Insert a module"
+	},
+	"tb": {
+		"prefix": "tb,testbench",
+		"body": [
+			"`timescale 1ns / 1ps " ,
+			"//****************************************VSCODE PLUG-IN**********************************// " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"// IDE :                   VSCODE       " ,
+			"// VSCODE plug-in version: Verilog-Hdl-Format-1.8.20240408" ,
+			"// VSCODE plug-in author : Jiang Percy " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"//****************************************Copyright (c)***********************************// " ,
+			"// Copyright(C)            COMPANY_NAME  " ,
+			"// All rights reserved      ",
+			"// File name:               " ,
+			"// Last modified Date:     $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND " ,
+			"// Last Version:           V1.0 " ,
+			"// Descriptions:            " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"// Created by:             USER_NAME" ,
+			"// Created date:           $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND " ,
+			"// Version:                V1.0 " ,
+			"// TEXT NAME:              $TM_FILENAME " ,
+			"// PATH:                   $TM_FILEPATH " ,
+			"// Descriptions:            " ,
+			"//                          " ,
+			"//---------------------------------------------------------------------------------------- " ,
+			"//****************************************************************************************// " ,
+			" " ,
+			"module tb(); " ,
+			"    reg             clk                                    ; " ,
+			"    reg             rst_n                                  ; " ,
+			"    initial " ,
+			"        begin " ,
+			"            #2 " ,
+			"                    rst_n = 0   ; " ,
+			"                    clk = 0     ; " ,
+			"            #10 " ,
+			"                    rst_n = 1   ; " ,
+			"        end " ,
+			" " ,
+			"    parameter   CLK_FREQ = 100;//Mhz " ,
+			"    always # ( 1000/CLK_FREQ/2 ) clk = ~clk ; " ,
+			" " ,
+			"    $2 " ,
+			"endmodule"
+		
+	],
+	"description": "Insert a testbench"
 	},
 
+	
 	"geli": {
 		"prefix": "geli",
 		"body": [
@@ -43,8 +99,6 @@
 	],
 	"description": "annotation"
 	},
-
-
 	"jishuqi": {
 		"prefix": "jishuqi",
 		"body": [
@@ -62,6 +116,23 @@
 	],
 	"description": "jishuqi"
 	},
+	
+	"log": {
+		"prefix": "log",
+		"body": [
+			"/*****************************************************************"
+			" * 文件名: $TM_FILENAME "
+			" * 作者: "
+			" * 修改日志:"
+			" * ------------------------------------------------------------------------"
+			" * 日期                    作者                        修改内容"
+			" * ------------------------------------------------------------------------"
+			" * $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND     姓名1                       初始版本  "
+			" * ------------------------------------------------------------------------"
+			" *****************************************************************/"
+	],
+	"description": "log"
+	},
 
 
 	"shangshenyan": {
@@ -78,54 +149,6 @@
 	],
 	"description": "shangshenyan"
 	},
-
-
-	"tb": {
-        "prefix": "tb,testbench",
-        "body": [
-            "`timescale 1ns / 1ps",
-            "//****************************************Copyright (c)***********************************// ",
-            "//Copyright(C) CETC Ce Kong ",
-            "//All rights reserved ",
-            "//----------------------------------------------------------------------------------------",
-            "// File name:           ",
-            "// Last modified Date:  $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-            "// Last Version:        V1.0",
-            "// Descriptions:        ",
-            "//----------------------------------------------------------------------------------------",
-            "// Created by:           ",
-            "// Created date:        $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-            "// Version:             V1.0",
-            "// Descriptions:        ",
-            "//",
-            "//----------------------------------------------------------------------------------------",
-            "//****************************************************************************************//",
-            "",
-            " "		,
-            "module tb();",
-            "    reg             clk                                    ; ",
-            "    reg             rst_n                                  ; ",
-            "    initial"                                               ,
-            "        begin"                                             ,
-            "            #2                                             ",
-            "                    rst_n = 0   ;                          ",
-            "                    clk = 0     ;                          ",
-            "            #10                                            ",
-            "                    rst_n = 1   ;                          ",
-            "        end                                                ",
-            "                                                           ",
-            "    parameter   CLK_FREQ = 100;//Mhz                       ",
-            "    always # ( 1000/CLK_FREQ/2 ) clk = ~clk ;              ",
-            "                                                           ",
-            "                                                           ",
-            "$2",                                               
-            "endmodule                                                  "
-
-	],
-	"description": "tb"
-	},
-
-
 
 	"zhuangtaiji": {
         "prefix": "zhuangtaiji",

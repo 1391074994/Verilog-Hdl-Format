@@ -704,17 +704,21 @@
           "match": "\\b([A-Z][A-Z0-9_]*)\\b",
           "name": "constant.other.net.verilog"
         },
+
+
         {
-          "match": "(`ifdef|`ifndef|`default_nettype)\\s+(\\w+)",
+          "match": "(`ifdef|`elseif|`endif|`else|`elsif|`ifndef|`default_nettype)\\s+(\\w+)?",
           "captures": {
             "1": {
-              "name": "constant.other.preprocessor.verilog"
+              "name": "support.function.preprocessor.verilog"   
             },
             "2": {
-              "name": "support.variable.verilog"
+              "name": "variable.preprocessor.verilog"   
             }
           }
         },
+
+
         {
           "match": "`(celldefine|else|elsif|endcelldefine|endif|include|line|nounconnected_drive|resetall|timescale|unconnected_drive|undef|begin_\\w+|end_\\w+|remove_\\w+|restore_\\w+)\\b",
           "name": "constant.other.preprocessor.verilog"
