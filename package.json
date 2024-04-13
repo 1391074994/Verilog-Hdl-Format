@@ -16,6 +16,8 @@
     "Programming Languages"
   ],
   "icon": "images/duck.png",
+  "README": "docs/README.md",
+  "changelogPath": "docs/CHANGELOG.md",   
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {

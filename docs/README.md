@@ -1,16 +1,32 @@
-# verilog-hdl-format README
+# verilog-hdl-format 插件介绍
 
 ## 前言 
-- 注意🔴:高亮代码的时候需要切换颜色主题为:深色+
 - 提升🟢:如果大家有好的修改意见,请给我留言. 🐧QQ:1391074994 🐧QQ裙: 819816965
 - 如果好用,请记得给个好评😘😘😘.
+* 操作范例:[bilibi 示范链接](https://www.bilibili.com/video/BV1xi421d7e9/?vd_source=99e34f775e17481ae5a0ed7fad6b00cc#reply1451507881)
+* 演示文档链接:[中文文档](https://1391074994.github.io/Verilog-Hdl-Format/)
+* github链接:[verilog-hdl-format](https://github.com/1391074994/verilog-hdl-format)
+## 功能简介
+1. 语法功能
+    * [代码格式化](./gsh/geshihua.md)
+    * [文件树显示](./wjs/wenjianshu.md)
+    * [一键例化](./lihua/lihua.md)
+    * [语法高亮](./gl/gl.md)
+    * [语法跳转](./yf/yf.md)
+    * [代码补全](./bq/bq.md)
+    * [定义悬停](./yf/yf.md)
+    * [代码错误检查](./linter/linter.md)
+2. 其他功能
+    * [ucf转xdc文件](./ucf_to_xdc/ucf_to_xdc.md) 
+    * [vivado仿真文件的快速转换](./sim_do/sim_do.md)
+    * [游标列递增、递减](./incrementSelection/incrementSelection.md)
+    * [颜色主题](./thems/thems.md)
 
-## 功能介绍
 1. 实现verilog代码格式化功能（变量对齐，逗号对齐，括号对齐）,在设置界面可以配置缩进量。功能触发：按下 ctrl+shift+p :输入 verilog。 快捷键 CTRL + L;功能2：加入只对于always块的格式化，在设置界面可以配置缩进量。命令：verilog-simplealign.always_valuation_func；快捷键ctrl + U。
 2. 一键例化功能,例化的代码自动复制到剪切板。功能触发：按下 ctrl+shift+p :输入 Convert_instance。一键tb功能:按下 ctrl+shift+p :输入 Convert_testbench.
 3. ucf转xdc文件:
-3.1  正常顺序转换。 功能触发：按下 ctrl+shift+p :输入 Convert UCF to XDC NORMAL ORDER。
-3.2  可实现序号的从小到大的排列。 功能触发：按下 ctrl+shift+p :输入 Convert UCF to XDC SORT ORDER。
+      - 正常顺序转换。 功能触发：按下 ctrl+shift+p :输入 Convert UCF to XDC NORMAL ORDER。
+      - 可实现序号的从小到大的排列。 功能触发：按下 ctrl+shift+p :输入 Convert UCF to XDC SORT ORDER。
 4. 语法高功能：ucf,xdc,do,tcl语法高亮，verilog语法高亮，高云.cst语法高亮。
 5. verilog代码常用片段。
 6. verilog代码定义变量悬停显示。
@@ -20,10 +36,6 @@
 10. 加入了verilog 文件树显示功能.需要命令Refresh the verilog file tree display(中文：刷新verilog文件树显示)触发和刷新（容器右上角有刷新按钮/主编辑器区域鼠标右键也有命令）
 11. 加入verilog定义跳转,例化名跳转,例化的端口跳转。快捷跳转需要ctags,（支持跨文件跳转）。
 12. 加入了颜色主题- VSCODE 颜色主题：[jiang percy verilog themes]()
-
-
-* 操作范例:[bilibi 示范链接](https://www.bilibili.com/video/BV1xi421d7e9/?vd_source=99e34f775e17481ae5a0ed7fad6b00cc#reply1451507881)
-* 演示文档链接:[CSDN演示文档链接](https://blog.csdn.net/weixin_44830487/article/details/133364935?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22133364935%22%2C%22source%22%3A%22weixin_44830487%22%7D)
 
 
 * 代码片段:支持输入的代码片段:  | module | geli | jishuqi | shangshenyan | tb | zhuangtaiji | always | dapai | assign | alwaysposclk | alwaysnegclk | begin | end | initial | case | reg | regarray | regmemory | wire | wirearray | array | parameter | localparam | integer | signed | include | def | ifdef | ifndef | elsif | endif | undef | ts | default_nettype | ternary | if | ifelse | for | while | forever | function | generate |genvar
