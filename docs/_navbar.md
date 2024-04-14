@@ -3,6 +3,7 @@
  - [GitHub](https://github.com/1391074994/Verilog-Hdl-Format)
 
 
-* languages:
-  * [中文]()
-  * [english]()
+* languages/语言:
+  * [中文](./README_cn.md)
+  
+  * [English](./README_en.md)

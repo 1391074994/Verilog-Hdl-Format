@@ -1,4 +1,5 @@
 .svn/**
+docs/**
 .vscode/**
 .vscode-test/**
 out/**
