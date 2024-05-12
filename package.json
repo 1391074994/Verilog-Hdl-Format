@@ -1,11 +1,11 @@
 {
   "name": "Verilog-Hdl-Format",
   "displayName": "Verilog Hdl Format",
-  "description": "[公开版]verilog代码格式化,例化,TB,ucf转XDC,verilog语法检测,verilog文件树。verilog,ucf,高云cst,xdc,tcl,modelsim-do语法高亮;定义悬停,跳转;modelsim do 文件转换快速仿真,",
-  "version": "1.9.20240413",
+  "description": "FPGA 代码格式化,文件树显示,一键例化,语法高亮,语法跳转,代码补全,定义悬停,代码错误检查等功能",
+  "version": "2.3.20240512",
   "publisher": "Jiang-Percy",
   "engines": {
-    "vscode": "^1.82.0"
+    "vscode": "^1.74.3"
   },
   "homepage": "https://github.com/1391074994/Verilog-Hdl-Format",
   "repository": {
@@ -17,15 +17,15 @@
   ],
   "icon": "images/duck.png",
   "README": "docs/README.md",
-  "changelogPath": "docs/CHANGELOG.md",   
+  "changelogPath": "docs/CHANGELOG.md",
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "themes": [
       {
-          "label": "jiang percy verilog themes",
-          "uiTheme": "vs-dark",
-          "path": "./themes/jiang_percy_verilog_themes.json"
+        "label": "jiang percy verilog themes",
+        "uiTheme": "vs-dark",
+        "path": "./themes/jiang_percy_verilog_themes.json"
       }
     ],
     "snippets": [
@@ -75,7 +75,6 @@
         }
       ]
     },
-
     "menus": {
       "editor/context": [
         {
@@ -127,7 +126,7 @@
           "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
           "group": "navigation"
         }
-    ]
+      ]
     },
     "commands": [
       {
@@ -214,6 +213,30 @@
       {
         "command": "verilogModuleTree.openFileInVSCodeExplorer",
         "title": "%Open File in VSCode Explorer%"
+      },
+      {
+        "command": "extension.Vivado_FindIP",
+        "title": "Vivado_FindIP"
+      },
+      {
+        "command": "extension.Vivado_FindIP_hand",
+        "title": "Vivado_FindIP_hand"
+      },
+      {
+        "command": "extension.Vivado_Bitbackup",
+        "title": "Vivado_Bitbackup"
+      },
+      {
+        "command": "bitBackup.Vivado_WebShowLog",
+        "title": "Vivado_WebShowLog"
+      },
+      {
+        "command": "extension.processLtxFile",
+        "title": "processLtxFile"
+      },
+      {
+        "command": "extension.Vivado_Questsim_Modelsim",
+        "title": "Vivado_Questsim_Modelsim"
       }
     ],
     "grammars": [
@@ -246,6 +269,21 @@
         "language": "do",
         "scopeName": "source.do",
         "path": "./syntaxes/do.tmLanguage.json"
+      },
+      {
+        "language": "ltx",
+        "scopeName": "source.ltx",
+        "path": "./syntaxes/ltx.tmLanguage.json"
+      },
+      {
+        "language": "vhdl",
+        "scopeName": "source.vhdl",
+        "path": "./syntaxes/vhdl.tmLanguage.json"
+      },
+      {
+        "language": "systemverilog",
+        "scopeName": "source.systemverilog",
+        "path": "./syntaxes/systemverilog.tmLanguage.json"
       }
     ],
     "languages": [
@@ -253,7 +291,8 @@
         "id": "verilog",
         "aliases": [
           "Verilog",
-          "verilog"
+          "verilogHDL",
+          "VHDL"
         ],
         "extensions": [
           ".v",
@@ -272,6 +311,38 @@
           ".xdc"
         ],
         "configuration": "./config/language-configuration_tcl.json"
+      },
+      {
+        "id": "ltx",
+        "aliases": [
+          "LaTeX"
+        ],
+        "extensions": [
+          ".ltx"
+        ],
+        "configuration": "./config/language-configuration_tcl.json"
+      },
+      {
+        "id": "vhdl",
+        "aliases": [
+          "VHDL"
+        ],
+        "extensions": [
+          ".vhd",
+          ".vhdl"
+        ],
+        "configuration": "./config/language-configuration_vhdl.json"
+      },
+      {
+        "id": "systemverilog",
+        "aliases": [
+          "SystemVerilog"
+        ],
+        "extensions": [
+          ".sv",
+          ".svh"
+        ],
+        "configuration": "./config/language-configuration_systemverilog.json"
       },
       {
         "id": "cst",
@@ -604,8 +675,40 @@
         "FPGA_verilog.ctags.path": {
           "scope": "window",
           "type": "string",
-          "default": "none",
+          "default": "",
           "description": "A path to the installation of Universal Ctags."
+        },
+        "FPGA_verilog.ctags.choose": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "internal",
+            "external"
+          ],
+          "default": "internal",
+          "description": "Choose whether to use internal or external ctags.exe."
+        },
+        "VivadoSimPath.path": {
+          "scope": "window",
+          "type": "string",
+          "default": "C:/questasim64_10.6c/win64",
+          "description": "A path to the installation of sim ."
+        },
+        "vivadoLibrary.path": {
+          "scope": "window",
+          "type": "string",
+          "default": "C:/Xilinx/vivado_2018_3_lib",
+          "description": "A path to vivado co-emulation library path."
+        },
+        "vivadoSim.type": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "modelsim",
+            "questasim"
+          ],
+          "default": "questasim",
+          "description": "Select the sim type : 'modelsim' or 'questasim'."
         }
       }
     }
@@ -626,7 +729,8 @@
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.82.0",
+    "@types/vscode": "^1.49.0",
+    "@types/xml2js": "^0.4.14",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "@vscode/test-electron": "^2.3.4",
@@ -640,6 +744,8 @@
   },
   "dependencies": {
     "antlr4ts": "^0.5.0-alpha.4",
-    "graceful-fs": "^4.2.11"
+    "date-fns": "^3.6.0",
+    "graceful-fs": "^4.2.11",
+    "xml2js": "^0.6.2"
   }
 }

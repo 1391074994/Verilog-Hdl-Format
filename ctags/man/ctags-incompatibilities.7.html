@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<title>ctags-incompatibilities</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7952 2016-07-26 18:15:59Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="ctags-incompatibilities">
+<span id="ctags-incompatibilities-7"></span>
+<h1 class="title">ctags-incompatibilities</h1>
+<h2 class="subtitle" id="incompatibilities-between-universal-ctags-and-exuberant-ctags">Incompatibilities between Universal Ctags and Exuberant Ctags</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Version:</th>
+<td>6.0.0</td></tr>
+<tr class="manual-group field"><th class="docinfo-name">Manual group:</th><td class="field-body">Universal Ctags</td>
+</tr>
+<tr class="manual-section field"><th class="docinfo-name">Manual section:</th><td class="field-body">7</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="synopsis">
+<h1>SYNOPSIS</h1>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> [options] [file(s)]</div>
+<div class="line"><strong>etags</strong> [options] [file(s)]</div>
+</div>
+</div>
+<div class="section" id="description">
+<h1>DESCRIPTION</h1>
+<p>This page describes major incompatible changes introduced to
+Universal Ctags forked from Exuberant Ctags.</p>
+<div class="section" id="option-files-loading-at-starting-up-time-preload-files">
+<h2>Option files loading at starting up time (preload files)</h2>
+<p>Universal Ctags doesn't load <tt class="docutils literal"><span class="pre">~/.ctags</span></tt> at starting up time.
+File paths for preload files are changed.
+See &quot;FILES&quot; section of ctags(1).</p>
+</div>
+<div class="section" id="environment-variables-for-arranging-command-lines">
+<h2>Environment variables for arranging command lines</h2>
+<p>Universal Ctags doesn't read <tt class="docutils literal">CTAGS</tt> and/or <tt class="docutils literal">ETAGS</tt> environment
+variables.</p>
+</div>
+<div class="section" id="behavior-when-excmd-mixed-is-given">
+<h2>Behavior when <tt class="docutils literal"><span class="pre">--excmd=mixed</span></tt> is given</h2>
+<p>Exuberant Ctags uses line numbers as addresses for C preprocessor
+macro definition tags. Universal Ctags uses patterns for the tags.</p>
+</div>
+<div class="section" id="incompatibilities-in-command-line-interface">
+<h2>Incompatibilities in command line interface</h2>
+<div class="section" id="ordering-in-a-command-line">
+<h3>Ordering in a command line</h3>
+<!-- NOTE: #1889 -->
+<p>The command line format of Universal Ctags is &quot;<tt class="docutils literal">ctags [options]
+[source_file(s)]</tt>&quot; following the standard POSIX convention.</p>
+<p>Exuberant Ctags accepts a option following a source file.</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>ctags<span class="whitespace"> </span>-o<span class="whitespace"> </span>-<span class="whitespace"> </span>foo.c<span class="whitespace"> </span>--list-kinds<span class="operator">=</span>Sh<span class="whitespace">
+</span><span class="generic output">f  functions</span>
+</pre>
+<p>Universal Ctags warns and ignores the option <tt class="docutils literal"><span class="pre">--list-kinds=Sh</span></tt> as follows.</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>ctags<span class="whitespace"> </span>-o<span class="whitespace"> </span>-<span class="whitespace"> </span>foo.c<span class="whitespace"> </span>--list-kinds<span class="operator">=</span>Sh<span class="whitespace">
+</span><span class="generic output">ctags: Warning: cannot open input file &quot;--list-kinds=Sh&quot; : No such file or directory
+a       foo.c   /^void a () {}$/;&quot;      f       typeref:typename:void
+b       foo.c   /^void b () {}$/;&quot;      f       typeref:typename:void</span>
+</pre>
+</div>
+<div class="section" id="the-order-of-application-of-patterns-and-extensions-in-langmap">
+<h3>The order of application of patterns and extensions in <tt class="docutils literal"><span class="pre">--langmap</span></tt></h3>
+<p>When applying mappings for a name of given source file,
+Exuberant Ctags tests file name patterns <em>AFTER</em> file extensions
+(<em>e-map-order</em>). Universal Ctags does this differently; it tests file
+name patterns <em>BEFORE</em> file extensions (<em>u-map-order</em>).</p>
+<p>This incompatible change is introduced to deal with the following
+situation:</p>
+<blockquote>
+<ul class="simple">
+<li><tt class="docutils literal">build.xml</tt> as a source file,</li>
+<li>The Ant parser declares it handles a file name pattern <tt class="docutils literal">build.xml</tt>, and</li>
+<li>The XML parser declares it handles a file extension <tt class="docutils literal">.xml</tt>.</li>
+</ul>
+</blockquote>
+<p>Which parser should be used for parsing <tt class="docutils literal">build.xml</tt>?  The assumption
+of Universal Ctags is the user may want to use the Ant parser; the
+file name pattern it declares is more specific than the file extension
+that the XML parser declares. However, e-map-order chooses the XML
+parser.</p>
+<p>So Universal Ctags uses the u-map-order even though it introduces an
+incompatibility.</p>
+<p><tt class="docutils literal"><span class="pre">--list-map-extensions=&lt;language&gt;</span></tt> and <tt class="docutils literal"><span class="pre">--list-map-patterns=&lt;language&gt;</span></tt>
+options are helpful to verify and the file extensions and the file
+name patterns of given <em>&lt;language&gt;</em>.</p>
+</div>
+<div class="section" id="remove-file-tags-and-file-scope-options">
+<h3>Remove <tt class="docutils literal"><span class="pre">--file-tags</span></tt> and <tt class="docutils literal"><span class="pre">--file-scope</span></tt> options</h3>
+<p>Even in Exuberant Ctags, <tt class="docutils literal"><span class="pre">--file-tags</span></tt> is not documented in its man page.
+Instead of specifying <tt class="docutils literal"><span class="pre">--file-tags</span></tt> or <tt class="docutils literal"><span class="pre">--file-tags=yes</span></tt>, use
+<tt class="docutils literal"><span class="pre">--extras=+f</span></tt> or <tt class="docutils literal"><span class="pre">--extras=+{inputFile}</span></tt>.</p>
+<p>Instead of specifying <tt class="docutils literal"><span class="pre">--file-tags=no</span></tt>, use
+<tt class="docutils literal"><span class="pre">--extras=-f</span></tt> or <tt class="docutils literal"><span class="pre">--extras=-{inputFile}</span></tt>.</p>
+<p>Universal Ctags introduces <tt class="docutils literal">F/fileScope</tt> extra as the replacement for
+<tt class="docutils literal"><span class="pre">--file-scope</span></tt> option.</p>
+<p>Instead of specifying <tt class="docutils literal"><span class="pre">--file-tags</span></tt> or <tt class="docutils literal"><span class="pre">--file-tags=yes</span></tt>, use
+<tt class="docutils literal"><span class="pre">--extras=+F</span></tt> or <tt class="docutils literal"><span class="pre">--extras=+{fileScope}</span></tt>.</p>
+<p>Instead of specifying <tt class="docutils literal"><span class="pre">--file-tags=no</span></tt>, use
+<tt class="docutils literal"><span class="pre">--extras=-F</span></tt> or <tt class="docutils literal"><span class="pre">--extras=-{fileScope}</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="incompatibilities-in-language-and-kind-definitions">
+<h2>Incompatibilities in language and kind definitions</h2>
+<div class="section" id="language-name-defined-with-langdef-name-option">
+<h3>Language name defined with <tt class="docutils literal"><span class="pre">--langdef=name</span></tt> option</h3>
+<p>The characters you can use are more restricted than Exuberant Ctags.
+For more details, see the description of <tt class="docutils literal"><span class="pre">--langdef=name</span></tt> in ctags-optlib(7).</p>
+</div>
+<div class="section" id="obsoleting-lang-kinds-option">
+<h3>Obsoleting <tt class="docutils literal"><span class="pre">--&lt;LANG&gt;-kinds</span></tt> option</h3>
+<p>Some options have <em>&lt;LANG&gt;</em> as parameterized parts in their name like
+<tt class="docutils literal"><span class="pre">--foo-&lt;LANG&gt;=...</span></tt> or <tt class="docutils literal"><span class="pre">--&lt;LANG&gt;-foo=...</span></tt>. The most of all such
+options in Exuberant Ctags have the former form, <tt class="docutils literal"><span class="pre">--foo-&lt;LANG&gt;=...</span></tt>.
+The exception is <tt class="docutils literal"><span class="pre">--&lt;LANG&gt;-kinds</span></tt>.</p>
+<p>Universal Ctags uses the former form for all <em>&lt;LANG&gt;</em> parameterized
+option. Use <tt class="docutils literal"><span class="pre">--kinds-&lt;LANG&gt;</span></tt> instead of <tt class="docutils literal"><span class="pre">--&lt;LANG&gt;-kinds</span></tt> in
+Universal Ctags. <tt class="docutils literal"><span class="pre">--&lt;LANG&gt;-kinds</span></tt> still works but it will be
+removed in the future.</p>
+<p>The former form may be friendly to shell completion engines.</p>
+</div>
+<div class="section" id="disallowing-to-define-a-kind-with-file-as-name">
+<h3>Disallowing to define a kind with <tt class="docutils literal">file</tt> as name</h3>
+<p>The kind name <tt class="docutils literal">file</tt> is reserved.  Using it as part of kind spec in
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> option is now disallowed.</p>
+</div>
+<div class="section" id="disallowing-to-define-a-kind-with-f-as-letter">
+<h3>Disallowing to define a kind with '<tt class="docutils literal">F</tt>' as letter</h3>
+<p>The kind letter '<tt class="docutils literal">F</tt>' is reserved.  Using it as part of a kind spec in
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> option is now disallowed.</p>
+</div>
+<div class="section" id="disallowing-to-use-other-than-alphabetical-character-as-kind-letter">
+<h3>Disallowing to use other than alphabetical character as kind letter</h3>
+<p>Exuberant Ctags accepts a character other than alphabetical character
+as kind letter in <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=...</span></tt> option.  Universal Ctags
+accepts only an alphabetical character.</p>
+</div>
+<div class="section" id="acceptable-characters-as-parts-of-a-kind-name">
+<h3>Acceptable characters as parts of a kind name</h3>
+<p>Exuberant Ctags accepts any character as a part of a kind name
+defined with <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=/regex/replacement/kind-spec/</span></tt>.</p>
+<p>Universal Ctags accepts only an alphabetical character as
+the initial letter of a kind name.
+Universal Ctags accepts only an alphabetical character or
+numerical character as the rest letters.</p>
+<p>An example:</p>
+<pre class="literal-block">
+--regex-Foo=/abstract +class +([a-z]+)/\1/a,abstract class/i
+</pre>
+<p>Universal Ctags rejects this because the kind name, <tt class="docutils literal">abstract class</tt>,
+includes a whitespace character.</p>
+<p>This requirement is for making the output of Universal Ctags follow
+the tags file format.</p>
+</div>
+<div class="section" id="a-combination-of-a-kind-letter-and-a-kind-name">
+<h3>A combination of a kind letter and a kind name</h3>
+<p>In Universal Ctags, the combination of
+a kind letter and a kind name must be unique in a language.</p>
+<p>You cannot define more than one kind reusing a kind letter with
+different kind names. You cannot define more than one kind reusing a
+kind name with different kind letters.</p>
+<p>An example:</p>
+<pre class="literal-block">
+--regex-Foo=/abstract +class +([a-z]+)/\1/a,abstractClass/i
+--regex-Foo=/attribute +([a-z]+)/\1/a,attribute/i
+</pre>
+<p>Universal Ctags rejects this because the kind letter, '<tt class="docutils literal">a</tt>', used twice
+for defining a kind <tt class="docutils literal">abstractClass</tt> and <tt class="docutils literal">attribute</tt>.</p>
+</div>
+</div>
+<div class="section" id="incompatibilities-in-tags-file-format">
+<h2>Incompatibilities in tags file format</h2>
+<div class="section" id="using-numerical-character-in-the-name-part-of-tag-tagfield">
+<h3>Using numerical character in the name part of tag tagfield</h3>
+<p>The version 2 tags file format, the default output format of
+Exuberant Ctags, accepts only alphabetical characters in the name part
+of tag tagfield.</p>
+<p>Universal Ctags introduces an exception to this specification; it may
+use numerical characters in addition to alphabetical characters as the
+letters other than initial letter of the name part.</p>
+<p>The kinds <tt class="docutils literal">heading1</tt>, <tt class="docutils literal">heading2</tt>, and <tt class="docutils literal">heading3</tt> in the HTML parser
+are the examples.</p>
+</div>
+<div class="section" id="truncating-the-pattern-for-long-input-lines">
+<h3>Truncating the pattern for long input lines</h3>
+<p>To prevent generating overly large tags files, a pattern field is
+truncated, by default, when its size exceeds 96 bytes. A different
+limit can be specified with <tt class="docutils literal"><span class="pre">--pattern-length-limit=N</span></tt>. Specifying
+0 as <em>N</em> results no truncation as Exuberant Ctags does not.</p>
+</div>
+<div class="section" id="kind-letters-and-names">
+<h3>Kind letters and names</h3>
+<p>A kind letter '<tt class="docutils literal">F</tt>' and a kind name <tt class="docutils literal">file</tt> are reserved in the
+main part. A parser cannot have a kind conflicting with
+these reserved ones. Some incompatible changes are introduced
+to follow the above rule.</p>
+<ul class="simple">
+<li>Cobol's <tt class="docutils literal">file</tt> kind is renamed to <tt class="docutils literal">fileDesc</tt> because the
+kind name <tt class="docutils literal">file</tt> is reserved.</li>
+<li>Ruby's '<tt class="docutils literal">F</tt>' (singletonMethod) is changed to '<tt class="docutils literal">S</tt>'.</li>
+<li>SQL's '<tt class="docutils literal">F</tt>' (field) is changed to '<tt class="docutils literal">E</tt>'.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h1>SEE ALSO</h1>
+<p>ctags(1), ctags-optlib(7), and tags(5).</p>
+</div>
+</div>
+</body>
+</html>

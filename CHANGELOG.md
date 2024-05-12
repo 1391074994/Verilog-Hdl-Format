@@ -2,6 +2,34 @@
 
 # Verilog Hdl Format Change Log
 
+
+## [0.2.3] - 2024-05-12
+
+1. 修复了一键tb/例化的多余注释BUG
+2. 修改了悬停和定义跳转的正则匹配
+3. 增加了内部ctags,外部ctags选择-默认为内部ctags
+
+
+## [0.2.2] - 2024-05-01
+1. 优化了一键tb/例化的注释保留
+2. 加入了VIVADO 的web界面功能-刷新ila 的脚本
+ 
+
+## [0.2.1] - 2024-04-28
+
+  1. 修复了ctags的路径BUG.
+  2. 加入了一点静态代码片段 
+  3. 加入了VIVADO 的 tcl脚本延迟
+  4. 加入了ltx,vhdl,systemverilog的语法高亮
+  5. 修改了bit文件备份的逻辑
+  6. 加入了VIVADO和questasim/modelsim的联合仿真功能
+  7. 修改VSCODE最低支持版本为1.74.3
+
+## [0.2.0] - 2024-04-21
+  1. 读取VIVAD 的最新ip的Veo文件 ：就是IP的例化文件
+  2. 加入了bit文件备份功能,使用Bitbackup命令进行备份
+  3. 加入自动生成下载bit程序和刷新ILA脚本,使用ReFreShWbLog命令打开WEB界面,点击按钮后直接在VIVADO 的 tcl栏目黏贴既可运行备份的版本程序.
+
 ## [0.1.9] - 2024-04-13
   1. 修复了verilog 文件数会识别到注释块里面的内容
   2. 修改了文件树miss文件图标，加入了文件树命令openFileInExplorer，openFileInVSCodeExplorer，openFileInNewEditor，openFileInMainEditor的功能

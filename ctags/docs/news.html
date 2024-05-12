@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Other changes &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Extending ctags with Regex parser (optlib)" href="optlib.html" />
+    <link rel="prev" title="Interactive mode" href="interactive-mode.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="optlib.html" title="Extending ctags with Regex parser (optlib)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="interactive-mode.html" title="Interactive mode"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Other changes</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="other-changes">
+<h1>Other changes<a class="headerlink" href="#other-changes" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title"><cite>Table of contents</cite></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#new-and-extended-options" id="id1">New and extended options</a></p>
+<ul>
+<li><p><a class="reference internal" href="#exclude-exception-an-option-complementing-exclude" id="id2"><code class="docutils literal notranslate"><span class="pre">--exclude-exception</span></code>, an option complementing <code class="docutils literal notranslate"><span class="pre">--exclude</span></code></a></p></li>
+<li><p><a class="reference internal" href="#maxdepth-option" id="id3"><code class="docutils literal notranslate"><span class="pre">--maxdepth</span></code> option</a></p></li>
+<li><p><a class="reference internal" href="#input-encoding-encoding-and-output-encoding-encoding" id="id4"><code class="docutils literal notranslate"><span class="pre">--input-encoding=ENCODING</span></code> and <code class="docutils literal notranslate"><span class="pre">--output-encoding=ENCODING</span></code></a></p></li>
+<li><p><a class="reference internal" href="#map-lang-option" id="id5"><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> option</a></p></li>
+<li><p><a class="reference internal" href="#guessing-parser-from-file-contents-g-option" id="id6">Guessing parser from file contents (<code class="docutils literal notranslate"><span class="pre">-G</span></code> option)</a></p></li>
+<li><p><a class="reference internal" href="#including-line-number-to-pattern-field" id="id7">Including line number to pattern field</a></p></li>
+<li><p><a class="reference internal" href="#long-names-in-kinds-fields-and-extra-options" id="id8">Long names in kinds, fields, and extra options</a></p></li>
+<li><p><a class="reference internal" href="#wildcard-in-options" id="id9">Wildcard in options</a></p></li>
+<li><p><a class="reference internal" href="#extra-tag-entries-extras" id="id10">Extra tag entries (<code class="docutils literal notranslate"><span class="pre">--extras</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#kinds-synchronization" id="id11">Kinds synchronization</a></p></li>
+<li><p><a class="reference internal" href="#enabling-disabling-pseudo-tags-pseudo-tags-option" id="id12">Enabling/disabling pseudo-tags (<code class="docutils literal notranslate"><span class="pre">--pseudo-tags</span></code> option)</a></p></li>
+<li><p><a class="reference internal" href="#put-field-prefix-options" id="id13"><code class="docutils literal notranslate"><span class="pre">--put-field-prefix</span></code> options</a></p></li>
+<li><p><a class="reference internal" href="#always-and-never-as-an-argument-for-tag-relative" id="id14">“always” and “never” as an argument for <code class="docutils literal notranslate"><span class="pre">--tag-relative</span></code></a></p></li>
+<li><p><a class="reference internal" href="#defining-a-parser-specific-extra" id="id15">Defining a parser specific extra</a></p></li>
+<li><p><a class="reference internal" href="#defining-a-cpreprocessor-macro-from-command-line" id="id16">Defining a CPreProcessor macro from command line</a></p></li>
+<li><p><a class="reference internal" href="#options-for-inspecting-ctags-internals" id="id17">Options for inspecting ctags internals</a></p></li>
+<li><p><a class="reference internal" href="#notice-messages-and-quiet" id="id18">Notice messages and <code class="docutils literal notranslate"><span class="pre">--quiet</span></code></a></p></li>
+<li><p><a class="reference internal" href="#skipping-utf-8-bom" id="id19">Skipping utf-8 BOM</a></p></li>
+<li><p><a class="reference internal" href="#interactive-mode" id="id20">Interactive mode</a></p></li>
+<li><p><a class="reference internal" href="#pcre2-regular-expression" id="id21">PCRE2 regular expression</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#incompatible-changes-in-command-line" id="id22">Incompatible changes in command line</a></p>
+<ul>
+<li><p><a class="reference internal" href="#d-option" id="id23"><code class="docutils literal notranslate"><span class="pre">-D</span></code> option</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#changes-imported-from-exuberant-ctags" id="id24">Changes imported from Exuberant Ctags</a></p></li>
+<li><p><a class="reference internal" href="#parser-related-changes" id="id25">Parser related changes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#new-parsers" id="id26">New parsers</a></p></li>
+<li><p><a class="reference internal" href="#fully-improved-parsers" id="id27">Fully improved parsers</a></p></li>
+<li><p><a class="reference internal" href="#automatically-expanding-cpreprocessor-macros-defined-in-the-same-input-file-highly-experimental" id="id28">Automatically expanding CPreProcessor macros defined in the same input file (HIGHLY EXPERIMENTAL)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#readtags" id="id29">Readtags</a></p>
+<ul>
+<li><p><a class="reference internal" href="#printing-line-numbers-with-n" id="id30">Printing line numbers with <code class="docutils literal notranslate"><span class="pre">-n</span></code></a></p></li>
+<li><p><a class="reference internal" href="#filtering-in-readtags-command" id="id31">Filtering in readtags command</a></p></li>
+<li><p><a class="reference internal" href="#sorting-in-readtags-command" id="id32">Sorting in readtags command</a></p></li>
+<li><p><a class="reference internal" href="#listing-pseudo-tags-with-d" id="id33">Listing pseudo tags with <code class="docutils literal notranslate"><span class="pre">-D</span></code></a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<hr class="docutils" />
+<p>Many changes have been introduced in Universal Ctags. Use git-log to
+review changes not enumerated here, especially in language parsers.</p>
+<section id="new-and-extended-options">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">New and extended options</a><a class="headerlink" href="#new-and-extended-options" title="Permalink to this heading">¶</a></h2>
+<section id="exclude-exception-an-option-complementing-exclude">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">--exclude-exception</span></code>, an option complementing <code class="docutils literal notranslate"><span class="pre">--exclude</span></code></a><a class="headerlink" href="#exclude-exception-an-option-complementing-exclude" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/ctags.1.html#option-input-output-file"><span class="std std-ref">Input/Output File Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="maxdepth-option">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">--maxdepth</span></code> option</a><a class="headerlink" href="#maxdepth-option" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/ctags.1.html#option-input-output-file"><span class="std std-ref">Input/Output File Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="input-encoding-encoding-and-output-encoding-encoding">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">--input-encoding=ENCODING</span></code> and <code class="docutils literal notranslate"><span class="pre">--output-encoding=ENCODING</span></code></a><a class="headerlink" href="#input-encoding-encoding-and-output-encoding-encoding" title="Permalink to this heading">¶</a></h3>
+<p>People may use their own native language in source code comments (or
+sometimes in identifiers) and in such cases encoding may become an issue.
+Nowadays UTF-8 is the most widely used encoding, but some source codes
+still use legacy encodings like latin1, cp932 and so on. These options
+are useful for such files.</p>
+<p>ctags doesn’t consider the input encoding; it just reads input as a
+sequence of bytes and uses them as is when writing tags entries.</p>
+<p>On the other hand Vim does consider input encoding. When loading a
+file, Vim converts the file contents into an internal format with one
+of the encodings specified in its <cite>fileencodings</cite> option.</p>
+<p>As a result of this difference, Vim cannot always move the cursor to
+the definition of a tag as users expect when attempting to match the
+patterns in a tags file.</p>
+<p>The good news is that there is a way to notify Vim of the encoding
+used in a tags file with the <code class="docutils literal notranslate"><span class="pre">TAG_FILE_ENCODING</span></code> pseudo-tag.</p>
+<p>Two new options have been introduced (<code class="docutils literal notranslate"><span class="pre">--input-encoding=IN</span></code> and
+<code class="docutils literal notranslate"><span class="pre">--output-encoding=OUT</span></code>).</p>
+<p>Using the encoding specified with these options ctags converts input
+from <code class="docutils literal notranslate"><span class="pre">IN</span></code> to <code class="docutils literal notranslate"><span class="pre">OUT</span></code>. ctags uses the converted strings when writing
+the pattern parts of each tag line. As a result the tags output is
+encoded in <code class="docutils literal notranslate"><span class="pre">OUT</span></code> encoding.</p>
+<p>In addition <code class="docutils literal notranslate"><span class="pre">OUT</span></code> is specified at the top the tags file as the
+value for the <code class="docutils literal notranslate"><span class="pre">TAG_FILE_ENCODING</span></code> pseudo-tag. The default value of
+<code class="docutils literal notranslate"><span class="pre">OUT</span></code> is UTF-8.</p>
+<p>NOTE: Converted input is NOT passed to language parsers.
+The parsers still deal with input as a byte sequence.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">--input-encoding-&lt;LANG&gt;=IN</span></code>, you can specify a specific input
+encoding for <code class="docutils literal notranslate"><span class="pre">LANG</span></code>. It overrides the global default value given
+with <code class="docutils literal notranslate"><span class="pre">--input-encoding</span></code>.</p>
+<p>The example usage can be found in <em>Tmain/{input,output}-encoding-option.d</em>.</p>
+<p>Acceptable <code class="docutils literal notranslate"><span class="pre">IN</span></code> and <code class="docutils literal notranslate"><span class="pre">OUT</span></code> values can be listed with <em>iconv -l</em> or
+<em>iconv --list</em>. It is platform dependant.</p>
+<p>To enable the option, libiconv is needed on your platform.
+On Windows mingw (without msys2), you must specify <code class="docutils literal notranslate"><span class="pre">WITH_ICONV=yes</span></code>
+like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">dev</span>\<span class="n">ctags</span><span class="o">&gt;</span><span class="n">mingw32</span><span class="o">-</span><span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mingw</span><span class="o">.</span><span class="n">mak</span> <span class="n">WITH_ICONV</span><span class="o">=</span><span class="n">yes</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--list-features</span></code> helps you to know whether your ctags executable
+links to libiconv or not. You will find <code class="docutils literal notranslate"><span class="pre">iconv</span></code> in the output if it
+links to.</p>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-output-format"><span class="std std-ref">Output Format Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="map-lang-option">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> option</a><a class="headerlink" href="#map-lang-option" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> is newly introduced to control the file name
+to language mappings (langmap) with finer granularity than
+<code class="docutils literal notranslate"><span class="pre">--langmap</span></code> allows.</p>
+<p>A langmap entry is defined as a pair; the name of the language and a
+file name extension (or pattern).</p>
+<p>Here we use “spec” as a generic term representing both file name
+extensions and patterns.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--langmap</span></code> maps specs to languages exclusively:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --langdef=FOO --langmap=FOO:+.ABC \
+          --langdef=BAR --langmap=BAR:+.ABC  \
+          --list-maps | grep &#39;\*.ABC$&#39;
+BAR      *.ABC
+</pre></div>
+</div>
+<p>Though language <cite>FOO</cite> is added before <cite>BAR</cite>, only <cite>BAR</cite> is set as a
+handler for the spec <cite>*.ABC</cite>.</p>
+<p>Universal Ctags enables multiple parsers to be configured for a spec.
+The appropriate parser for a given input file can then be chosen by a
+variety of internal guessing strategies (see <a class="reference internal" href="man/ctags.1.html#guessing"><span class="std std-ref">Determining file language</span></a>).</p>
+<p>Let’s see how specs can be mapped non-exclusively with
+<code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --langdef=FOO --map-FOO=+.ABC \
+          --langdef=BAR --map-BAR=+.ABC \
+          --list-maps | grep &#39;\*.ABC$&#39;
+FOO      *.ABC
+BAR      *.ABC
+</pre></div>
+</div>
+<p>Both <cite>FOO</cite> and <cite>BAR</cite> are registered as handlers for the spec <cite>*.ABC</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> can also be used for removing a langmap entry.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --langdef=FOO --map-FOO=+.ABC \
+          --langdef=BAR --map-BAR=+.ABC \
+          --map-FOO=-.ABC --list-maps | grep &#39;\*.ABC$&#39;
+BAR      *.ABC
+
+$ ctags --langdef=FOO --map-FOO=+.ABC \
+          --langdef=BAR --map-BAR=+.ABC \
+          --map-BAR=-.ABC --list-maps | grep &#39;\*.ABC$&#39;
+FOO      *.ABC
+
+$ ctags --langdef=FOO --map-FOO=+.ABC \
+         --langdef=BAR --map-BAR=+.ABC \
+         --map-BAR=-.ABC --map-FOO=-.ABC  --list-maps | grep &#39;\*.ABC$&#39;
+(NOTHING)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--langmap</span></code> provides a way to manipulate the langmap in a
+spec-centric manner and <code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> provides a way to manipulate
+the langmap in a parser-centric manner.</p>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-lang-mapping"><span class="std std-ref">Language Selection and Mapping Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="guessing-parser-from-file-contents-g-option">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Guessing parser from file contents (<code class="docutils literal notranslate"><span class="pre">-G</span></code> option)</a><a class="headerlink" href="#guessing-parser-from-file-contents-g-option" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/ctags.1.html#guessing"><span class="std std-ref">Determining file language</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="including-line-number-to-pattern-field">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Including line number to pattern field</a><a class="headerlink" href="#including-line-number-to-pattern-field" title="Permalink to this heading">¶</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--excmd=number</span></code>.
+See <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="long-names-in-kinds-fields-and-extra-options">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Long names in kinds, fields, and extra options</a><a class="headerlink" href="#long-names-in-kinds-fields-and-extra-options" title="Permalink to this heading">¶</a></h3>
+<p>A letter is used for specifying a kind, a field, or an extra entry.
+In Universal Ctags a name can also be used.</p>
+<p>Surround the name with braces (<cite>{</cite> and <cite>}</cite>) in values assigned to the
+options, <code class="docutils literal notranslate"><span class="pre">--kind-&lt;LANG&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">--fields=</span></code>, or <code class="docutils literal notranslate"><span class="pre">--extras=</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--kinds-C<span class="o">=</span>+L-d<span class="w"> </span>...
+</pre></div>
+</div>
+<p>This command line uses the letters, <cite>L</cite> for enabling the label kind
+and <cite>d</cite> for disabling the macro kind of C. The command line can be
+rewritten with the associated names.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--kinds-C<span class="o">=</span><span class="s1">&#39;+{label}-{macro}&#39;</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p>The quotes are needed because braces are interpreted as meta
+characters by the shell.</p>
+<p>The available names can be listed with <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--list-fields</span></code>, or <code class="docutils literal notranslate"><span class="pre">--list-extras</span></code>.</p>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="wildcard-in-options">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Wildcard in options</a><a class="headerlink" href="#wildcard-in-options" title="Permalink to this heading">¶</a></h3>
+<p>For the purpose of gathering as much as information as possible from
+source code the “wildcard”(<code class="docutils literal notranslate"><span class="pre">*</span></code>) option value has been introduced.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--extras=*</span></code></dt><dd><p>Enables all extra tags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--fields=*</span></code></dt><dd><p>Enables all available fields.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;=*</span></code></dt><dd><p>Enables all available kinds for <code class="docutils literal notranslate"><span class="pre">LANG</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--kinds-all=*</span></code></dt><dd><p>Enables all available kinds for all available language parsers.</p>
+</dd>
+</dl>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="extra-tag-entries-extras">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Extra tag entries (<code class="docutils literal notranslate"><span class="pre">--extras</span></code>)</a><a class="headerlink" href="#extra-tag-entries-extras" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">--extra</span></code> option in Exuberant Ctags is renamed to <code class="docutils literal notranslate"><span class="pre">--extras</span></code> (plural) in
+Universal Ctags for making consistent with <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--fields</span></code>.</p>
+<p>These extra tag entries are newly introduced.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">F</span></code></dt><dd><p>Replacement for --file-scope.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p</span></code></dt><dd><p>Include pseudo-tags.</p>
+</dd>
+</dl>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="kinds-synchronization">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Kinds synchronization</a><a class="headerlink" href="#kinds-synchronization" title="Permalink to this heading">¶</a></h3>
+<p>See the description about <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>
+option on <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="enabling-disabling-pseudo-tags-pseudo-tags-option">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Enabling/disabling pseudo-tags (<code class="docutils literal notranslate"><span class="pre">--pseudo-tags</span></code> option)</a><a class="headerlink" href="#enabling-disabling-pseudo-tags-pseudo-tags-option" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> and
+<a class="reference internal" href="man/ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> about the option.</p>
+</section>
+<section id="put-field-prefix-options">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">--put-field-prefix</span></code> options</a><a class="headerlink" href="#put-field-prefix-options" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="always-and-never-as-an-argument-for-tag-relative">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">“always” and “never” as an argument for <code class="docutils literal notranslate"><span class="pre">--tag-relative</span></code></a><a class="headerlink" href="#always-and-never-as-an-argument-for-tag-relative" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">--tag-relative</span></code> option is extend.
+See <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="defining-a-parser-specific-extra">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Defining a parser specific extra</a><a class="headerlink" href="#defining-a-parser-specific-extra" title="Permalink to this heading">¶</a></h3>
+<p>A new <code class="docutils literal notranslate"><span class="pre">--_extradef-&lt;LANG&gt;=name,description</span></code> option allows you to
+defining a parser specific extra which turning on and off can be
+referred from a regex based parser for <code class="docutils literal notranslate"><span class="pre">&lt;LANG&gt;</span></code>.</p>
+<p>See <a class="reference internal" href="optlib.html#extras"><span class="std std-ref">Conditional tagging with extras</span></a> for more details.</p>
+</section>
+<section id="defining-a-cpreprocessor-macro-from-command-line">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Defining a CPreProcessor macro from command line</a><a class="headerlink" href="#defining-a-cpreprocessor-macro-from-command-line" title="Permalink to this heading">¶</a></h3>
+<p>Newly introduced <code class="docutils literal notranslate"><span class="pre">-D</span></code> option extends the function provided by
+<code class="docutils literal notranslate"><span class="pre">-I</span></code> option.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-D</span></code> emulates the behaviour of the corresponding gcc option:
+it defines a C preprocessor macro.</p>
+<p>See <a class="reference internal" href="man/ctags.1.html#option-tags-file-contents"><span class="std std-ref">Tags File Contents Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> and
+<a class="reference internal" href="parser-cxx.html#cxx"><span class="std std-ref">The new C/C++ parser</span></a> for more details.</p>
+</section>
+<section id="options-for-inspecting-ctags-internals">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Options for inspecting ctags internals</a><a class="headerlink" href="#options-for-inspecting-ctags-internals" title="Permalink to this heading">¶</a></h3>
+<p>Exuberant Ctags provides a way to inspect its internals via
+<code class="docutils literal notranslate"><span class="pre">--list-kinds</span></code>, <code class="docutils literal notranslate"><span class="pre">--list-languages</span></code>, and <code class="docutils literal notranslate"><span class="pre">--list-maps</span></code>.</p>
+<p>This idea has been expanded in Universal Ctags with
+<code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>, <code class="docutils literal notranslate"><span class="pre">--list-map-extensions</span></code>,  <code class="docutils literal notranslate"><span class="pre">--list-extras</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--list-features</span></code>, <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code>, <code class="docutils literal notranslate"><span class="pre">--list-map-patterns</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">--list-pseudo-tags</span></code> being added.</p>
+<p>The original three <code class="docutils literal notranslate"><span class="pre">--list-</span></code> options are not changed for
+compatibility reasons, however, the newly introduced options are
+recommended for all future use.</p>
+<p>By default, interactive use is assumed and ctags tries aligning the
+list output in columns for easier reading.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> is given before a <code class="docutils literal notranslate"><span class="pre">--list-</span></code> option, ctags
+outputs the list in a format more suitable for processing by scripts.
+Tab characters are used as separators between columns. The alignment
+of columns is never considered when <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> is given.</p>
+<p>Currently only <code class="docutils literal notranslate"><span class="pre">--list-extras</span></code>, <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code> and
+<code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code> support <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> output.</p>
+<p>These new <code class="docutils literal notranslate"><span class="pre">--list-</span></code> options also print a column header, a line
+representing the name of each column. The header may help users and
+scripts to understand and recognize the columns. Ignoring the column
+header is easy because it starts with a <cite>#</cite> character.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--with-list-header=no</span></code> suppresses output of the column header.</p>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-listing"><span class="std std-ref">Listing Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="notice-messages-and-quiet">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Notice messages and <code class="docutils literal notranslate"><span class="pre">--quiet</span></code></a><a class="headerlink" href="#notice-messages-and-quiet" title="Permalink to this heading">¶</a></h3>
+<p>There were 3 classes of message in Exuberant Ctags.
+In addition to them Universal Ctags introduced a new class of message, <em>notice</em>.</p>
+<dl class="simple">
+<dt><em>fatal</em></dt><dd><p>A critical error has occurred and ctags aborts the execution.</p>
+</dd>
+<dt><em>warning</em></dt><dd><p>An error has occurred but ctags continues the execution.</p>
+</dd>
+<dt><em>notice</em> (new)</dt><dd><p>It is less important than <em>warning</em> but more important for users than <em>verbose</em>.</p>
+</dd>
+<dt><em>verbose</em></dt><dd><p>Mainly used for debugging purposes.</p>
+</dd>
+</dl>
+<p>Generally the user can ignore <em>notice</em> class messages and <code class="docutils literal notranslate"><span class="pre">--quiet</span></code>
+can be used to disable them.</p>
+<p><em>verbose</em> class messages are disabled by default, and <code class="docutils literal notranslate"><span class="pre">--verbose</span></code> or <code class="docutils literal notranslate"><span class="pre">-V</span></code>
+can be used to enable them.</p>
+<p>See also <a class="reference internal" href="man/ctags.1.html#option-misc"><span class="std std-ref">Miscellaneous Options</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="skipping-utf-8-bom">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Skipping utf-8 BOM</a><a class="headerlink" href="#skipping-utf-8-bom" title="Permalink to this heading">¶</a></h3>
+<p>The three bytes sequence(<code class="docutils literal notranslate"><span class="pre">\xEF\xBB\xBF</span></code>) at the head of an input
+file is skipped when parsing.</p>
+<p>TODO:</p>
+<ul class="simple">
+<li><p>Do the same in guessing and selecting parser stage.</p></li>
+<li><p>Refect the BOM detection to encoding option</p></li>
+</ul>
+</section>
+<section id="interactive-mode">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Interactive mode</a><a class="headerlink" href="#interactive-mode" title="Permalink to this heading">¶</a></h3>
+<p>A new <code class="docutils literal notranslate"><span class="pre">--_interactive</span></code> option launches a JSON based command REPL which
+can be used to control ctags generation programmatically.</p>
+<p>See <a class="reference internal" href="interactive-mode.html#interactive-mode"><span class="std std-ref">Interactive mode</span></a> for more details.</p>
+</section>
+<section id="pcre2-regular-expression">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">PCRE2 regular expression</a><a class="headerlink" href="#pcre2-regular-expression" title="Permalink to this heading">¶</a></h3>
+<p>With <code class="docutils literal notranslate"><span class="pre">{pcre2}</span></code> (or <code class="docutils literal notranslate"><span class="pre">p</span></code>) flag, PCRE2 expressions can be used in
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;=</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">--_mtable-regex-&lt;LANG&gt;=</span></code> if the ctags is built with <code class="docutils literal notranslate"><span class="pre">pcre2</span></code> library.</p>
+</section>
+</section>
+<section id="incompatible-changes-in-command-line">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Incompatible changes in command line</a><a class="headerlink" href="#incompatible-changes-in-command-line" title="Permalink to this heading">¶</a></h2>
+<section id="d-option">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">-D</span></code> option</a><a class="headerlink" href="#d-option" title="Permalink to this heading">¶</a></h3>
+<p>For a ctags binary that had debugging output enabled in the build config
+stage, <code class="docutils literal notranslate"><span class="pre">-D</span></code> was used for specifying the level of debugging
+output. It is changed to <code class="docutils literal notranslate"><span class="pre">-d</span></code>. This change is not critical because
+<code class="docutils literal notranslate"><span class="pre">-D</span></code> option was not described in ctags.1 man page.</p>
+<p>Instead <code class="docutils literal notranslate"><span class="pre">-D</span></code> is used for defining a macro in CPreProcessor parser.</p>
+</section>
+</section>
+<section id="changes-imported-from-exuberant-ctags">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Changes imported from Exuberant Ctags</a><a class="headerlink" href="#changes-imported-from-exuberant-ctags" title="Permalink to this heading">¶</a></h2>
+<p>See “Exuberant Ctags” in “Tracking other projects” for detailed
+information regarding imported changes.</p>
+<p>Some changes have also been imported from Fedora and Debian.</p>
+</section>
+<section id="parser-related-changes">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Parser related changes</a><a class="headerlink" href="#parser-related-changes" title="Permalink to this heading">¶</a></h2>
+<section id="new-parsers">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">New parsers</a><a class="headerlink" href="#new-parsers" title="Permalink to this heading">¶</a></h3>
+<p>The following parsers have been added:</p>
+<ul class="simple">
+<li><p>Abaqus</p></li>
+<li><p>Abc</p></li>
+<li><p>Ada</p></li>
+<li><p>AnsiblePlaybook <em>libyaml</em></p></li>
+<li><p>Asciidoc</p></li>
+<li><p>Autoconf</p></li>
+<li><p>Automake</p></li>
+<li><p>AutoIt</p></li>
+<li><p>BibTeX</p></li>
+<li><p>Clojure</p></li>
+<li><p>CMake <em>optlib</em></p></li>
+<li><p>CSS</p></li>
+<li><p>Ctags option library <em>optlib</em></p></li>
+<li><p>CUDA</p></li>
+<li><p>D</p></li>
+<li><p>DBusIntrospect <em>libxml</em></p></li>
+<li><p>Diff</p></li>
+<li><p>Dots <em>Sh based subparser</em></p></li>
+<li><p>DTD</p></li>
+<li><p>DTS</p></li>
+<li><p>Elixir <em>optlib</em></p></li>
+<li><p>Elm <em>peg/packcc</em></p></li>
+<li><p>Falcon</p></li>
+<li><p>FrontMatter <em>only YAML syntax, running as a guest on R?Markdown</em></p></li>
+<li><p>FunctionParameters <em>Perl based subparser</em></p></li>
+<li><p>Gdbinit script <em>optlib</em></p></li>
+<li><p>GemSpec <em>Ruby based subparser</em></p></li>
+<li><p>GDScript</p></li>
+<li><p>Glade <em>libxml</em></p></li>
+<li><p>Go</p></li>
+<li><p>GPerf <em>optlib</em></p></li>
+<li><p>Haskell</p></li>
+<li><p>Haxe</p></li>
+<li><p>iPythonCell <em>optlib</em>, <em>Python based subparser</em></p></li>
+<li><p>Inko <em>optlib</em></p></li>
+<li><p>JavaProperties</p></li>
+<li><p>JSON</p></li>
+<li><p>Julia</p></li>
+<li><p>Kconfig <em>optlib</em></p></li>
+<li><p>Kotlin <em>peg/packcc</em></p></li>
+<li><p>GNU linker script(LdScript)</p></li>
+<li><p>LEX <em>optlib</em></p></li>
+<li><p>Man page <em>optlib</em></p></li>
+<li><p>Markdown</p></li>
+<li><p>Maven2 <em>libxml</em></p></li>
+<li><p>MesonBuild (Meson) <em>optlib</em></p></li>
+<li><p>MesonOptions <em>optlib+script</em></p></li>
+<li><p>Moose <em>Perl based subparser</em></p></li>
+<li><p>Myrddin</p></li>
+<li><p>M4</p></li>
+<li><p>NSIS</p></li>
+<li><p>ObjectiveC</p></li>
+<li><p>Org <em>optlib</em></p></li>
+<li><p>OpenAPI (3.x.x / Swagger 2.0) <em>Yaml based subparser</em></p></li>
+<li><p>Passwd <em>optlib</em></p></li>
+<li><p>PuppetManifest <em>optlib</em></p></li>
+<li><p>Perl6</p></li>
+<li><p>Pod <em>optlib</em></p></li>
+<li><p>PowerShell</p></li>
+<li><p>PropertyList(plist) <em>libxml</em></p></li>
+<li><p>Protobuf</p></li>
+<li><p>PythonLoggingConfig</p></li>
+<li><p>QemuHX <em>optlib</em></p></li>
+<li><p>QtMoc</p></li>
+<li><p>Quarto <em>Markdown based subparser</em></p></li>
+<li><p>R</p></li>
+<li><p>R6Class <em>R based subparser</em></p></li>
+<li><p>Rake <em>Ruby based subparser</em></p></li>
+<li><p>RDoc <em>optlib pcre2</em></p></li>
+<li><p>RelaxNG <em>libxml</em></p></li>
+<li><p>ReStructuredText</p></li>
+<li><p>RMarkdown <em>Markdown based subparser</em></p></li>
+<li><p>Robot</p></li>
+<li><p>RpmMacros <em>optlib</em></p></li>
+<li><p>RpmSpec</p></li>
+<li><p>RSpec <em>Ruby based subparser</em></p></li>
+<li><p>Rust</p></li>
+<li><p>S4Class <em>R based subparser</em></p></li>
+<li><p>SCSS <em>optlib</em></p></li>
+<li><p>SystemdUnit</p></li>
+<li><p>SystemTap <em>optlib</em></p></li>
+<li><p>SystemVerilog</p></li>
+<li><p>SVG <em>libxml</em></p></li>
+<li><p>TclOO (see <a class="reference internal" href="parser-tcl.html#tcl"><span class="std std-ref">The new Tcl parser</span></a>)</p></li>
+<li><p>Terraform (HCL) <em>optlib</em></p></li>
+<li><p>TerraformVariables <em>optlib</em></p></li>
+<li><p>Thrift <em>peg/packcc</em></p></li>
+<li><p>TTCN</p></li>
+<li><p>Txt2tags</p></li>
+<li><p>TypeScript</p></li>
+<li><p>Varlink <em>peg/packcc</em></p></li>
+<li><p>WindRes</p></li>
+<li><p>XSLT v1.0 <em>libxml</em></p></li>
+<li><p>Yacc</p></li>
+<li><p>Yaml <em>libyaml</em></p></li>
+<li><p>YumRepo</p></li>
+<li><p>Zephir</p></li>
+<li><p>Zsh</p></li>
+</ul>
+<p>See <a class="reference internal" href="optlib.html#optlib"><span class="std std-ref">Extending ctags with Regex parser (optlib)</span></a> for details on <em>optlib</em>.
+Libxml2 is required to use the parser(s) marked with <em>libxml</em>.
+Libyaml is required to use the parser(s) marked with <em>libyaml</em>.
+pcre2 is required to use the parser(s) marked with <em>pcre2</em>.</p>
+<p>TIPS: you can list newly introduced parsers if you also have
+Exuberant Ctags installed with following command line:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>diff<span class="w"> </span>-ruN<span class="w"> </span>&lt;<span class="o">(</span>universal-ctags<span class="w"> </span>--list-languages<span class="o">)</span><span class="w"> </span>&lt;<span class="o">(</span>exuberant-ctags<span class="w"> </span>--list-languages<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;^[-+]&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="fully-improved-parsers">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Fully improved parsers</a><a class="headerlink" href="#fully-improved-parsers" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>C (see <a class="reference internal" href="parser-cxx.html#cxx"><span class="std std-ref">The new C/C++ parser</span></a>)</p></li>
+<li><p>C++ (see <a class="reference internal" href="parser-cxx.html#cxx"><span class="std std-ref">The new C/C++ parser</span></a>)</p></li>
+<li><p>Python (see <a class="reference internal" href="parser-python.html#python"><span class="std std-ref">The new Python parser</span></a>)</p></li>
+<li><p>HTML (see <a class="reference internal" href="parser-html.html#html"><span class="std std-ref">The new HTML parser</span></a>)</p></li>
+<li><p>Tcl (see <a class="reference internal" href="parser-tcl.html#tcl"><span class="std std-ref">The new Tcl parser</span></a>)</p></li>
+<li><p>ITcl (see <a class="reference internal" href="parser-tcl.html#tcl"><span class="std std-ref">The new Tcl parser</span></a>)</p></li>
+<li><p>Ant (rewritten with <em>libxml</em>)</p></li>
+<li><p>PHP</p></li>
+<li><p>Verilog/SystemVerilog</p></li>
+</ul>
+</section>
+<section id="automatically-expanding-cpreprocessor-macros-defined-in-the-same-input-file-highly-experimental">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Automatically expanding CPreProcessor macros defined in the same input file (HIGHLY EXPERIMENTAL)</a><a class="headerlink" href="#automatically-expanding-cpreprocessor-macros-defined-in-the-same-input-file-highly-experimental" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="parser-cxx.html#cxx"><span class="std std-ref">The new C/C++ parser</span></a> for more details.</p>
+</section>
+</section>
+<section id="readtags">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Readtags</a><a class="headerlink" href="#readtags" title="Permalink to this heading">¶</a></h2>
+<section id="printing-line-numbers-with-n">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Printing line numbers with <code class="docutils literal notranslate"><span class="pre">-n</span></code></a><a class="headerlink" href="#printing-line-numbers-with-n" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a>.</p>
+</section>
+<section id="filtering-in-readtags-command">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Filtering in readtags command</a><a class="headerlink" href="#filtering-in-readtags-command" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a>.</p>
+<p>readtags has ability to find tag entries by name.</p>
+<p>The concept of filtering is inspired by the display filter of
+Wireshark. You can specify more complex conditions for searching.</p>
+<p>All symbols starting with <cite>$</cite> represent a field of a tag entry which
+is being tested against the S expression. Most will evaluate as a
+string or <cite>#f</cite>. It evaluates to <cite>#f</cite> when the field doesn’t exist.</p>
+<p>The <cite>scope</cite> field holds structured data: the kind and name of the
+upper scope combined with <cite>:</cite>. The hold the value is stored to
+<cite>$scope</cite>. The kind part is mapped to <cite>$scope-kind</cite>, and the name part
+to <cite>$scope-name</cite>.</p>
+<p><cite>$scope-kind</cite> and <cite>$scope-name</cite> can only be used if the input tags
+file is generated by ctags with <code class="docutils literal notranslate"><span class="pre">--fields=+Z</span></code>.</p>
+<p><cite>$</cite> is a generic accessor for accessing extension fields.
+<cite>$</cite> takes one argument: the name of an extension field.
+It returns the value of the field as a string if a value
+is given, or <cite>#f</cite>.</p>
+<p>Following examples shows how <cite>prefix?</cite>, <cite>suffix?</cite>, and
+<cite>substr?</cite> work.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(prefix? &quot;TARGET&quot; &quot;TA&quot;)
+=&gt; #t
+
+(prefix? &quot;TARGET&quot; &quot;RGET&quot;)
+=&gt; #f
+
+(prefix? &quot;TARGET&quot; &quot;RGE&quot;)
+=&gt; #f
+
+(suffix? &quot;TARGET&quot; &quot;TA&quot;)
+=&gt; #f
+
+(suffix? &quot;TARGET&quot; &quot;RGET&quot;)
+=&gt; #t
+
+(suffix? &quot;TARGET&quot; &quot;RGE&quot;)
+=&gt; #f
+
+(substr? &quot;TARGET&quot; &quot;TA&quot;)
+=&gt; #t
+
+(suffix? &quot;TARGET&quot; &quot;RGET&quot;)
+=&gt; #t
+
+(suffix? &quot;TARGET&quot; &quot;RGE&quot;)
+=&gt; #t
+
+(and (suffix? &quot;TARGET&quot; &quot;TARGET&quot;)
+     (prefix? &quot;TARGET&quot; &quot;TARGET&quot;)
+     (substr? &quot;TARGET&quot; &quot;TARGET&quot;)
+=&gt; #t
+</pre></div>
+</div>
+</section>
+<section id="sorting-in-readtags-command">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Sorting in readtags command</a><a class="headerlink" href="#sorting-in-readtags-command" title="Permalink to this heading">¶</a></h3>
+<p>readtags can sort the tag entries before printing.
+You can specify the way to sort with -S option. Like <code class="docutils literal notranslate"><span class="pre">-Q</span></code> option, <code class="docutils literal notranslate"><span class="pre">-S</span></code>
+also takes an S expression.</p>
+<p>See <a class="reference internal" href="man/readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a>.</p>
+</section>
+<section id="listing-pseudo-tags-with-d">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Listing pseudo tags with <code class="docutils literal notranslate"><span class="pre">-D</span></code></a><a class="headerlink" href="#listing-pseudo-tags-with-d" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="man/readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a>.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Other changes</a><ul>
+<li><a class="reference internal" href="#new-and-extended-options">New and extended options</a><ul>
+<li><a class="reference internal" href="#exclude-exception-an-option-complementing-exclude"><code class="docutils literal notranslate"><span class="pre">--exclude-exception</span></code>, an option complementing <code class="docutils literal notranslate"><span class="pre">--exclude</span></code></a></li>
+<li><a class="reference internal" href="#maxdepth-option"><code class="docutils literal notranslate"><span class="pre">--maxdepth</span></code> option</a></li>
+<li><a class="reference internal" href="#input-encoding-encoding-and-output-encoding-encoding"><code class="docutils literal notranslate"><span class="pre">--input-encoding=ENCODING</span></code> and <code class="docutils literal notranslate"><span class="pre">--output-encoding=ENCODING</span></code></a></li>
+<li><a class="reference internal" href="#map-lang-option"><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> option</a></li>
+<li><a class="reference internal" href="#guessing-parser-from-file-contents-g-option">Guessing parser from file contents (<code class="docutils literal notranslate"><span class="pre">-G</span></code> option)</a></li>
+<li><a class="reference internal" href="#including-line-number-to-pattern-field">Including line number to pattern field</a></li>
+<li><a class="reference internal" href="#long-names-in-kinds-fields-and-extra-options">Long names in kinds, fields, and extra options</a></li>
+<li><a class="reference internal" href="#wildcard-in-options">Wildcard in options</a></li>
+<li><a class="reference internal" href="#extra-tag-entries-extras">Extra tag entries (<code class="docutils literal notranslate"><span class="pre">--extras</span></code>)</a></li>
+<li><a class="reference internal" href="#kinds-synchronization">Kinds synchronization</a></li>
+<li><a class="reference internal" href="#enabling-disabling-pseudo-tags-pseudo-tags-option">Enabling/disabling pseudo-tags (<code class="docutils literal notranslate"><span class="pre">--pseudo-tags</span></code> option)</a></li>
+<li><a class="reference internal" href="#put-field-prefix-options"><code class="docutils literal notranslate"><span class="pre">--put-field-prefix</span></code> options</a></li>
+<li><a class="reference internal" href="#always-and-never-as-an-argument-for-tag-relative">“always” and “never” as an argument for <code class="docutils literal notranslate"><span class="pre">--tag-relative</span></code></a></li>
+<li><a class="reference internal" href="#defining-a-parser-specific-extra">Defining a parser specific extra</a></li>
+<li><a class="reference internal" href="#defining-a-cpreprocessor-macro-from-command-line">Defining a CPreProcessor macro from command line</a></li>
+<li><a class="reference internal" href="#options-for-inspecting-ctags-internals">Options for inspecting ctags internals</a></li>
+<li><a class="reference internal" href="#notice-messages-and-quiet">Notice messages and <code class="docutils literal notranslate"><span class="pre">--quiet</span></code></a></li>
+<li><a class="reference internal" href="#skipping-utf-8-bom">Skipping utf-8 BOM</a></li>
+<li><a class="reference internal" href="#interactive-mode">Interactive mode</a></li>
+<li><a class="reference internal" href="#pcre2-regular-expression">PCRE2 regular expression</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#incompatible-changes-in-command-line">Incompatible changes in command line</a><ul>
+<li><a class="reference internal" href="#d-option"><code class="docutils literal notranslate"><span class="pre">-D</span></code> option</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#changes-imported-from-exuberant-ctags">Changes imported from Exuberant Ctags</a></li>
+<li><a class="reference internal" href="#parser-related-changes">Parser related changes</a><ul>
+<li><a class="reference internal" href="#new-parsers">New parsers</a></li>
+<li><a class="reference internal" href="#fully-improved-parsers">Fully improved parsers</a></li>
+<li><a class="reference internal" href="#automatically-expanding-cpreprocessor-macros-defined-in-the-same-input-file-highly-experimental">Automatically expanding CPreProcessor macros defined in the same input file (HIGHLY EXPERIMENTAL)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#readtags">Readtags</a><ul>
+<li><a class="reference internal" href="#printing-line-numbers-with-n">Printing line numbers with <code class="docutils literal notranslate"><span class="pre">-n</span></code></a></li>
+<li><a class="reference internal" href="#filtering-in-readtags-command">Filtering in readtags command</a></li>
+<li><a class="reference internal" href="#sorting-in-readtags-command">Sorting in readtags command</a></li>
+<li><a class="reference internal" href="#listing-pseudo-tags-with-d">Listing pseudo tags with <code class="docutils literal notranslate"><span class="pre">-D</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="interactive-mode.html"
+                          title="previous chapter">Interactive mode</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="optlib.html"
+                          title="next chapter">Extending ctags with Regex parser (<em>optlib</em>)</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="optlib.html" title="Extending ctags with Regex parser (optlib)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="interactive-mode.html" title="Interactive mode"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Other changes</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

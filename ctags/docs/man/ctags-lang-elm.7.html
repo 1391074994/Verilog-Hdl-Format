@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-elm &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-fortran" href="ctags-lang-fortran.7.html" />
+    <link rel="prev" title="ctags-lang-autoit" href="ctags-lang-autoit.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-fortran.7.html" title="ctags-lang-fortran"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-autoit.7.html" title="ctags-lang-autoit"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-elm</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-elm">
+<span id="ctags-lang-elm-7"></span><h1>ctags-lang-elm<a class="headerlink" href="#ctags-lang-elm" title="Permalink to this heading">¶</a></h1>
+<p>Random notes about tagging Elm source code with Universal Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … --languages=+Elm …</div>
+<div class="line"><strong>ctags</strong> … --language-force=Elm …</div>
+<div class="line"><strong>ctags</strong> … --map-Elm=+.elm …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>The Elm parser is a PEG parser using PackCC, which is part of the
+ctags infrastructure. It should correctly process all top level
+statements, however there is a limitation with functions embedded
+in let/in blocks. They will mostly be fine, but sometimes a
+function in a let/in block will be omitted.</p>
+</section>
+<section id="examples">
+<h2>EXAMPLES<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<section id="imports">
+<h3>Imports<a class="headerlink" href="#imports" title="Permalink to this heading">¶</a></h3>
+<p>Imported modules are tagged, and their role is “imported”, not “def”.
+Types, functions, etc which are exposed via imported module have their
+role as “exposed”.</p>
+<p>Exposed items are marked as being in the scope of their own module,
+not the module that’s doing the importing.</p>
+<p>“input.elm”</p>
+<div class="highlight-Elm notranslate"><div class="highlight"><pre><span></span><span class="kn">module</span><span class="w"> </span><span class="nc">SomeMod</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="nf">(..)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nc">MyMod</span><span class="w"> </span><span class="nv">exposing</span>
+<span class="w">  </span><span class="p">(</span><span class="w"> </span><span class="nv">map</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="kt">Maybe</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="kt">Result</span><span class="nf">(..)</span>
+<span class="w">  </span><span class="p">,</span><span class="w"> </span><span class="kt">MyList</span><span class="p">(</span><span class="kt">Empty</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+r --fields=+r input.elm”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>SomeMod input.elm       /^module SomeMod exposing (..)$/;&quot;      m       roles:def
+MyMod   input.elm       /^import MyMod exposing$/;&quot;     m       roles:imported
+map     input.elm       /^  ( map$/;&quot;   f       module:MyMod    roles:exposed
+Maybe   input.elm       /^  , Maybe$/;&quot; t       module:MyMod    roles:exposed
+Result  input.elm       /^  , Result(..)$/;&quot;    t       module:MyMod    roles:exposed
+MyList  input.elm       /^  , MyList(Empty)$/;&quot; t       module:MyMod    roles:exposed
+Empty   input.elm       /^  , MyList(Empty)$/;&quot; c       type:MyMod.MyList       roles:exposed
+</pre></div>
+</div>
+</section>
+<section id="namespaces">
+<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this heading">¶</a></h3>
+<p>Namespaces are tagged and their role is “def”.</p>
+<p>“input.elm”</p>
+<div class="highlight-Elm notranslate"><div class="highlight"><pre><span></span><span class="kn">module</span><span class="w"> </span><span class="nc">AMod</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="nf">(..)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nc">MyImport</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="kt">NSpace</span><span class="w"> </span><span class="nv">exposing</span><span class="w"> </span><span class="p">(</span><span class="nv">impFunc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+r --fields=+r input.elm”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>AMod    input.elm       /^module AMod exposing (..)$/;&quot; m       roles:def
+NSpace  input.elm       /^import MyImport as NSpace exposing (impFunc)$/;&quot;      n       module:AMod     roles:def       moduleName:MyImport
+MyImport        input.elm       /^import MyImport as NSpace exposing (impFunc)$/;&quot;      m       roles:imported
+impFunc input.elm       /^import MyImport as NSpace exposing (impFunc)$/;&quot;      f       module:MyImport roles:exposed
+</pre></div>
+</div>
+</section>
+<section id="type-names">
+<h3>Type names<a class="headerlink" href="#type-names" title="Permalink to this heading">¶</a></h3>
+<p>Constructors top level functions will have type names.</p>
+<p>“input.elm”</p>
+<div class="highlight-Elm notranslate"><div class="highlight"><pre><span></span><span class="nv">funcA</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Int</span><span class="w"> </span><span class="nf">-&gt;</span><span class="w"> </span><span class="kt">Int</span>
+<span class="nv">funcA</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nf">=</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="nf">+</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="kr">type</span><span class="w"> </span><span class="kt">B</span>
+<span class="w">    </span><span class="nf">=</span><span class="w"> </span><span class="kt">B1Cons</span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Float</span>
+<span class="w">      </span><span class="p">,</span><span class="w"> </span><span class="nv">y</span><span class="w"> </span><span class="nf">:</span><span class="w"> </span><span class="kt">Float</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">B2Cons</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="kt">Integer</span>
+<span class="w">    </span><span class="nf">|</span><span class="w"> </span><span class="kt">B3Cons</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+r --fields=+r input.elm”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>funcA   input.elm       /^funcA a = a + 1$/;&quot;   f       typeref:typename:Int -&gt; Int     roles:def
+B       input.elm       /^type B$/;&quot;    t       roles:def
+B1Cons  input.elm       /^    = B1Cons$/;&quot;      c       type:B  typeref:typename:{ x : Float , y : Float } -&gt; B roles:def
+B2Cons  input.elm       /^    | B2Cons String Integer$/;&quot;       c       type:B  typeref:typename:String -&gt; Integer -&gt; B roles:def
+B3Cons  input.elm       /^    | B3Cons$/;&quot;      c       type:B  typeref:typename:B      roles:def
+</pre></div>
+</div>
+</section>
+<section id="function-parameter-lists">
+<h3>Function parameter lists<a class="headerlink" href="#function-parameter-lists" title="Permalink to this heading">¶</a></h3>
+<p>Function parameter lists can be extracted into the tags file
+signature field. They are not really function signatures, but
+it’s the closest concept available in ctags.
+Use “--fields=+S”.</p>
+<div class="highlight-Elm notranslate"><div class="highlight"><pre><span></span><span class="nv">funcA</span><span class="w"> </span><span class="nv">a1</span><span class="w"> </span><span class="nv">a2</span><span class="w"> </span><span class="nf">=</span>
+<span class="w">    </span><span class="nv">a1</span><span class="w"> </span><span class="nf">+</span><span class="w"> </span><span class="nv">a2</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--sort=no --extras=+r --fields=+rS”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>funcA       input.elm       /^funcA a1 a2 =$/;&quot;     f       signature:a1 a2 roles:def
+</pre></div>
+</div>
+</section>
+</section>
+<section id="known-limitations">
+<h2>KNOWN LIMITATIONS<a class="headerlink" href="#known-limitations" title="Permalink to this heading">¶</a></h2>
+<p>The ctags signature field is used for function parameter lists, even
+though it’s not an idea field. See above.</p>
+<p>Elm requires all statements at the same logical level to have the
+same indentation. If there is additional indentation that line is part
+of the previous one. Therefore without over-complicating the
+PEG parser we have the following limitations…</p>
+<p>Sometimes functions in let/in blocks will be omitted.</p>
+<p>Functions in let/in blocks will be marked as being in the scope of their
+outer function, regardless of how deeply nested the let/in block is.</p>
+<p>Functions in let/in blocks won’t have type names.</p>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-elm</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#examples">EXAMPLES</a><ul>
+<li><a class="reference internal" href="#imports">Imports</a></li>
+<li><a class="reference internal" href="#namespaces">Namespaces</a></li>
+<li><a class="reference internal" href="#type-names">Type names</a></li>
+<li><a class="reference internal" href="#function-parameter-lists">Function parameter lists</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#known-limitations">KNOWN LIMITATIONS</a></li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-lang-autoit.7.html"
+                          title="previous chapter">ctags-lang-autoit</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-fortran.7.html"
+                          title="next chapter">ctags-lang-fortran</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-fortran.7.html" title="ctags-lang-fortran"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-autoit.7.html" title="ctags-lang-autoit"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-elm</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

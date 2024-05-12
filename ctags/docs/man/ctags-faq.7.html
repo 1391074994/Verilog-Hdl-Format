@@ -1,0 +1,515 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-faq &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-asm" href="ctags-lang-asm.7.html" />
+    <link rel="prev" title="ctags-incompatibilities" href="ctags-incompatibilities.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-asm.7.html" title="ctags-lang-asm"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-incompatibilities.7.html" title="ctags-incompatibilities"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-faq</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-faq">
+<span id="ctags-faq-7"></span><h1><a class="toc-backref" href="#id2" role="doc-backlink">ctags-faq</a><a class="headerlink" href="#ctags-faq" title="Permalink to this heading">¶</a></h1>
+<p>Universal Ctags FAQ</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<p>This is the Universal Ctags FAQ (Frequently-Asked Questions).
+It is based on <a class="reference external" href="http://ctags.sourceforge.net/faq.html">Exuberant Ctags FAQ</a></p>
+<nav class="contents" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ctags-faq" id="id2">ctags-faq</a></p>
+<ul>
+<li><p><a class="reference internal" href="#description" id="id3">DESCRIPTION</a></p>
+<ul>
+<li><p><a class="reference internal" href="#what-is-the-difference-between-universal-ctags-and-exuberant-ctags" id="id4">What is the difference between Universal Ctags and Exuberant Ctags?</a></p></li>
+<li><p><a class="reference internal" href="#how-can-i-avoid-having-to-specify-my-favorite-option-every-time" id="id5">How can I avoid having to specify my favorite option every time?</a></p></li>
+<li><p><a class="reference internal" href="#what-are-these-strange-bits-of-text-beginning-with-which-follow-many-of-the-lines-in-the-tag-file" id="id6">What are these strange bits of text beginning with <code class="docutils literal notranslate"><span class="pre">;&quot;</span></code> which follow many of the lines in the tag file?</a></p></li>
+<li><p><a class="reference internal" href="#why-can-t-i-jump-to-class-member" id="id7">Why can’t I jump to <code class="docutils literal notranslate"><span class="pre">class::member</span></code>?</a></p></li>
+<li><p><a class="reference internal" href="#why-do-i-end-up-on-the-wrong-line-when-i-jump-to-a-tag" id="id8">Why do I end up on the wrong line when I jump to a tag?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-jump-to-the-tag-i-want-instead-of-the-wrong-one-by-the-same-name" id="id9">How do I jump to the tag I want instead of the wrong one by the same name?</a></p></li>
+<li><p><a class="reference internal" href="#how-can-i-locate-all-references-to-a-specific-function-or-variable" id="id10">How can I locate all references to a specific function or variable?</a></p></li>
+<li><p><a class="reference internal" href="#why-does-appending-tags-to-a-tag-file-tag-so-long" id="id11">Why does appending tags to a tag file tag so long?</a></p></li>
+<li><p><a class="reference internal" href="#how-should-i-set-up-tag-files-for-a-multi-level-directory-hierarchy" id="id12">How should I set up tag files for a multi-level directory hierarchy?</a></p></li>
+<li><p><a class="reference internal" href="#does-universal-ctags-support-unicode-file-names" id="id13">Does Universal Ctags support Unicode file names?</a></p></li>
+<li><p><a class="reference internal" href="#why-does-zsh-cause-zsh-no-matches-found-error" id="id14">Why does zsh cause “zsh: no matches found” error?</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#see-also" id="id15">SEE ALSO</a></p></li>
+<li><p><a class="reference internal" href="#author" id="id16">AUTHOR</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="description">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">DESCRIPTION</a><a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<section id="what-is-the-difference-between-universal-ctags-and-exuberant-ctags">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">What is the difference between Universal Ctags and Exuberant Ctags?</a><a class="headerlink" href="#what-is-the-difference-between-universal-ctags-and-exuberant-ctags" title="Permalink to this heading">¶</a></h3>
+<p>Universal Ctags is an unofficial fork of Exuberant Ctags.
+The differences are summarized in <a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a> man page.</p>
+<p>The most notable one is that Universal Ctags doesn’t read <code class="docutils literal notranslate"><span class="pre">~/.ctags</span></code> file.
+Instead, it reads <code class="docutils literal notranslate"><span class="pre">*.ctags</span></code> under <code class="docutils literal notranslate"><span class="pre">~/.ctags.d</span></code> directory.</p>
+</section>
+<section id="how-can-i-avoid-having-to-specify-my-favorite-option-every-time">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">How can I avoid having to specify my favorite option every time?</a><a class="headerlink" href="#how-can-i-avoid-having-to-specify-my-favorite-option-every-time" title="Permalink to this heading">¶</a></h3>
+<p>Either by setting the environment variable <code class="docutils literal notranslate"><span class="pre">CTAGS</span></code> to your custom
+options, or putting them into a <code class="docutils literal notranslate"><span class="pre">~/.ctags.d/anyname.ctags</span></code> file in your home
+directory.</p>
+</section>
+<section id="what-are-these-strange-bits-of-text-beginning-with-which-follow-many-of-the-lines-in-the-tag-file">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">What are these strange bits of text beginning with <code class="docutils literal notranslate"><span class="pre">;&quot;</span></code> which follow many of the lines in the tag file?</a><a class="headerlink" href="#what-are-these-strange-bits-of-text-beginning-with-which-follow-many-of-the-lines-in-the-tag-file" title="Permalink to this heading">¶</a></h3>
+<p>These are <em>extension flags</em>. They are added in order to provide extra
+information about the tag that may be utilized by the editor in order to
+more intelligently handle tags. They are appended to the EX command part of
+the tag line in a manner that provides backwards compatibility with existing
+implementations of the Vi editor. The semicolon is an EX command separator
+and the double quote begins an EX comment. Thus, the extension flags appear
+as an EX comment and should be ignored by the editor when it processes the
+EX command.</p>
+<p>Some non-vi editors, however, implement only the bare minimum of EX commands
+in order to process the search command or line number in the third field of
+the tag file. If you encounter this problem, use the option <code class="docutils literal notranslate"><span class="pre">--format=1</span></code> to
+generate a tag file without these extensions (remember that you can set the
+CTAGS environment variable to any default arguments you wish to supply). Then
+ask the supplier of your editor to implement handling of this feature of EX
+commands.</p>
+</section>
+<section id="why-can-t-i-jump-to-class-member">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Why can’t I jump to <code class="docutils literal notranslate"><span class="pre">class::member</span></code>?</a><a class="headerlink" href="#why-can-t-i-jump-to-class-member" title="Permalink to this heading">¶</a></h3>
+<p>Because, by default, ctags only generates tags for the separate identifiers
+found in the source files. If you specify the <code class="docutils literal notranslate"><span class="pre">--extra=+q</span></code> option, then
+ctags will also generate a second, class-qualified tag for each class member
+(data and function/method) in the form <code class="docutils literal notranslate"><span class="pre">class::member</span></code> for C++, and in the form
+<code class="docutils literal notranslate"><span class="pre">class.method</span></code> for Eiffel and Java.</p>
+</section>
+<section id="why-do-i-end-up-on-the-wrong-line-when-i-jump-to-a-tag">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Why do I end up on the wrong line when I jump to a tag?</a><a class="headerlink" href="#why-do-i-end-up-on-the-wrong-line-when-i-jump-to-a-tag" title="Permalink to this heading">¶</a></h3>
+<p>By default, ctags encodes the line number in the file where macro (<code class="docutils literal notranslate"><span class="pre">#define</span></code>)
+tags are found. This was done to remain compatible with the original UNIX
+version of ctags. If you change the file containing the tag without
+rebuilding the tag file, the location of tag in the tag file may no longer
+match the current location.</p>
+<p>In order to avoid this problem, you can specify the option <code class="docutils literal notranslate"><span class="pre">--excmd=p</span></code>,
+which causes ctags to use a search pattern to locate macro tags. I have
+never uncovered the reason why the original UNIX ctags used line numbers
+exclusively for macro tags, but have so far resisted changing the default
+behavior of Exuberant (and Universal) Ctags to behave differently.</p>
+</section>
+<section id="how-do-i-jump-to-the-tag-i-want-instead-of-the-wrong-one-by-the-same-name">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">How do I jump to the tag I want instead of the wrong one by the same name?</a><a class="headerlink" href="#how-do-i-jump-to-the-tag-i-want-instead-of-the-wrong-one-by-the-same-name" title="Permalink to this heading">¶</a></h3>
+<p>A tag file is simple a list of tag names and where to find them. If there
+are duplicate entries, you often end up going to the wrong one because the
+tag file is sorted and your editor locates the first one in the tag file.</p>
+<p>Standard Vi provides no facilities to alter this behavior. However, Vim
+has some nice features to minimize this problem, primarily by examining all
+matches and choosing the best one under the circumstances. Vim also provides
+commands which allow for selection of the desired matching tag.</p>
+</section>
+<section id="how-can-i-locate-all-references-to-a-specific-function-or-variable">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">How can I locate all references to a specific function or variable?</a><a class="headerlink" href="#how-can-i-locate-all-references-to-a-specific-function-or-variable" title="Permalink to this heading">¶</a></h3>
+<p>There are several packages already available which provide this capability.
+Namely, these are: GLOBAL source code tag system, GNU id-utils, cscope,
+and cflow. As of this writing, they can be found in the following locations:</p>
+<ul class="simple">
+<li><p>GLOBAL:    <a class="reference external" href="http://www.gnu.org/software/global">http://www.gnu.org/software/global</a></p></li>
+<li><p>id-utils:  <a class="reference external" href="http://www.gnu.org/software/idutils/idutils.html">http://www.gnu.org/software/idutils/idutils.html</a></p></li>
+<li><p>cscope:    <a class="reference external" href="http://cscope.sourceforge.net">http://cscope.sourceforge.net</a></p></li>
+<li><p>cflow:     <a class="reference external" href="ftp://www.ibiblio.org/pub/Linux/devel/lang/c">ftp://www.ibiblio.org/pub/Linux/devel/lang/c</a></p></li>
+</ul>
+</section>
+<section id="why-does-appending-tags-to-a-tag-file-tag-so-long">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Why does appending tags to a tag file tag so long?</a><a class="headerlink" href="#why-does-appending-tags-to-a-tag-file-tag-so-long" title="Permalink to this heading">¶</a></h3>
+<p>Sometimes, in an attempt to build a global tag file for all source files in
+a large source tree of many directories, someone will make an attempt to run
+ctags in append (<code class="docutils literal notranslate"><span class="pre">-a</span></code>) mode on every directory in the hierarchy. Each time
+ctags is invoked, its default behavior is to sort the tag file once the tags
+for that execution have been added. As the cumulative tag file grows, the sort
+time increases arithmetically.</p>
+<p>The best way to avoid this problem (and the most efficient) is to make
+use of the <code class="docutils literal notranslate"><span class="pre">--recurse</span></code> (or <code class="docutils literal notranslate"><span class="pre">-R</span></code>) option of ctags by executing the following
+command in the root of the directory hierarchy (thus running ctags only once):</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ctags<span class="w"> </span>-R
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you really insist on running ctags separately on each directory, you can
+avoid the sort pass each time by specifying the option <code class="docutils literal notranslate"><span class="pre">--sort=no</span></code>. Once the
+tag file is completely built, use the sort command to manually sort the
+final tag file, or let the final invocation of ctags sort the file.</p>
+</section>
+<section id="how-should-i-set-up-tag-files-for-a-multi-level-directory-hierarchy">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">How should I set up tag files for a multi-level directory hierarchy?</a><a class="headerlink" href="#how-should-i-set-up-tag-files-for-a-multi-level-directory-hierarchy" title="Permalink to this heading">¶</a></h3>
+<p>There are a few ways of approaching this:</p>
+<ol class="arabic simple">
+<li><p>A local tag file in each directory containing only the tags for source
+files in that directory.</p></li>
+<li><p>One single big, global tag file present in the root directory of your
+hierarchy, containing all tags present in all source files in the
+hierarchy.</p></li>
+<li><p>A local tag file in each directory containing only the tags for source
+files in that directory, in addition to one single global tag file
+present in the root directory of your hierarchy, containing all
+non-static tags present in all source files in the hierarchy.</p></li>
+<li><p>A local tag file in each directory of the hierarchy, each one
+containing all tags present in source files in that directory and all
+non-static tags in every directory below it (note that this implies
+also having one big tag file in the root directory of the hierarchy).</p></li>
+</ol>
+<p>Each of these approaches has its own set of advantages and disadvantages,
+depending upon your particular conditions. Which approach is deemed best
+depends upon the following factors:</p>
+<ol class="upperalpha">
+<li><p>The ability of your editor to use multiple tag files.</p>
+<p>If your editor cannot make use of multiple tag files (original vi
+implementations could not), then one large tag file is the only way to
+go if you ever desire to jump to tags located in other directories. If
+you never need to jump to tags in another directory (i.e. the source
+in each directory is entirely self-contained), then a local tag file
+in each directory will fit your needs.</p>
+</li>
+<li><p>The time is takes for your editor to look up a tag in the tag file.</p>
+<p>The significance of this factor depends upon the size of your source
+tree and on whether the source files are located on a local or remote
+file system. For source and tag files located on a local file system,
+looking up a tag is not as big a hit as one might first imagine, since
+vi implementations typically perform a binary search on a sorted tag
+file. This may or may not be true for the editor you use. For files
+located on a remote file system, reading a large file is an expensive
+operation.</p>
+</li>
+<li><p>Whether or not you expect the source code to change and the time it
+takes to rebuild a tag file to account for changes to the source code.</p>
+<p>While Universal Ctags is particularly fast in scanning source code
+(around 1-2 MB/sec), a large project may still result in objectionable
+delays if one wishes to keep their tag file(s) up to date on a
+frequent basis, or if the files are located on a remote file system.</p>
+</li>
+<li><p>The presence of duplicate tags in the source code and the ability to
+handle them.</p>
+<p>The impact of this factor is influenced by the following three issues:</p>
+<ol class="arabic">
+<li><p>How common are duplicate tags in your project?</p></li>
+<li><p>Does your editor provide any facilities for dealing with duplicate
+tags?</p>
+<p>While standard vi does not, many modern vi implementations, such
+as Vim have good facilities for selecting the desired match from
+the list of duplicates. If your editor does not support duplicate
+tags, then it will typically send you to only one of them, whether
+or not that is the one you wanted (and not even notifying you that
+there are other potential matches).</p>
+</li>
+<li><p>What is the significance of duplicate tags?</p>
+<p>For example, if you have two tags of the same name from entirely
+isolated software components, jumping first to the match found
+in component B while working in component A may be entirely
+misleading, distracting or inconvenient (to keep having to choose
+which one if your editor provides you with a list of matches).
+However, if you have two tags of the same name for parallel builds
+(say two initialization routines for different hosts), you may
+always want to specify which one you want.</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>Of the approaches listed above, I tend to favor Approach 3. My editor of
+choice is Vim, which provides a rich set of features for handling multiple
+tag files, which partly influences my choice. If you are working with
+source files on a remote file system, then I would recommend either
+Approach 3 or Approach 4, depending upon the hit when reading the global
+tag file.</p>
+<p>The advantages of Approach 3 are many (assuming that your editor has
+the ability to support both multiple tag files and duplicate tags). All
+lookups of tag located in the current directory are fast and the local
+tag file can be quickly and easily regenerated in one second or less
+(I have even mapped a keystroke to do this easily). A lookup of a
+(necessarily non-static) tag found in another directory fails a lookup in
+the local tag file, but is found in the global tag file, which satisfies
+all cross-directory lookups. The global tag file can be automatically
+regenerated periodically with a cron job (and perhaps the local tag files
+also).</p>
+<p>Now I give an example of how you would implement Approach 3. Means of
+implementing the other approaches can be performed in a similar manner.</p>
+<p>Here is a visual representation of an example directory hierarchy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>project
+`-----misccomp
+|       `...
+`-----sysint
+        `-----client
+        |       `-----hdrs
+        |       `-----lib
+        |       `-----src
+        |       `-----test
+        `-----common
+        |       `-----hdrs
+        |       `-----lib
+        |       `-----src
+        |       `-----test
+        `-----server
+                `-----hdrs
+                `-----lib
+                `-----src
+                `-----test
+</pre></div>
+</div>
+<p>Here is a recommended solution (conceptually) to build the tag files:</p>
+<ol class="arabic">
+<li><p>Within each of the leaf nodes (i.e. <code class="docutils literal notranslate"><span class="pre">hdrs</span></code>, <code class="docutils literal notranslate"><span class="pre">lib</span></code>, <code class="docutils literal notranslate"><span class="pre">src</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code>) build a tag
+file using “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">*.[ch]</span></code>”. This can be easily be done for the whole
+hierarchy by making a shell script, call it <code class="docutils literal notranslate"><span class="pre">dirtags</span></code>, containing the
+following lines:</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$1</span>
+ctags<span class="w"> </span>*
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now execute the following command:</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>*<span class="w"> </span>-type<span class="w"> </span>d<span class="w"> </span>-exec<span class="w"> </span>dirtags<span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>These tag files are trivial (and extremely quick) to rebuild while
+making changes within a directory. The following Vim key mapping is
+quite useful to rebuild the tag file in the directory of the current
+source file:</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:nmap ,t :!(cd %:p:h;ctags *.[ch])&amp;&lt;CR&gt;&lt;CR&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Build the global tag file:</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/project
+ctags<span class="w"> </span>--file-scope<span class="o">=</span>no<span class="w"> </span>-R
+</pre></div>
+</div>
+</div></blockquote>
+<p>thus constructing a tag file containing only non-static tags for all
+source files in all descendent directories.</p>
+</li>
+<li><p>Configure your editor to read the local tag file first, then consult
+the global tag file when not found in the local tag file. In Vim,
+this is done as follows:</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:set tags=./tags,tags,~/project/tags
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>If you wish to implement Approach 4, you would need to replace the
+<code class="docutils literal notranslate"><span class="pre">dirtags</span></code> script of step 1 with the following:</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nv">$1</span>
+ctags<span class="w"> </span>*
+<span class="c1"># Now append the non-static tags from descendent directories</span>
+find<span class="w"> </span>*<span class="w"> </span>-type<span class="w"> </span>d<span class="w"> </span>-prune<span class="w"> </span>-print<span class="w"> </span><span class="p">|</span><span class="w"> </span>ctags<span class="w"> </span>-aR<span class="w"> </span>--file-scope<span class="o">=</span>no<span class="w"> </span>-L-
+</pre></div>
+</div>
+</div></blockquote>
+<p>And replace the configuration of step 3 with this:</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:set tags=./tags;$HOME,tags
+</pre></div>
+</div>
+</div></blockquote>
+<p>As a caveat, it should be noted that step 2 builds a global tag file whose
+file names will be relative to the directory in which the global tag file
+is being built. This takes advantage of the Vim <code class="docutils literal notranslate"><span class="pre">tagrelative</span></code> option,
+which causes the path to be interpreted a relative to the location of the
+tag file instead of the current directory. For standard vi, which always
+interprets the paths as relative to the current directory, we need to
+build the global tag file with absolute path names. This can be
+accomplished by replacing step 2 with the following:</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/project
+ctags<span class="w"> </span>--file-scope<span class="o">=</span>no<span class="w"> </span>-R<span class="w"> </span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="does-universal-ctags-support-unicode-file-names">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Does Universal Ctags support Unicode file names?</a><a class="headerlink" href="#does-universal-ctags-support-unicode-file-names" title="Permalink to this heading">¶</a></h3>
+<p>Yes, Unicode file names are supported on unix-like platforms (Linux, macOS,
+Cygwin, etc.).</p>
+<p>However, on MS Windows, you need to use Windows 10 version 1903 or later to use
+Unicode file names. (This is an experimental feature, though.) On older versions
+on Windows, Universal Ctags only support file names represented in the current
+code page. If you still want to use Unicode file names on them, use Cygwin or
+MSYS2 version of Universal Ctags as a workaround.</p>
+</section>
+<section id="why-does-zsh-cause-zsh-no-matches-found-error">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Why does zsh cause “zsh: no matches found” error?</a><a class="headerlink" href="#why-does-zsh-cause-zsh-no-matches-found-error" title="Permalink to this heading">¶</a></h3>
+<p>zsh causes error on the following cases;</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ctags<span class="w"> </span>--extra<span class="o">=</span>+*<span class="w"> </span>...
+ctags<span class="w"> </span>--exclude<span class="o">=</span>foo/*<span class="w"> </span>...
+</pre></div>
+</div>
+</div></blockquote>
+<p>This is the 2nd most significant incompatibility <em>feature</em> of zsh.</p>
+<p>Cited from “Z-Shell Frequently-Asked Questions”, “<a class="reference external" href="http://zsh.sourceforge.net/FAQ/zshfaq02.html">2.1: Differences from sh and
+ksh</a>”;</p>
+<blockquote>
+<div><p>… The next most classic difference is that unmatched glob patterns cause
+the command to abort; set <code class="docutils literal notranslate"><span class="pre">NO_NOMATCH</span></code> for those.</p>
+</div></blockquote>
+<p>You may add “<code class="docutils literal notranslate"><span class="pre">setopt</span> <span class="pre">nonomatch</span></code>” on your <code class="docutils literal notranslate"><span class="pre">~/.zshrc</span></code>. Or you can escape glob
+patterns with backslash;</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ctags<span class="w"> </span>--extra<span class="o">=</span>+<span class="se">\*</span><span class="w"> </span>...
+ctags<span class="w"> </span>--exclude<span class="o">=</span>foo/<span class="se">\*</span><span class="w"> </span>...
+</pre></div>
+</div>
+</div></blockquote>
+<p>Or quote them;</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ctags<span class="w"> </span><span class="s1">&#39;--extra=+*&#39;</span><span class="w"> </span>...
+ctags<span class="w"> </span><span class="s1">&#39;--exclude=foo/*&#39;</span><span class="w"> </span>...
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+<section id="see-also">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">SEE ALSO</a><a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p>The official Universal Ctags web site at:</p>
+<p><a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a></p>
+</section>
+<section id="author">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">AUTHOR</a><a class="headerlink" href="#author" title="Permalink to this heading">¶</a></h2>
+<p>This FAQ is based on <a class="reference external" href="http://ctags.sourceforge.net/faq.html">Exuberant Ctags FAQ</a> by
+Darren Hiebert and <a class="reference external" href="mailto:vberthoux&#37;&#52;&#48;users&#46;sourceforge&#46;net">vberthoux<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a></p>
+<p>Universal Ctags project: <a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-faq</a><ul>
+<li><a class="reference internal" href="#description">DESCRIPTION</a><ul>
+<li><a class="reference internal" href="#what-is-the-difference-between-universal-ctags-and-exuberant-ctags">What is the difference between Universal Ctags and Exuberant Ctags?</a></li>
+<li><a class="reference internal" href="#how-can-i-avoid-having-to-specify-my-favorite-option-every-time">How can I avoid having to specify my favorite option every time?</a></li>
+<li><a class="reference internal" href="#what-are-these-strange-bits-of-text-beginning-with-which-follow-many-of-the-lines-in-the-tag-file">What are these strange bits of text beginning with <code class="docutils literal notranslate"><span class="pre">;&quot;</span></code> which follow many of the lines in the tag file?</a></li>
+<li><a class="reference internal" href="#why-can-t-i-jump-to-class-member">Why can’t I jump to <code class="docutils literal notranslate"><span class="pre">class::member</span></code>?</a></li>
+<li><a class="reference internal" href="#why-do-i-end-up-on-the-wrong-line-when-i-jump-to-a-tag">Why do I end up on the wrong line when I jump to a tag?</a></li>
+<li><a class="reference internal" href="#how-do-i-jump-to-the-tag-i-want-instead-of-the-wrong-one-by-the-same-name">How do I jump to the tag I want instead of the wrong one by the same name?</a></li>
+<li><a class="reference internal" href="#how-can-i-locate-all-references-to-a-specific-function-or-variable">How can I locate all references to a specific function or variable?</a></li>
+<li><a class="reference internal" href="#why-does-appending-tags-to-a-tag-file-tag-so-long">Why does appending tags to a tag file tag so long?</a></li>
+<li><a class="reference internal" href="#how-should-i-set-up-tag-files-for-a-multi-level-directory-hierarchy">How should I set up tag files for a multi-level directory hierarchy?</a></li>
+<li><a class="reference internal" href="#does-universal-ctags-support-unicode-file-names">Does Universal Ctags support Unicode file names?</a></li>
+<li><a class="reference internal" href="#why-does-zsh-cause-zsh-no-matches-found-error">Why does zsh cause “zsh: no matches found” error?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+<li><a class="reference internal" href="#author">AUTHOR</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-incompatibilities.7.html"
+                          title="previous chapter">ctags-incompatibilities</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-asm.7.html"
+                          title="next chapter">ctags-lang-asm</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-asm.7.html" title="ctags-lang-asm"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-incompatibilities.7.html" title="ctags-incompatibilities"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-faq</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>tags &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-optlib" href="ctags-optlib.7.html" />
+    <link rel="prev" title="ctags-json-output" href="ctags-json-output.5.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-optlib.7.html" title="ctags-optlib"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-json-output.5.html" title="ctags-json-output"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tags</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tags">
+<span id="tags-5"></span><h1>tags<a class="headerlink" href="#tags" title="Permalink to this heading">¶</a></h1>
+<p>Vi tags file format extended in ctags projects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>2+</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>5</p>
+</dd>
+</dl>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>The contents of next section is a copy of FORMAT file in Exuberant
+Ctags source code in its subversion repository at sourceforge.net.</p>
+<p>Exceptions introduced in Universal Ctags are explained inline with
+“EXCEPTION” marker. Statements that are made further clear in Universal
+Ctags are explained inline with “COMMENT” marker.</p>
+</section>
+<hr class="docutils" />
+<section id="proposal-for-extended-vi-tags-file-format">
+<h2>Proposal for extended Vi tags file format<a class="headerlink" href="#proposal-for-extended-vi-tags-file-format" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line">Version: 0.06 DRAFT</div>
+<div class="line">Date: 1998 Feb 8</div>
+<div class="line">Author: Bram Moolenaar &lt;Bram at vim.org&gt; and Darren Hiebert &lt;dhiebert at users.sourceforge.net&gt;</div>
+</div>
+<section id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h3>
+<p>The file format for the “tags” file, as used by Vi and many of its
+descendants, has limited capabilities.</p>
+<p>This additional functionality is desired:</p>
+<ol class="arabic simple">
+<li><p>Static or local tags.
+The scope of these tags is the file where they are defined.  The same tag
+can appear in several files, without really being a duplicate.</p></li>
+<li><p>Duplicate tags.
+Allow the same tag to occur more then once.  They can be located in
+a different file and/or have a different command.</p></li>
+<li><p>Support for C++.
+A tag is not only specified by its name, but also by the context (the
+class name).</p></li>
+<li><p>Future extension.
+When even more additional functionality is desired, it must be possible to
+add this later, without breaking programs that don’t support it.</p></li>
+</ol>
+</section>
+<section id="from-proposal-to-standard">
+<h3>From proposal to standard<a class="headerlink" href="#from-proposal-to-standard" title="Permalink to this heading">¶</a></h3>
+<p>To make this proposal into a standard for tags files, it needs to be supported
+by most people working on versions of Vi, ctags, etc..  Currently this
+standard is supported by:</p>
+<dl class="simple">
+<dt>Darren Hiebert &lt;dhiebert at users.sourceforge.net&gt;</dt><dd><p>Exuberant Ctags</p>
+</dd>
+<dt>Bram Moolenaar &lt;Bram at vim.org&gt;</dt><dd><p>Vim (Vi IMproved)</p>
+</dd>
+</dl>
+<p>These have been or will be asked to support this standard:</p>
+<dl class="simple">
+<dt>Nvi</dt><dd><p>Keith Bostic &lt;bostic at bsdi.com&gt;</p>
+</dd>
+<dt>Vile</dt><dd><p>Tom E. Dickey &lt;dickey at clark.net&gt;</p>
+</dd>
+<dt>NEdit</dt><dd><p>Mark Edel &lt;edel at ltx.com&gt;</p>
+</dd>
+<dt>CRiSP</dt><dd><p>Paul Fox &lt;fox at crisp.demon.co.uk&gt;</p>
+</dd>
+<dt>Lemmy</dt><dd><p>James Iuliano &lt;jai at accessone.com&gt;</p>
+</dd>
+<dt>Zeus</dt><dd><p>Jussi Jumppanen &lt;jussij at ca.com.au&gt;</p>
+</dd>
+<dt>Elvis</dt><dd><p>Steve Kirkendall &lt;kirkenda at cs.pdx.edu&gt;</p>
+</dd>
+<dt>FTE</dt><dd><p>Marko Macek &lt;Marko.Macek at snet.fri.uni-lj.si&gt;</p>
+</dd>
+</dl>
+</section>
+<section id="backwards-compatibility">
+<h3>Backwards compatibility<a class="headerlink" href="#backwards-compatibility" title="Permalink to this heading">¶</a></h3>
+<p>A tags file that is generated in the new format should still be usable by Vi.
+This makes it possible to distribute tags files that are usable by all
+versions and descendants of Vi.</p>
+<p>This restricts the format to what Vi can handle.  The format is:</p>
+<ol class="arabic">
+<li><p>The tags file is a list of lines, each line in the format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">tagname</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagfile</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagaddress</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl>
+<dt>{tagname}</dt><dd><p>Any identifier, not containing white space..</p>
+<p>EXCEPTION: Universal Ctags violates this item of the proposal;
+tagname may contain spaces. However, tabs are not allowed.</p>
+</dd>
+<dt>&lt;Tab&gt;</dt><dd><p>Exactly one TAB character (although many versions of Vi can
+handle any amount of white space).</p>
+</dd>
+<dt>{tagfile}</dt><dd><p>The name of the file where {tagname} is defined, relative to
+the current directory (or location of the tags file?).</p>
+</dd>
+<dt>{tagaddress}</dt><dd><p>Any Ex command.  When executed, it behaves like ‘magic’ was
+not set.</p>
+</dd>
+</dl>
+</li>
+<li><p>The tags file is sorted on {tagname}.  This allows for a binary search in
+the file.</p></li>
+<li><p>Duplicate tags are allowed, but which one is actually used is
+unpredictable (because of the binary search).</p></li>
+</ol>
+<p>The best way to add extra text to the line for the new functionality, without
+breaking it for Vi, is to put a comment in the {tagaddress}.  This gives the
+freedom to use any text, and should work in any traditional Vi implementation.</p>
+<p>For example, when the old tags file contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>main    main.c  /^main(argc, argv)$/
+DEBUG   defines.c       89
+</pre></div>
+</div>
+<p>The new lines can be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>main    main.c  /^main(argc, argv)$/;&quot;any additional text
+DEBUG   defines.c       89;&quot;any additional text
+</pre></div>
+</div>
+<p>Note that the ‘;’ is required to put the cursor in the right line, and then
+the ‘”’ is recognized as the start of a comment.</p>
+<p>For Posix compliant Vi versions this will NOT work, since only a line number
+or a search command is recognized.  I hope Posix can be adjusted.  Nvi suffers
+from this.</p>
+</section>
+<section id="security">
+<h3>Security<a class="headerlink" href="#security" title="Permalink to this heading">¶</a></h3>
+<p>Vi allows the use of any Ex command in a tags file.  This has the potential of
+a trojan horse security leak.</p>
+<p>The proposal is to allow only Ex commands that position the cursor in a single
+file.  Other commands, like editing another file, quitting the editor,
+changing a file or writing a file, are not allowed.  It is therefore logical
+to call the command a tagaddress.</p>
+<p>Specifically, these two Ex commands are allowed:</p>
+<ul>
+<li><p>A decimal line number:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">89</span>
+</pre></div>
+</div>
+</li>
+<li><p>A search command.  It is a regular expression pattern, as used by Vi,
+enclosed in // or ??:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>/^int c;$/
+?main()?
+</pre></div>
+</div>
+</li>
+</ul>
+<p>There are two combinations possible:</p>
+<ul>
+<li><p>Concatenation of the above, with ‘;’ in between.  The meaning is that the
+first line number or search command is used, the cursor is positioned in
+that line, and then the second search command is used (a line number would
+not be useful).  This can be done multiple times.  This is useful when the
+information in a single line is not unique, and the search needs to start
+in a specified line.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">struct</span> <span class="n">xyz</span> <span class="p">{</span><span class="o">/</span><span class="p">;</span><span class="o">/</span><span class="nb">int</span> <span class="n">count</span><span class="p">;</span><span class="o">/</span>
+<span class="mi">389</span><span class="p">;</span><span class="o">/</span><span class="n">struct</span> <span class="n">foo</span><span class="o">/</span><span class="p">;</span><span class="o">/</span><span class="n">char</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+<li><p>A trailing comment can be added, starting with ‘;”’ (two characters:
+semi-colon and double-quote).  This is used below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">89</span><span class="p">;</span><span class="s2">&quot; foo bar</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>This might be extended in the future.  What is currently missing is a way to
+position the cursor in a certain column.</p>
+</section>
+<section id="goals">
+<h3>Goals<a class="headerlink" href="#goals" title="Permalink to this heading">¶</a></h3>
+<p>Now the usage of the comment text has to be defined.  The following is aimed
+at:</p>
+<ol class="arabic simple">
+<li><p>Keep the text short, because:</p>
+<ul class="simple">
+<li><p>The line length that Vi can handle is limited to 512 characters.</p></li>
+<li><p>Tags files can contain thousands of tags.  I have seen tags files of
+several Mbytes.</p></li>
+<li><p>More text makes searching slower.</p></li>
+</ul>
+</li>
+<li><p>Keep the text readable, because:</p>
+<ul class="simple">
+<li><p>It is often necessary to check the output of a new ctags program.</p></li>
+<li><p>Be able to edit the file by hand.</p></li>
+<li><p>Make it easier to write a program to produce or parse the file.</p></li>
+</ul>
+</li>
+<li><p>Don’t use special characters, because:</p>
+<ul class="simple">
+<li><p>It should be possible to treat a tags file like any normal text file.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="proposal">
+<h3>Proposal<a class="headerlink" href="#proposal" title="Permalink to this heading">¶</a></h3>
+<p>Use a comment after the {tagaddress} field.  The format would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">tagname</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagfile</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagaddress</span><span class="p">}[;</span><span class="s2">&quot;&lt;Tab&gt;</span><span class="si">{tagfield}</span><span class="s2">..]</span>
+</pre></div>
+</div>
+<dl>
+<dt>{tagname}</dt><dd><p>Any identifier, not containing white space..</p>
+<p>EXCEPTION: Universal Ctags violates this item of the proposal;
+name may contain spaces. However, tabs are not allowed.
+Conversion, for some characters including &lt;Tab&gt; in the “value”,
+explained in the last of this section is applied.</p>
+</dd>
+<dt>&lt;Tab&gt;</dt><dd><p>Exactly one TAB character (although many versions of Vi can
+handle any amount of white space).</p>
+</dd>
+<dt>{tagfile}</dt><dd><p>The name of the file where {tagname} is defined, relative to
+the current directory (or location of the tags file?).</p>
+</dd>
+<dt>{tagaddress}</dt><dd><p>Any Ex command.  When executed, it behaves like ‘magic’ was
+not set.  It may be restricted to a line number or a search
+pattern (Posix).</p>
+<p>COMMENT: {tagaddress} could contain tab characters. See
+<a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> to know how to programmatically extract {tagaddress}
+(called “pattern field” there) and parse it.</p>
+</dd>
+</dl>
+<p>Optionally:</p>
+<dl class="simple">
+<dt>;”</dt><dd><p>semicolon + doublequote: Ends the tagaddress in way that looks
+like the start of a comment to Vi.</p>
+</dd>
+<dt>{tagfield}</dt><dd><p>See below.</p>
+</dd>
+</dl>
+<p>A tagfield has a name, a colon, and a value: “name:value”.</p>
+<ul>
+<li><p>The name consist only out of alphabetical characters.  Upper and lower case
+are allowed.  Lower case is recommended.  Case matters (“kind:” and “Kind:
+are different tagfields).</p>
+<p>EXCEPTION: Universal Ctags allows users to use a numerical character
+in the name other than its initial letter.</p>
+</li>
+<li><p>The value may be empty.
+It cannot contain a &lt;Tab&gt;.</p>
+<ul class="simple">
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\t</span></code>, this stands for a &lt;Tab&gt;.</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\r</span></code>, this stands for a &lt;CR&gt;.</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\n</span></code>, this stands for a &lt;NL&gt;.</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\\</span></code>, this stands for a single <code class="docutils literal notranslate"><span class="pre">\</span></code> character.</p></li>
+</ul>
+<p>Other use of the backslash character is reserved for future expansion.
+Warning: When a tagfield value holds an MS-DOS file name, the backslashes
+must be doubled!</p>
+<p>EXCEPTION: Universal Ctags introduces more conversion rules.</p>
+<ul class="simple">
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\a</span></code>, this stands for a &lt;BEL&gt; (0x07).</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\b</span></code>, this stands for a &lt;BS&gt; (0x08).</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\v</span></code>, this stands for a &lt;VT&gt; (0x0b).</p></li>
+<li><p>When a value contains a <code class="docutils literal notranslate"><span class="pre">\f</span></code>, this stands for a &lt;FF&gt; (0x0c).</p></li>
+<li><p>The characters in range 0x01 to 0x1F included, and 0x7F are
+converted to <code class="docutils literal notranslate"><span class="pre">\x</span></code> prefixed hexadecimal number if the characters are
+not handled in the above “value” rules.</p></li>
+</ul>
+<p>EXCEPTION: Universal Ctags allows all these escape sequences in {tagname}
+and {tagfile} also. However, about {tagfile}, a condition must be
+satisfied. See “<a class="reference internal" href="#exceptions-in-universal-ctags">Exceptions in Universal Ctags</a>” about the condition.</p>
+<ul class="simple">
+<li><p>The leading space (0x20) and <code class="docutils literal notranslate"><span class="pre">!</span></code> (0x21) in {tagname} are converted
+to <code class="docutils literal notranslate"><span class="pre">\x</span></code> prefixed hexadecimal number (<code class="docutils literal notranslate"><span class="pre">\x20</span></code> and <code class="docutils literal notranslate"><span class="pre">\x21</span></code>) if the
+tag is not a pseudo-tag. As described later, a pseudo-tag starts with
+<code class="docutils literal notranslate"><span class="pre">!</span></code>. These rules are for distinguishing pseudo-tags and non pseudo-tags
+(regular tags) when tags lines in a tag file are sorted.</p></li>
+</ul>
+</li>
+</ul>
+<p>Proposed tagfield names:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>FIELD-NAME</p></th>
+<th class="head"><p>DESCRIPTION</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>arity</p></td>
+<td><p>Number of arguments for a function tag.</p></td>
+</tr>
+<tr class="row-odd"><td><p>class</p></td>
+<td><p>Name of the class for which this tag is a member or method.</p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td><p>Name of the enumeration in which this tag is an enumerator.</p></td>
+</tr>
+<tr class="row-odd"><td><p>file</p></td>
+<td><p>Static (local) tag, with a scope of the specified file.  When
+the value is empty, {tagfile} is used.</p></td>
+</tr>
+<tr class="row-even"><td><p>function</p></td>
+<td><p>Function in which this tag is defined.  Useful for local
+variables (and functions).  When functions nest (e.g., in
+Pascal), the function names are concatenated, separated with
+‘/’, so it looks like a path.</p></td>
+</tr>
+<tr class="row-odd"><td><p>kind</p></td>
+<td><p>Kind of tag.  The value depends on the language.  For C and
+C++ these kinds are recommended:</p>
+<dl class="simple">
+<dt>c</dt><dd><p>class name</p>
+</dd>
+<dt>d</dt><dd><p>define (from #define XXX)</p>
+</dd>
+<dt>e</dt><dd><p>enumerator</p>
+</dd>
+<dt>f</dt><dd><p>function or method name</p>
+</dd>
+<dt>F</dt><dd><p>file name</p>
+</dd>
+<dt>g</dt><dd><p>enumeration name</p>
+</dd>
+<dt>m</dt><dd><p>member (of structure or class data)</p>
+</dd>
+<dt>p</dt><dd><p>function prototype</p>
+</dd>
+<dt>s</dt><dd><p>structure name</p>
+</dd>
+<dt>t</dt><dd><p>typedef</p>
+</dd>
+<dt>u</dt><dd><p>union name</p>
+</dd>
+<dt>v</dt><dd><p>variable</p>
+</dd>
+</dl>
+<p>When this field is omitted, the kind of tag is undefined.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p>struct</p></td>
+<td><p>Name of the struct in which this tag is a member.</p></td>
+</tr>
+<tr class="row-odd"><td><p>union</p></td>
+<td><p>Name of the union in which this tag is a member.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note that these are mostly for C and C++.  When tags programs are written for
+other languages, this list should be extended to include the used field names.
+This will help users to be independent of the tags program used.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>asdf    sub.cc  /^asdf()$/;&quot;    new_field:some\svalue   file:
+foo_t   sub.h   /^typedef foo_t$/;&quot;     kind:t
+func3   sub.p   /^func3()$/;&quot;   function:/func1/func2   file:
+getflag sub.c   /^getflag(arg)$/;&quot;      kind:f  file:
+inc     sub.cc  /^inc()$/;&quot;     file: class:PipeBuf
+</pre></div>
+</div>
+<p>The name of the “kind:” field can be omitted.  This is to reduce the size of
+the tags file by about 15%.  A program reading the tags file can recognize the
+“kind:” field by the missing ‘:’.  Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>foo_t   sub.h   /^typedef foo_t$/;&quot;     t
+getflag sub.c   /^getflag(arg)$/;&quot;      f       file:
+</pre></div>
+</div>
+<p>Additional remarks:</p>
+<ul class="simple">
+<li><p>When a tagfield appears twice in a tag line, only the last one is used.</p></li>
+</ul>
+<p>Note about line separators:</p>
+<p>Vi traditionally runs on Unix systems, where the line separator is a single
+linefeed character &lt;NL&gt;.  On MS-DOS and compatible systems &lt;CR&gt;&lt;NL&gt; is the
+standard line separator.  To increase portability, this line separator is also
+supported.</p>
+<p>On the Macintosh a single &lt;CR&gt; is used for line separator.  Supporting this on
+Unix systems causes problems, because most fgets() implementation don’t see
+the &lt;CR&gt; as a line separator.  Therefore the support for a &lt;CR&gt; as line
+separator is limited to the Macintosh.</p>
+<p>Summary:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>line separator</p></th>
+<th class="head"><p>generated on</p></th>
+<th class="head"><p>accepted on</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt;LF&gt;</p></td>
+<td><p>Unix</p></td>
+<td><p>Unix, MS-DOS, Macintosh</p></td>
+</tr>
+<tr class="row-odd"><td><p>&lt;CR&gt;</p></td>
+<td><p>Macintosh</p></td>
+<td><p>Macintosh</p></td>
+</tr>
+<tr class="row-even"><td><p>&lt;CR&gt;&lt;LF&gt;</p></td>
+<td><p>MS-DOS</p></td>
+<td><p>Unix, MS-DOS, Macintosh</p></td>
+</tr>
+</tbody>
+</table>
+<p>The characters &lt;CR&gt; and &lt;LF&gt; cannot be used inside a tag line.  This is not
+mentioned elsewhere (because it’s obvious).</p>
+<p>Note about white space:</p>
+<p>Vi allowed any white space to separate the tagname from the tagfile, and the
+filename from the tagaddress.  This would need to be allowed for backwards
+compatibility.  However, all known programs that generate tags use a single
+&lt;Tab&gt; to separate fields.</p>
+<p>There is a problem for using file names with embedded white space in the
+tagfile field.  To work around this, the same special characters could be used
+as in the new fields, for example <code class="docutils literal notranslate"><span class="pre">\s</span></code>.  But, unfortunately, in MS-DOS the
+backslash character is used to separate file names.  The file name
+<code class="docutils literal notranslate"><span class="pre">c:\vim\sap</span></code> contains <code class="docutils literal notranslate"><span class="pre">\s</span></code>, but this is not a &lt;Space&gt;.  The number of
+backslashes could be doubled, but that will add a lot of characters, and make
+parsing the tags file slower and clumsy.</p>
+<p>To avoid these problems, we will only allow a &lt;Tab&gt; to separate fields, and
+not support a file name or tagname that contains a &lt;Tab&gt; character.  This
+means that we are not 100% Vi compatible.  However, there is no known tags
+program that uses something else than a &lt;Tab&gt; to separate the fields.  Only
+when a user typed the tags file himself, or made his own program to generate a
+tags file, we could run into problems.  To solve this, the tags file should be
+filtered, to replace the arbitrary white space with a single &lt;Tab&gt;.  This Vi
+command can be used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="o">%</span><span class="n">s</span><span class="o">/^</span>\<span class="p">([</span><span class="o">^</span> <span class="o">^</span><span class="n">I</span><span class="p">]</span><span class="o">*</span>\<span class="p">)[</span> <span class="o">^</span><span class="n">I</span><span class="p">]</span><span class="o">*</span>\<span class="p">([</span><span class="o">^</span> <span class="o">^</span><span class="n">I</span><span class="p">]</span><span class="o">*</span>\<span class="p">)[</span> <span class="o">^</span><span class="n">I</span><span class="p">]</span><span class="o">*/</span>\<span class="mi">1</span><span class="o">^</span><span class="n">I</span>\<span class="mi">2</span><span class="o">^</span><span class="n">I</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>(replace ^I with a real &lt;Tab&gt;).</p>
+<p>COMMENT: Universal Ctags running on MS Windows converts the <code class="docutils literal notranslate"><span class="pre">\</span></code> separator
+to <code class="docutils literal notranslate"><span class="pre">/</span></code> by defualt, and allows the escape sequences even in {tagfile}
+if a condition is satisfied. See “<a class="reference internal" href="#exceptions-in-universal-ctags">Exceptions in Universal Ctags</a>” about
+the condition.</p>
+<p>TAG FILE INFORMATION:</p>
+<p>Pseudo-tag lines can be used to encode information into the tag file regarding
+details about its content (e.g. have the tags been sorted?, are the optional
+tagfields present?), and regarding the program used to generate the tag file.
+This information can be used both to optimize use of the tag file (e.g.
+enable/disable binary searching) and provide general information (what version
+of the generator was used).</p>
+<p>The names of the tags used in these lines may be suitably chosen to ensure
+that when sorted, they will always be located near the first lines of the tag
+file.  The use of “!_TAG_” is recommended.  Note that a rare tag like “!”
+can sort to before these lines.  The program reading the tags file should be
+smart enough to skip over these tags.</p>
+<p>The lines described below have been chosen to convey a select set of
+information.</p>
+<p>Tag lines providing information about the content of the tag file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_FILE_FORMAT   {version-number}        /optional comment/
+!_TAG_FILE_SORTED   {0|1}                   /0=unsorted, 1=sorted/
+</pre></div>
+</div>
+<p>The {version-number} used in the tag file format line reserves the value of
+“1” for tag files complying with the original UNIX vi/ctags format, and
+reserves the value “2” for tag files complying with this proposal. This value
+may be used to determine if the extended features described in this proposal
+are present.</p>
+<p>Tag lines providing information about the program used to generate the tag
+file, and provided solely for documentation purposes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_PROGRAM_AUTHOR        {author-name}   /{email-address}/
+!_TAG_PROGRAM_NAME  {program-name}  /optional comment/
+!_TAG_PROGRAM_URL   {URL}   /optional comment/
+!_TAG_PROGRAM_VERSION       {version-id}    /optional comment/
+</pre></div>
+</div>
+<p>EXCEPTION: Universal Ctags introduces more kinds of pseudo-tags.
+See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> about them.</p>
+<p>COMMENT: Though pseudo-tags are semantically different from regular tags, They
+use the same format, which is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">tagname</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagfile</span><span class="p">}</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="p">{</span><span class="n">tagaddress</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>, and the escape sequences and illegal characters explained in “Proposal”
+section also applies to pseudo-tags.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="exceptions-in-universal-ctags">
+<h2>Exceptions in Universal Ctags<a class="headerlink" href="#exceptions-in-universal-ctags" title="Permalink to this heading">¶</a></h2>
+<p>Universal Ctags supports this proposal with some
+exceptions.</p>
+<section id="exceptions">
+<h3>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>{tagname} in tags file generated by Universal Ctags may contain
+spaces and several escape sequences. Parsers for documents like Tex and
+reStructuredText, or liberal languages such as JavaScript need these
+exceptions. See {tagname} of Proposal section for more detail about the
+conversion.</p></li>
+<li><p>{tagfile} in tags file generated by Universal Ctags may contain
+spaces and several escape sequences if <code class="docutils literal notranslate"><span class="pre">\</span></code> characters are not used as
+filename separators. UNIX-like systems use <code class="docutils literal notranslate"><span class="pre">/</span></code> for the
+purpose. On MS Windows, Universal Ctags converts <code class="docutils literal notranslate"><span class="pre">\</span></code> in filenames
+to <code class="docutils literal notranslate"><span class="pre">/</span></code> by default. So, generally this condition is satisfied.
+Universal Ctags emits several psuedo tags telling whether the condition
+is satisfied or not. See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> about these psuedo tags.</p></li>
+<li><p>“name” part of {tagfield} in a tag generated by Universal Ctags may
+contain numeric characters, but the first character of the “name”
+must be alphabetic.</p>
+</li>
+</ol>
+</section>
+<section id="compatible-output-and-weakness">
+<span id="compat-output"></span><h3>Compatible output and weakness<a class="headerlink" href="#compatible-output-and-weakness" title="Permalink to this heading">¶</a></h3>
+<p>Default behavior (<code class="docutils literal notranslate"><span class="pre">--output-format=u-ctags</span></code> option) has the
+exceptions.  On the other hand, with <code class="docutils literal notranslate"><span class="pre">--output-format=e-ctags</span></code> option
+ctags has no exception; Universal Ctags command may use the same file
+format as Exuberant Ctags. However, <code class="docutils literal notranslate"><span class="pre">--output-format=e-ctags</span></code> throws
+away a tag entry which name includes a space or a tab
+character. <code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_MODE</span></code> pseudo-tag tells which format is
+used when ctags generating tags file.</p>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>, <a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a>, <a class="reference internal" href="readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">tags</a><ul>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#proposal-for-extended-vi-tags-file-format">Proposal for extended Vi tags file format</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#from-proposal-to-standard">From proposal to standard</a></li>
+<li><a class="reference internal" href="#backwards-compatibility">Backwards compatibility</a></li>
+<li><a class="reference internal" href="#security">Security</a></li>
+<li><a class="reference internal" href="#goals">Goals</a></li>
+<li><a class="reference internal" href="#proposal">Proposal</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exceptions-in-universal-ctags">Exceptions in Universal Ctags</a><ul>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#compatible-output-and-weakness">Compatible output and weakness</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-json-output.5.html"
+                          title="previous chapter">ctags-json-output</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-optlib.7.html"
+                          title="next chapter">ctags-optlib</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-optlib.7.html" title="ctags-optlib"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-json-output.5.html" title="ctags-json-output"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tags</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

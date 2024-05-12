@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<title>ctags-optlib</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7952 2016-07-26 18:15:59Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="ctags-optlib">
+<span id="ctags-optlib-7"></span>
+<h1 class="title">ctags-optlib</h1>
+<h2 class="subtitle" id="universal-ctags-parser-definition-language">Universal Ctags parser definition language</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Version:</th>
+<td>6.0.0</td></tr>
+<tr class="manual-group field"><th class="docinfo-name">Manual group:</th><td class="field-body">Universal Ctags</td>
+</tr>
+<tr class="manual-section field"><th class="docinfo-name">Manual section:</th><td class="field-body">7</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="synopsis">
+<h1>SYNOPSIS</h1>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> [options] [file(s)]</div>
+<div class="line"><strong>etags</strong> [options] [file(s)]</div>
+</div>
+</div>
+<div class="section" id="description">
+<h1>DESCRIPTION</h1>
+<p><em>Exuberant Ctags</em>, the ancestor of <em>Universal Ctags</em>, has provided
+the way to define a new parser from command line.  Universal Ctags
+extends and refines this feature. <em>optlib parser</em> is the name for such
+parser in Universal Ctags. &quot;opt&quot; intends a parser is defined with
+combination of command line options. &quot;lib&quot; intends an optlib parser
+can be more than ad-hoc personal configuration.</p>
+<p>This man page is for people who want to define an optlib parser. The
+readers should read ctags(1) of Universal Ctags first.</p>
+<p>Following options are for defining (or customizing) a parser:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">--langdef=&lt;name&gt;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></tt></li>
+</ul>
+<p>Following options are for controlling loading parser definition:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">--options=&lt;pathname&gt;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--options-maybe=&lt;pathname&gt;</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">--optlib-dir=[+]&lt;directory&gt;</span></tt></li>
+</ul>
+<p>The design of options and notations for defining a parser in
+Exuberant Ctags may focus on reducing the number of typing by user.
+Reducing the number of typing is important for users who want to
+define (or customize) a parser quickly.</p>
+<p>On the other hand, the design in Universal Ctags focuses on
+maintainability. The notation of Universal Ctags is redundant than
+that of Exuberant Ctags; the newly introduced kind should be declared
+explicitly, (long) names are approved than one-letter flags
+specifying kinds, and naming rules are stricter.</p>
+<p>This man page explains only stable options and flags.  Universal Ctags
+also introduces experimental options and flags which have names starting
+with <tt class="docutils literal">_</tt>. For documentation on these options and flags, visit
+Universal Ctags web site at <a class="reference external" href="https://ctags.io/">https://ctags.io/</a>.</p>
+<div class="section" id="storing-a-parser-definition-to-a-file">
+<h2>Storing a parser definition to a file</h2>
+<p>Though it is possible to define a parser from command line, you don't
+want to type the same command line each time when you need the parser.
+You can store options for defining a parser into a file.</p>
+<p>ctags loads files (preload files) listed in &quot;FILES&quot;
+section of ctags(1) at program starting up. You can put your parser
+definition needed usually to the files.</p>
+<p><tt class="docutils literal"><span class="pre">--options=&lt;pathname&gt;</span></tt>, <tt class="docutils literal"><span class="pre">--options-maybe=&lt;pathname&gt;</span></tt>, and
+<tt class="docutils literal"><span class="pre">--optlib-dir=[+]&lt;directory&gt;</span></tt> are for loading optlib files you need
+occasionally. See &quot;Option File Options&quot; section of ctags(1) for
+these options.</p>
+<p>As explained in &quot;FILES&quot; section of ctags(1), options for defining a
+parser listed line by line in an optlib file. Prefixed white spaces are
+ignored. A line starting with '#' is treated as a comment.  Escaping
+shell meta character is not needed.</p>
+<p>Use <tt class="docutils literal">.ctags</tt> as file extension for optlib file. You can define
+multiple parsers in an optlib file but it is better to make a file for
+each parser definition.</p>
+<p><tt class="docutils literal"><span class="pre">--_echo=&lt;msg&gt;</span></tt> and <tt class="docutils literal"><span class="pre">--_force-quit=&lt;num&gt;</span></tt> options are for debugging
+optlib parser.</p>
+</div>
+<div class="section" id="overview-for-defining-a-parser">
+<h2>Overview for defining a parser</h2>
+<ol class="arabic">
+<li><p class="first">Design the parser</p>
+<p>You need know both the target language and the ctags'
+concepts (definition, reference, kind, role, field, extra). About
+the concepts, ctags(1) of Universal Ctags may help you.</p>
+</li>
+<li><p class="first">Give a name to the parser</p>
+<p>Use <tt class="docutils literal"><span class="pre">--langdef=&lt;name&gt;</span></tt> option. <em>&lt;name&gt;</em> is referred as <em>&lt;LANG&gt;</em> in
+the later steps.</p>
+</li>
+<li><p class="first">Give a file pattern or file extension for activating the parser</p>
+<p>Use <tt class="docutils literal"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></tt>.</p>
+</li>
+<li><p class="first">Define kinds</p>
+<p>Use <tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt> option.
+Universal Ctags introduces this option.  Exuberant Ctags doesn't
+have. In Exuberant Ctags, a kind is defined as a side effect of
+specifying <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=</span></tt> option. So user doesn't have a
+chance to recognize how important the definition of kind.</p>
+</li>
+<li><p class="first">Define patterns</p>
+<p>Use <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></tt>
+option for a single-line regular expression. You can also use
+<tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></tt>
+option for a multi-line regular expression.</p>
+<p>As <em>&lt;kind-spec&gt;</em>, you can use the one-letter flag defined with
+<tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt> option.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="options">
+<h1>OPTIONS</h1>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">--langdef=&lt;name&gt;</span></tt></dt>
+<dd><p class="first">Defines a new user-defined language, <em>&lt;name&gt;</em>, to be parsed with regular
+expressions. Once defined, <em>&lt;name&gt;</em> may be used in other options taking
+language names.</p>
+<p><em>&lt;name&gt;</em> must consist of alphanumeric characters, '<tt class="docutils literal">#</tt>', or '<tt class="docutils literal">+</tt>'
+('[a-zA-Z0-9#+]+'). The graph characters other than '<tt class="docutils literal">#</tt>' and
+'<tt class="docutils literal">+</tt>' are disallowed (or reserved). Some of them (<tt class="docutils literal"><span class="pre">[-=:{.]</span></tt>) are
+disallowed because they can make the command line parser of
+ctags confused. The rest of them are just
+reserved for future extending ctags.</p>
+<p><tt class="docutils literal">all</tt> is an exception.  <tt class="docutils literal">all</tt> as <em>&lt;name&gt;</em> is not acceptable. It is
+a reserved word. See the description of
+<tt class="docutils literal"><span class="pre">--kinds-(&lt;LANG&gt;|all)=[+|-](&lt;kinds&gt;|*)</span></tt> option in ctags(1) about how the
+reserved word is used.</p>
+<p><tt class="docutils literal">NONE</tt> is another exception. <tt class="docutils literal">NONE</tt> as <em>&lt;name&gt;</em> is not acceptable.</p>
+<p class="last">The names of built-in parsers are capitalized. When
+ctags evaluates an option in a command line, and
+chooses a parser, ctags uses the names of
+parsers in a case-insensitive way. Therefore, giving a name
+started from a lowercase character doesn't help you to avoid the
+parser name confliction. However, in a tags file,
+ctags prints parser names in a case-sensitive
+way; it prints a parser name as specified in <tt class="docutils literal"><span class="pre">--langdef=&lt;name&gt;</span></tt>
+option.  Therefore, we recommend you to give a name started from a
+lowercase character to your private optlib parser. With this
+convention, people can know where a tag entry in a tag file comes
+from a built-in parser or a private optlib parser.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt></dt>
+<dd><p class="first">Define a kind for <em>&lt;LANG&gt;</em>.
+Be not confused this with <tt class="docutils literal"><span class="pre">--kinds-&lt;LANG&gt;</span></tt>.</p>
+<p><em>&lt;letter&gt;</em> must be an alphabetical character ('[a-zA-EG-Z]')
+other than &quot;F&quot;. &quot;F&quot; has been reserved for representing a file
+since Exuberant Ctags.</p>
+<p><em>&lt;name&gt;</em> must start with an alphabetic character, and the rest
+must  be alphanumeric ('[a-zA-Z][a-zA-Z0-9]*'). Do not use
+&quot;file&quot; as <em>&lt;name&gt;</em>. It has been reserved for representing a file
+since Exuberant Ctags.</p>
+<p>Note that using a number character in a <em>&lt;name&gt;</em> violates the
+version 2 of tags file format though ctags
+accepts it. For more detail, see tags(5).</p>
+<p><em>&lt;description&gt;</em> comes from any printable ASCII characters. The
+exception is <tt class="docutils literal">{</tt> and <tt class="docutils literal">\</tt>. <tt class="docutils literal">{</tt> is reserved for adding flags
+this option in the future. So put <tt class="docutils literal">\</tt> before <tt class="docutils literal">{</tt> to include
+<tt class="docutils literal">{</tt> to a description. To include <tt class="docutils literal">\</tt> itself to a description,
+put <tt class="docutils literal">\</tt> before <tt class="docutils literal">\</tt>.</p>
+<p>Both <em>&lt;letter&gt;</em>, <em>&lt;name&gt;</em> and their combination must be unique in
+a <em>&lt;LANG&gt;</em>.</p>
+<p>This option is newly introduced in Universal Ctags.  This option
+reduces the typing defining a regex pattern with
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=</span></tt>, and keeps the consistency of kind
+definitions in a language.</p>
+<p>The <em>&lt;letter&gt;</em> can be used as an argument for <tt class="docutils literal"><span class="pre">--kinds-&lt;LANG&gt;</span></tt>
+option to enable or disable the kind. Unless <tt class="docutils literal">K</tt> field is
+enabled, the <em>&lt;letter&gt;</em> is used as value in the &quot;kind&quot; extension
+field in tags output.</p>
+<p>The <em>&lt;name&gt;</em> surrounded by braces can be used as an argument for
+<tt class="docutils literal"><span class="pre">--kind-&lt;LANG&gt;</span></tt> option. If <tt class="docutils literal">K</tt> field is enabled, the <em>&lt;name&gt;</em>
+is used as value in the &quot;kind&quot; extension field in tags output.</p>
+<p class="last">The <em>&lt;description&gt;</em> and <em>&lt;letter&gt;</em> are listed in <tt class="docutils literal"><span class="pre">--list-kinds</span></tt>
+output. All three elements of the kind-spec are listed in
+<tt class="docutils literal"><span class="pre">--list-kinds-full</span></tt> output. Don't use braces in the
+<em>&lt;description&gt;</em>. They will be used meta characters in the future.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></tt></dt>
+<dd><p class="first">Define a single-line regular expression.</p>
+<p>The <em>/&lt;line_pattern&gt;/&lt;name_pattern&gt;/</em> pair defines a regular expression
+replacement pattern, similar in style to <tt class="docutils literal">sed</tt> substitution
+commands, <tt class="docutils literal">s/regexp/replacement/</tt>, with which to generate tags from source files mapped to
+the named language, <em>&lt;LANG&gt;</em>, (case-insensitive; either a built-in
+or user-defined language).</p>
+<p>The regular expression, <em>&lt;line_pattern&gt;</em>, defines
+an extended regular expression (roughly that used by egrep(1)),
+which is used to locate a single source line containing a tag and
+may specify tab characters using <tt class="docutils literal">\t</tt>.</p>
+<p>When a matching line is
+found, a tag will be generated for the name defined by
+<em>&lt;name_pattern&gt;</em>, which generally will contain the special
+back-references <tt class="docutils literal">\1</tt> through <tt class="docutils literal">\9</tt> to refer to matching sub-expression
+groups within <em>&lt;line_pattern&gt;</em>.</p>
+<p>The '<tt class="docutils literal">/</tt>' separator characters shown in the
+parameter to the option can actually be replaced by any
+character. Note that whichever separator character is used will
+have to be escaped with a backslash ('<tt class="docutils literal">\</tt>') character wherever it is
+used in the parameter as something other than a separator. The
+regular expression defined by this option is added to the current
+list of regular expressions for the specified language unless the
+parameter is omitted, in which case the current list is cleared.</p>
+<p>Unless modified by <em>&lt;flags&gt;</em>, <em>&lt;line_pattern&gt;</em> is interpreted as a POSIX
+extended regular expression. The <em>&lt;name_pattern&gt;</em> should expand for all
+matching lines to a non-empty string of characters, or a warning
+message will be reported unless <tt class="docutils literal">{placeholder}</tt> regex flag is
+specified.</p>
+<p>A kind specifier (<em>&lt;kind-spec&gt;</em>) for tags matching regexp may
+follow <em>&lt;name_pattern&gt;</em>, which will determine what kind of tag is
+reported in the <tt class="docutils literal">kind</tt> extension field (see tags(5)).</p>
+<p><em>&lt;kind-spec&gt;</em> has two forms: <em>one-letter form</em> and <em>full form</em>.</p>
+<p>The     one-letter form in the form of <tt class="docutils literal">&lt;letter&gt;</tt>. It just refers a kind
+<em>&lt;letter&gt;</em> defined with <tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;</span></tt>. This form is recommended in
+Universal Ctags.</p>
+<p>The full form of <em>&lt;kind-spec&gt;</em> is in the form of
+<tt class="docutils literal"><span class="pre">&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt>. Either the kind <em>&lt;name&gt;</em> and/or the
+<em>&lt;description&gt;</em> can be omitted. See the description of
+<tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></tt> option about the
+elements.</p>
+<p>The full form is supported only for keeping the compatibility with Exuberant
+Ctags which does not have <tt class="docutils literal"><span class="pre">--kinddef-&lt;LANG&gt;</span></tt> option. Supporting the
+form will be removed from Universal Ctags in the future.</p>
+<!-- MEMO: the following line is commented out
+If *<kind-spec>* is omitted, it defaults to ``r,regex``. -->
+<p>About <em>&lt;flags&gt;</em>, see &quot;FLAGS FOR <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> OPTION&quot;.</p>
+<p class="last">For more information on the regular expressions used by
+ctags, see either the regex(5,7) man page, or
+the GNU info documentation for regex (e.g. &quot;<tt class="docutils literal">info regex</tt>&quot;).</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">--list-regex-flags</span></tt></dt>
+<dd>Lists the flags that can be used in <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> option.</dd>
+<dt><tt class="docutils literal"><span class="pre">--list-mline-regex-flags</span></tt></dt>
+<dd>Lists the flags that can be used in <tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;</span></tt> option.</dd>
+<dt><tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></tt></dt>
+<dd><p class="first">Define a multi-line regular expression.</p>
+<p>This option is similar to <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> option except the pattern is
+applied to the whole fileâ€™s contents, not line by line.</p>
+<p class="last">See &quot;<a class="reference internal" href="#flags-for-mline-regex-lang-option">FLAGS FOR --mline-regex-&lt;LANG&gt; OPTION</a>&quot; about <tt class="docutils literal"><span class="pre">{mgroup=&lt;N&gt;}</span></tt>.
+<tt class="docutils literal"><span class="pre">{mgroup=&lt;N&gt;}</span></tt> flag is a must.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">--_echo=&lt;message&gt;</span></tt></dt>
+<dd>Print <em>&lt;message&gt;</em> to the standard error stream.  This is helpful to
+understand (and debug) optlib loading feature of Universal Ctags.</dd>
+<dt><tt class="docutils literal"><span class="pre">--_force-quit[=&lt;num&gt;]</span></tt></dt>
+<dd>Exits immediately when this option is processed.  If <em>&lt;num&gt;</em> is used
+as exit status. The default is 0.  This is helpful to debug optlib
+loading feature of Universal Ctags.</dd>
+</dl>
+<div class="section" id="flags-for-regex-lang-option">
+<h2>FLAGS FOR <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> OPTION</h2>
+<p>You can specify more than one flag, <tt class="docutils literal"><span class="pre">&lt;letter&gt;|{&lt;name&gt;}</span></tt>, at the end of <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> to
+control how Universal Ctags uses the pattern.</p>
+<p>Exuberant Ctags uses a <em>&lt;letter&gt;</em> to represent a flag. In
+Universal Ctags, a <em>&lt;name&gt;</em> surrounded by braces (name form) can be used
+in addition to <em>&lt;letter&gt;</em>. The name form makes a user reading an optlib
+file easier.</p>
+<p>The most of all flags newly added in Universal Ctags
+don't have the one-letter representation. All of them have only the name
+representation. <tt class="docutils literal"><span class="pre">--list-regex-flags</span></tt> lists all the flags.</p>
+<dl class="docutils">
+<dt><tt class="docutils literal">basic</tt> (one-letter form <tt class="docutils literal">b</tt>)</dt>
+<dd>The pattern is interpreted as a POSIX basic regular expression.</dd>
+<dt><tt class="docutils literal">exclusive</tt> (one-letter form <tt class="docutils literal">x</tt>)</dt>
+<dd>Skip testing the other patterns if a line is matched to this
+pattern. This is useful to avoid using CPU to parse line comments.</dd>
+<dt><tt class="docutils literal">extend</tt> (one-letter form <tt class="docutils literal">e</tt>)</dt>
+<dd>The pattern is interpreted as a POSIX extended regular
+expression (default).</dd>
+<dt><tt class="docutils literal">pcre2</tt> (one-letter form <tt class="docutils literal">p</tt>, experimental)</dt>
+<dd>The pattern is interpreted as a PCRE2 regular expression explained
+in pcre2syntax(3).  This flag is available only if the ctags is
+built with <tt class="docutils literal">pcre2</tt> library. See the output of
+<tt class="docutils literal"><span class="pre">--list-features</span></tt> option to know whether your ctags is
+built-with <tt class="docutils literal">pcre2</tt> or not.</dd>
+<dt><tt class="docutils literal">icase</tt> (one-letter form <tt class="docutils literal">i</tt>)</dt>
+<dd>The regular expression is to be applied in a case-insensitive
+manner.</dd>
+<dt><tt class="docutils literal">placeholder</tt></dt>
+<dd>Don't emit a tag captured with a regex pattern.  The replacement
+can be an empty string.  See the following description of
+<tt class="docutils literal"><span class="pre">scope=...</span></tt> flag about how this is useful.</dd>
+</dl>
+<p><tt class="docutils literal"><span class="pre">scope=(ref|push|pop|clear|set|replace)</span></tt></p>
+<blockquote>
+<p>Specify what to do with the internal scope stack.</p>
+<p>A parser programmed with <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> has a stack (scope
+stack) internally. You can use it for tracking scope
+information. The <tt class="docutils literal"><span class="pre">scope=...</span></tt> flag is for manipulating and
+utilizing the scope stack.</p>
+<p>If <tt class="docutils literal">{scope=push}</tt> is specified, a tag captured with
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> is pushed to the stack. <tt class="docutils literal">{scope=push}</tt>
+implies <tt class="docutils literal">{scope=ref}</tt>.</p>
+<p>You can fill the scope field (<tt class="docutils literal">scope:</tt>) of captured tag with
+<tt class="docutils literal">{scope=ref}</tt>. If <tt class="docutils literal">{scope=ref}</tt> flag is given,
+ctags attaches the tag at the top to the tag
+captured with <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> as the value for the <tt class="docutils literal">scope:</tt>
+field.</p>
+<p>ctags pops the tag at the top of the stack when
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> with <tt class="docutils literal">{scope=pop}</tt> is matched to the input
+line.</p>
+<p>Specifying <tt class="docutils literal">{scope=clear}</tt> removes all the tags in the scope.
+Specifying <tt class="docutils literal">{scope=set}</tt> removes all the tags in the scope, and
+then pushes the captured tag as <tt class="docutils literal">{scope=push}</tt> does.</p>
+<p><tt class="docutils literal">{scope=replace}</tt> does the three things sequentially. First it
+does the same as <tt class="docutils literal">{scope=pop}</tt>, then fills the <tt class="docutils literal">scope:</tt> field
+of the tag captured with <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt>, and pushes the tag to
+the scope stack as if <tt class="docutils literal">{scope=push}</tt> was given finally.
+You cannot specify another scope action together with
+<tt class="docutils literal">{scope=replace}</tt>.</p>
+<p>You don't want to specify <tt class="docutils literal"><span class="pre">{scope=pop}{scope=push}</span></tt> as an
+alternative to <tt class="docutils literal">{scope=replace}</tt>; <tt class="docutils literal"><span class="pre">{scope=pop}{scope=push}</span></tt>
+fills the <tt class="docutils literal">scope:</tt> field of the tag captured with <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt>
+first, then pops the tag at the top of the stack, and pushes
+the captured tag to the scope stack finally. The timing when
+filling the end field is different between <tt class="docutils literal">{scope=replace}</tt> and
+<tt class="docutils literal"><span class="pre">{scope=pop}{scope=push}</span></tt>.</p>
+<p>In some cases, you may want to use <tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> only for its
+side effects: using it only to manipulate the stack but not for
+capturing a tag. In such a case, make <em>&lt;name_pattern&gt;</em> component of
+<tt class="docutils literal"><span class="pre">--regex-&lt;LANG&gt;</span></tt> option empty while specifying <tt class="docutils literal">{placeholder}</tt>
+as a regex flag. For example, a non-named tag can be put on
+the stack by giving a regex flag &quot;<tt class="docutils literal"><span class="pre">{scope=push}{placeholder}</span></tt>&quot;.</p>
+<p>You may wonder what happens if a regex pattern with
+<tt class="docutils literal">{scope=ref}</tt> flag matches an input line but the stack is empty,
+or a non-named tag is at the top. If the regex pattern contains a
+<tt class="docutils literal">{scope=ref}</tt> flag and the stack is empty, the <tt class="docutils literal">{scope=ref}</tt>
+flag is ignored and nothing is attached to the <tt class="docutils literal">scope:</tt> field.</p>
+<p>If the top of the stack contains an unnamed tag,
+ctags searches deeper into the stack to find the
+top-most named tag. If it reaches the bottom of the stack without
+finding a named tag, the <tt class="docutils literal">{scope=ref}</tt> flag is ignored and
+nothing is attached to the <tt class="docutils literal">scope:</tt> field.</p>
+<p>When a named tag on the stack is popped or cleared as the side
+effect of a pattern matching, ctags attaches the
+line number of the match to the <tt class="docutils literal">end:</tt> field of
+the named tag.</p>
+<p>ctags clears all of the tags on the stack when it
+reaches the end of the input source file. The line number of the
+end is attached to the <tt class="docutils literal">end:</tt> field of the cleared tags.</p>
+</blockquote>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">warning=&lt;message&gt;</span></tt></dt>
+<dd>print the given <em>&lt;message&gt;</em> at WARNING level</dd>
+<dt><tt class="docutils literal"><span class="pre">fatal=&lt;message&gt;</span></tt></dt>
+<dd>print the given <em>&lt;message&gt;</em> and exit</dd>
+</dl>
+</div>
+<div class="section" id="flags-for-mline-regex-lang-option">
+<h2>FLAGS FOR <tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;</span></tt> OPTION</h2>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">mgroup=&lt;N&gt;</span></tt></dt>
+<dd><p class="first">decide the location of the tag extracted with
+<tt class="docutils literal"><span class="pre">--mline-regex-&lt;LANG&gt;</span></tt> option.</p>
+<p class="last"><em>&lt;N&gt;</em> is the number of a capture group in the pattern, which is
+used to record the line number location of the tag. <tt class="docutils literal"><span class="pre">mgroup=&lt;N&gt;</span></tt>
+flag is not an optional. You <strong>must</strong> add an <tt class="docutils literal"><span class="pre">mgroup=&lt;N&gt;</span></tt> flag,
+even if the <em>&lt;N&gt;</em> is <tt class="docutils literal">0</tt> (meaning the start position of the
+whole regex pattern).</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="examples">
+<h1>EXAMPLES</h1>
+<div class="section" id="perl-pod">
+<h2>Perl Pod</h2>
+<p>This is the definition (pod.ctags) used in ctags for parsing Pod
+(<a class="reference external" href="https://perldoc.perl.org/perlpod.html">https://perldoc.perl.org/perlpod.html</a>) file.</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-optlib.7.rst</tt>, line 435)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;ctags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: ctags
+
+   --langdef=pod
+   --map-pod=+.pod
+
+   --kinddef-pod=c,chapter,chapters
+   --kinddef-pod=s,section,sections
+   --kinddef-pod=S,subsection,subsections
+   --kinddef-pod=t,subsubsection,subsubsections
+
+   --regex-pod=/^=head1[ \t]+(.+)/\1/c/
+   --regex-pod=/^=head2[ \t]+(.+)/\1/s/
+   --regex-pod=/^=head3[ \t]+(.+)/\1/S/
+   --regex-pod=/^=head4[ \t]+(.+)/\1/t/
+
+</pre>
+</div>
+</div>
+<div class="section" id="using-scope-regex-flags">
+<h2>Using scope regex flags</h2>
+<p>Let's think about writing a parser for a very small subset of the Ruby
+language.</p>
+<p>input source file (<tt class="docutils literal">input.srb</tt>):</p>
+<pre class="literal-block">
+class Example
+  def methodA
+        puts &quot;in class_method&quot;
+  end
+  def methodB
+        puts &quot;in class_method&quot;
+  end
+end
+</pre>
+<p>The parser for the input should capture <tt class="docutils literal">Example</tt> with <tt class="docutils literal">class</tt> kind,
+<tt class="docutils literal">methodA</tt>, and <tt class="docutils literal">methodB</tt> with <tt class="docutils literal">method</tt> kind. <tt class="docutils literal">methodA</tt> and <tt class="docutils literal">methodB</tt>
+should have <tt class="docutils literal">Example</tt> as their scope. <tt class="docutils literal">end:</tt> fields of each tag
+should have proper values.</p>
+<p>optlib file (<tt class="docutils literal"><span class="pre">sub-ruby.ctags</span></tt>):</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-optlib.7.rst</tt>, line 474)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;ctags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: ctags
+
+        --langdef=subRuby
+        --map-subRuby=.srb
+        --kinddef-subRuby=c,class,classes
+        --kinddef-subRuby=m,method,methods
+        --regex-subRuby=/^class[ \t]+([a-zA-Z][a-zA-Z0-9]+)/\1/c/{scope=push}
+        --regex-subRuby=/^end///{scope=pop}{placeholder}
+        --regex-subRuby=/^[ \t]+def[ \t]+([a-zA-Z][a-zA-Z0-9_]+)/\1/m/{scope=push}
+        --regex-subRuby=/^[ \t]+end///{scope=pop}{placeholder}
+
+</pre>
+</div>
+<p>command line and output:</p>
+<pre class="literal-block">
+$ ctags --quiet --fields=+eK \
+--options=./sub-ruby.ctags -o - input.srb
+Example input.srb       /^class Example$/;&quot;     class   end:8
+methodA input.srb       /^  def methodA$/;&quot;     method  class:Example   end:4
+methodB input.srb       /^  def methodB$/;&quot;     method  class:Example   end:7
+</pre>
+</div>
+</div>
+<div class="section" id="see-also">
+<h1>SEE ALSO</h1>
+<p>The official Universal Ctags web site at:</p>
+<p><a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p>ctags(1), tags(5), regex(3), regex(7), egrep(1), pcre2syntax(3)</p>
+</div>
+<div class="section" id="author">
+<h1>AUTHOR</h1>
+<p>Universal Ctags project
+<a class="reference external" href="https://ctags.io/">https://ctags.io/</a>
+(This man page partially derived from ctags(1) of
+Executable-ctags)</p>
+<p>Darren Hiebert &lt;<a class="reference external" href="mailto:dhiebert&#64;users.sourceforge.net">dhiebert&#64;users.sourceforge.net</a>&gt;
+<a class="reference external" href="http://DarrenHiebert.com/">http://DarrenHiebert.com/</a></p>
+</div>
+</div>
+</body>
+</html>

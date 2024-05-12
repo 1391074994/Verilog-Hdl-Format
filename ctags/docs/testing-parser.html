@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Testing a parser &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testing readtags" href="testing-readtags.html" />
+    <link rel="prev" title="Testing ctags" href="testing-ctags.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="testing-readtags.html" title="Testing readtags"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="testing-ctags.html" title="Testing ctags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing a parser</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="testing-a-parser">
+<span id="testing-parser"></span><h1>Testing a parser<a class="headerlink" href="#testing-a-parser" title="Permalink to this heading">¶</a></h1>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title"><cite>Table of contents</cite></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#units-test-facility" id="id1"><em>Units</em> test facility</a></p>
+<ul>
+<li><p><a class="reference internal" href="#how-to-write-a-test-case" id="id2">How to write a test case</a></p></li>
+<li><p><a class="reference internal" href="#note-for-importing-a-test-case-from-test-directory" id="id3">Note for importing a test case from Test directory</a></p></li>
+<li><p><a class="reference internal" href="#example-of-files" id="id4">Example of files</a></p></li>
+<li><p><a class="reference internal" href="#how-to-run-unit-tests" id="id5">How to run unit tests</a></p></li>
+<li><p><a class="reference internal" href="#example-of-running" id="id6">Example of running</a></p></li>
+<li><p><a class="reference internal" href="#running-unit-tests-for-specific-languages" id="id7">Running unit tests for specific languages</a></p></li>
+<li><p><a class="reference internal" href="#gathering-test-cases-for-known-bugs" id="id8">Gathering test cases for known bugs</a></p></li>
+<li><p><a class="reference internal" href="#running-under-valgrind-and-timeout" id="id9">Running under valgrind and timeout</a></p></li>
+<li><p><a class="reference internal" href="#categories" id="id10">Categories</a></p></li>
+<li><p><a class="reference internal" href="#finding-minimal-bad-input" id="id11">Finding minimal bad input</a></p></li>
+<li><p><a class="reference internal" href="#acknowledgments" id="id12">Acknowledgments</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#reviewing-the-result-of-units-test" id="id13">Reviewing the result of Units test</a></p></li>
+<li><p><a class="reference internal" href="#semi-fuzz-fuzz-testing" id="id14">Semi-fuzz(<em>Fuzz</em>) testing</a></p></li>
+<li><p><a class="reference internal" href="#noise-testing" id="id15"><em>Noise</em> testing</a></p></li>
+<li><p><a class="reference internal" href="#chop-and-slap-testing" id="id16"><em>Chop</em> and <em>slap</em> testing</a></p></li>
+<li><p><a class="reference internal" href="#input-validation-for-units" id="id17">Input validation for <em>Units</em></a></p>
+<ul>
+<li><p><a class="reference internal" href="#how-to-run-an-example-session-of-input-validation" id="id18">How to run an example session of input validation</a></p></li>
+<li><p><a class="reference internal" href="#validator-file" id="id19"><em>validator</em> file</a></p></li>
+<li><p><a class="reference internal" href="#validator-command" id="id20">validator command</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#testing-examples-in-language-specific-man-pages" id="id21">Testing examples in language specific man pages</a></p></li>
+</ul>
+</nav>
+<p>It is difficult for us to know syntax of all languages supported in ctags. Test
+facility and test cases are quite important for maintaining ctags with limited
+resources.</p>
+<section id="units-test-facility">
+<span id="units"></span><h2><a class="toc-backref" href="#id1" role="doc-backlink"><em>Units</em> test facility</a><a class="headerlink" href="#units-test-facility" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><strong>Test facility</strong></p>
+<p>Exuberant Ctags has a test facility. The test case were <em>Test</em>
+directory. So Here I call it <em>Test</em>.</p>
+<p>Main aim of the facility is detecting regression. All files under Test
+directory are given as input for old and new version of ctags
+commands.  The output tags files of both versions are compared. If any
+difference is found the check fails. <em>Test</em> expects the older ctags
+binary to be correct.</p>
+<p>This expectation is not always met. Consider that a parser for a new
+language is added. You may want to add a sample source code for that
+language to <em>Test</em>. An older ctags version is unable to generate a
+tags file for that sample code, but the newer ctags version does. At
+this point a difference is found and <em>Test</em> reports failure.</p>
+<p><strong>Units facility</strong></p>
+<p>The units test facility (<em>Units</em>) I describe here takes a different
+approach. An input file and an expected output file are given by a
+contributor of a language parser. The units test facility runs ctags
+command with the input file and compares its output and the expected
+output file. The expected output doesn’t depend on ctags.</p>
+<p>If a contributor sends a patch which may improve a language parser,
+and if a reviewer is not familiar with that language, s/he cannot
+evaluate it.</p>
+<p><em>Unit</em> test files, the pair of input file and expected output file may
+be able to explain the intent of patch well; and may help the
+reviewer.</p>
+<section id="how-to-write-a-test-case">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">How to write a test case</a><a class="headerlink" href="#how-to-write-a-test-case" title="Permalink to this heading">¶</a></h3>
+<p>The test facility recognizes an input file and an expected
+output file by patterns of file name. Each test case should
+have its own directory under Units directory.</p>
+<p><em>Units/TEST/input.*</em> <strong>requisite</strong></p>
+<blockquote>
+<div><p>Input file name must have a <em>input</em> as basename. <em>TEST</em>
+part should explain the test case well.</p>
+</div></blockquote>
+<p><em>Units/TEST/input[-_][0-9].*</em> <em>Units/TEST/input[-_][0-9][-_]*.*</em> <strong>optional</strong></p>
+<blockquote>
+<div><p>Optional input file names. They are put next to <em>input.*</em> in
+testing command line.</p>
+</div></blockquote>
+<p><em>Units/TEST/expected.tags</em> <strong>optional</strong></p>
+<blockquote>
+<div><p>Expected output file must have a name <em>expected.tags</em>. It
+should be the same directory of the input file.</p>
+<p>If this file is not given, the exit status of ctags process
+is just checked; the output is ignored.</p>
+<p>If you want to test etags output (specified with <code class="docutils literal notranslate"><span class="pre">-e</span></code> ),
+Use <strong>.tags-e</strong> as suffix instead of <strong>.tags</strong>.
+In such a case you don’t have to write <code class="docutils literal notranslate"><span class="pre">-e</span></code> to <code class="docutils literal notranslate"><span class="pre">args.ctags</span></code>.
+The test facility sets <code class="docutils literal notranslate"><span class="pre">-e</span></code> automatically.</p>
+<p>If you want to test cross reference output (specified with <code class="docutils literal notranslate"><span class="pre">-x</span></code> ),
+Use <strong>.tags-x</strong> as suffix instead of <strong>.tags</strong>.
+In such a case you don’t have to write <code class="docutils literal notranslate"><span class="pre">-x</span></code> to <code class="docutils literal notranslate"><span class="pre">args.ctags</span></code>.
+The test facility sets <code class="docutils literal notranslate"><span class="pre">-x</span></code> automatically.</p>
+<p>If you want to test json output (specified with <code class="docutils literal notranslate"><span class="pre">--output-format=json</span></code> ),
+Use <strong>.tags-json</strong> as suffix instead of <strong>.tags</strong>.
+In such a case you don’t have to write <code class="docutils literal notranslate"><span class="pre">--output-format=json</span></code> to <code class="docutils literal notranslate"><span class="pre">args.ctags</span></code>,
+and add <code class="docutils literal notranslate"><span class="pre">json</span></code> to <code class="docutils literal notranslate"><span class="pre">features</span></code> as described below.
+The test facility sets the option and the feature automatically.</p>
+</div></blockquote>
+<p><em>Units/TEST/args.ctags</em> <strong>optional</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">-</span></code> is used as default optional argument when running a
+unit test ctags. If you want to add more options, enumerate
+options in <strong>args.ctags</strong> file.</p>
+<p>Remember you have to put one option in one line; don’t
+put multiple options to one line. Multiple options in
+one line doesn’t work.</p>
+</div></blockquote>
+<p><em>Units/TEST/filter</em> <strong>optional</strong></p>
+<blockquote>
+<div><p>You can rearrange the output of ctags with this command
+before comparing with <em>executed.tags</em>.
+This command is invoked with no argument. The output
+ctags is given via stdin. Rearrange data should be
+written to stdout.</p>
+</div></blockquote>
+<p><em>Units/TEST/features</em> <strong>optional</strong></p>
+<blockquote>
+<div><p>If a unit test case requires special features of ctags,
+enumerate them in this file line by line. If a target ctags
+doesn’t have one of the features, the test is skipped.</p>
+<p>If a file line is started with <code class="docutils literal notranslate"><span class="pre">!</span></code>, the effect is inverted;
+if a target ctags has the feature specified with <code class="docutils literal notranslate"><span class="pre">!</span></code>, the
+test is skipped.</p>
+<p>All features built-in can be listed with passing
+<code class="docutils literal notranslate"><span class="pre">--list-features</span></code> to ctags.</p>
+</div></blockquote>
+<p><em>Units/TEST/languages</em> <strong>optional</strong></p>
+<blockquote>
+<div><p>If a unit test case requires that language parsers are enabled/available,
+enumerate them in this file line by line. If one of them is
+disabled/unavailable, the test is skipped.</p>
+<p>language parsers enabled/available can be checked with passing
+<code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> to ctags.</p>
+</div></blockquote>
+</section>
+<section id="note-for-importing-a-test-case-from-test-directory">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Note for importing a test case from Test directory</a><a class="headerlink" href="#note-for-importing-a-test-case-from-test-directory" title="Permalink to this heading">¶</a></h3>
+<p>I think all test cases under Test directory should be converted to
+Units.</p>
+<p>If you convert use following TEST name convention.</p>
+<ul class="simple">
+<li><p>use <em>.t</em> instead of <em>.d</em> as suffix for the name</p></li>
+</ul>
+<p>Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Test</span><span class="o">/</span><span class="n">simple</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>This should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Units</span><span class="o">/</span><span class="n">simple</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">t</span>
+</pre></div>
+</div>
+<p>With this name convention we can track which test case is converted or
+not.</p>
+</section>
+<section id="example-of-files">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Example of files</a><a class="headerlink" href="#example-of-files" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference external" href="https://github.com/universal-ctags/ctags/tree/master/Units/parser-c.r/c-sample.d">Units/parser-c.r/c-sample.d</a>.</p>
+</section>
+<section id="how-to-run-unit-tests">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">How to run unit tests</a><a class="headerlink" href="#how-to-run-unit-tests" title="Permalink to this heading">¶</a></h3>
+<p><em>test</em> make target:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units
+</pre></div>
+</div>
+<p>The result of unit tests is reported by lines. You can specify
+test cases with <code class="docutils literal notranslate"><span class="pre">UNITS=</span></code>.</p>
+<p>An example to run <em>vim-command.d</em> only:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units UNITS=vim-command
+</pre></div>
+</div>
+<p>Another example to run <em>vim-command.d</em> and <em>parser-python.r/bug1856363.py.d</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units UNITS=vim-command,bug1856363.py
+</pre></div>
+</div>
+<p>During testing <em>OUTPUT.tmp</em>, <em>EXPECTED.tmp</em> and <em>DIFF.tmp</em> files are
+generated for each test case directory. These are removed when the
+unit test is <strong>passed</strong>.  If the result is <strong>FAILED</strong>, it is kept for
+debugging. Following command line can clean up these generated files
+at once:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make clean-units
+</pre></div>
+</div>
+<p>Other than <strong>FAILED</strong> and <strong>passed</strong> two types of result are
+defined.</p>
+<p><strong>skipped</strong></p>
+<blockquote>
+<div><p>means running the test case is skipped in some reason.</p>
+</div></blockquote>
+<p><strong>failed (KNOWN bug)</strong></p>
+<blockquote>
+<div><p>means the result was failed but the failure is expected.
+See “<a class="reference internal" href="#gathering-test"><span class="std std-ref">Gathering test cases for known bugs</span></a>”.</p>
+</div></blockquote>
+</section>
+<section id="example-of-running">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Example of running</a><a class="headerlink" href="#example-of-running" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units
+Category: ROOT
+-------------------------------------------------------------------------
+Testing 1795612.js as JavaScript                            passed
+Testing 1850914.js as JavaScript                            passed
+Testing 1878155.js as JavaScript                            passed
+Testing 1880687.js as JavaScript                            passed
+Testing 2023624.js as JavaScript                            passed
+Testing 3184782.sql as SQL                                  passed
+...
+</pre></div>
+</div>
+</section>
+<section id="running-unit-tests-for-specific-languages">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Running unit tests for specific languages</a><a class="headerlink" href="#running-unit-tests-for-specific-languages" title="Permalink to this heading">¶</a></h3>
+<p>You can run only the tests for specific languages by setting
+<code class="docutils literal notranslate"><span class="pre">LANGUAGES</span></code> to parsers as reported by
+<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-languages</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">units</span> <span class="n">LANGUAGES</span><span class="o">=</span><span class="n">PHP</span><span class="p">,</span><span class="n">C</span>
+</pre></div>
+</div>
+<p>Multiple languages can be selected using a comma separated list.</p>
+</section>
+<section id="gathering-test-cases-for-known-bugs">
+<span id="gathering-test"></span><h3><a class="toc-backref" href="#id8" role="doc-backlink">Gathering test cases for known bugs</a><a class="headerlink" href="#gathering-test-cases-for-known-bugs" title="Permalink to this heading">¶</a></h3>
+<p>When we meet a bug, it is an important development activity to make a small test
+case that triggers the bug.
+Even the bug cannot be fixed in soon,
+the test case is an important result of work. Such result should
+be merged to the source tree. However, we don’t love <strong>FAILED</strong>
+message, too. What we should do?</p>
+<p>In such a case, merge as usually but use <em>.b</em> as suffix for
+the directory of test case instead of <em>.d</em>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parser-autoconf.r/nested-block.ac.b/</span></code> is an example
+of <code class="docutils literal notranslate"><span class="pre">.b``*</span></code> suffix usage.</p>
+<p>When you run test.units target, you will see:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Testing</span> <span class="n">c</span><span class="o">-</span><span class="n">sample</span> <span class="k">as</span> <span class="n">C</span>                                 <span class="n">passed</span>
+<span class="n">Testing</span> <span class="n">css</span><span class="o">-</span><span class="n">singlequote</span><span class="o">-</span><span class="ow">in</span><span class="o">-</span><span class="n">comment</span> <span class="k">as</span> <span class="n">CSS</span>             <span class="n">failed</span> <span class="p">(</span><span class="n">KNOWN</span> <span class="n">bug</span><span class="p">)</span>
+<span class="n">Testing</span> <span class="n">ctags</span><span class="o">-</span><span class="n">simple</span> <span class="k">as</span> <span class="n">ctags</span>                         <span class="n">passed</span>
+</pre></div>
+</div>
+<p>Suffix <em>.i</em> is a variant of <em>.b</em>. <em>.i</em> is for merging/gathering input
+which lets ctags process enter an infinite loop. Different from <em>.b</em>,
+test cases marked as <em>.i</em> are never executed. They are just skipped
+but reported the skips:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Testing</span> <span class="n">ada</span><span class="o">-</span><span class="n">ads</span> <span class="k">as</span> <span class="n">Ada</span>                                <span class="n">passed</span>
+<span class="n">Testing</span> <span class="n">ada</span><span class="o">-</span><span class="n">function</span> <span class="k">as</span> <span class="n">Ada</span>                           <span class="n">skipped</span> <span class="p">(</span><span class="n">may</span> <span class="n">cause</span> <span class="n">an</span> <span class="n">infinite</span> <span class="n">loop</span><span class="p">)</span>
+<span class="n">Testing</span> <span class="n">ada</span><span class="o">-</span><span class="n">protected</span> <span class="k">as</span> <span class="n">Ada</span>                          <span class="n">passed</span>
+<span class="o">...</span>
+
+<span class="n">Summary</span> <span class="p">(</span><span class="n">see</span> <span class="n">CMDLINE</span><span class="o">.</span><span class="n">tmp</span> <span class="n">to</span> <span class="n">reproduce</span> <span class="n">without</span> <span class="n">test</span> <span class="n">harness</span><span class="p">)</span>
+<span class="o">------------------------------------------------------------</span>
+  <span class="c1">#passed:                                347</span>
+  <span class="c1">#FIXED:                                 0</span>
+  <span class="c1">#FAILED (unexpected-exit-status):       0</span>
+  <span class="c1">#FAILED (unexpected-output):            0</span>
+  <span class="c1">#skipped (features):                    0</span>
+  <span class="c1">#skipped (languages):                   0</span>
+  <span class="c1">#skipped (infinite-loop):               1</span>
+    <span class="n">ada</span><span class="o">-</span><span class="n">protected</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="running-under-valgrind-and-timeout">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Running under valgrind and timeout</a><a class="headerlink" href="#running-under-valgrind-and-timeout" title="Permalink to this heading">¶</a></h3>
+<p>If <code class="docutils literal notranslate"><span class="pre">VG=1</span></code> is given, each test cases are run under valgrind.
+If valgrind detects an error, it is reported as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units VG=1
+Testing css-singlequote-in-comment as CSS             failed (valgrind-error)
+...
+Summary (see CMDLINE.tmp to reproduce without test harness)
+------------------------------------------------------------
+...
+#valgrind-error:                        1
+  css-singlequote-in-comment
+...
+</pre></div>
+</div>
+<p>In this case the report of valgrind is recorded to
+<code class="docutils literal notranslate"><span class="pre">Units/css-singlequote-in-comment/VALGRIND-CSS.tmp</span></code>.</p>
+<p>NOTE: <code class="docutils literal notranslate"><span class="pre">/bin/bash</span></code> is needed to report the result. You can specify a shell
+running test with SHELL macro like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units VG=1 SHELL=/bin/bash
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">TIMEOUT=N</span></code> is given, each test cases are run under timeout
+command. If ctags doesn’t stop in <code class="docutils literal notranslate"><span class="pre">N</span></code> second, it is stopped
+by timeout command and reported as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units TIMEOUT=1
+Testing css-singlequote-in-comment as CSS             failed (TIMED OUT)
+...
+Summary (see CMDLINE.tmp to reproduce without test harness)
+------------------------------------------------------------
+...
+#TIMED-OUT:                             1
+  css-singlequote-in-comment
+...
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">TIMEOUT=N</span></code> is given, <em>.i</em> test cases are run. They will be
+reported as <em>TIMED-OUT</em>.</p>
+</section>
+<section id="categories">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Categories</a><a class="headerlink" href="#categories" title="Permalink to this heading">¶</a></h3>
+<p>With <em>.r</em> suffix, you can put test cases under a sub directory
+of <em>Units</em>. <code class="docutils literal notranslate"><span class="pre">Units/parser-ada.r</span></code> is an example. If <em>misc/units</em>
+test harness, the sub directory is called a category. <code class="docutils literal notranslate"><span class="pre">parser-ada.r</span></code>
+is the name category in the above example.</p>
+<p><em>CATEGORIES</em> macro of make is for running units in specified categories.
+Following command line is for running units in
+<code class="docutils literal notranslate"><span class="pre">Units/parser-sh.r</span></code> and <code class="docutils literal notranslate"><span class="pre">Units/parser-ada.r</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make units CATEGORIES=&#39;parser-sh,parser-ada&#39;
+</pre></div>
+</div>
+</section>
+<section id="finding-minimal-bad-input">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Finding minimal bad input</a><a class="headerlink" href="#finding-minimal-bad-input" title="Permalink to this heading">¶</a></h3>
+<p>When a test case is failed, the input causing <code class="docutils literal notranslate"><span class="pre">FAILED</span></code> result is
+passed to <em>misc/units shrink</em>.  <em>misc/units shrink</em> tries to make the
+shortest input which makes ctags exits with non-zero status.  The
+result is reported to <code class="docutils literal notranslate"><span class="pre">Units/\*/SHRINK-${language}.tmp</span></code>.  Maybe
+useful to debug.</p>
+</section>
+<section id="acknowledgments">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Acknowledgments</a><a class="headerlink" href="#acknowledgments" title="Permalink to this heading">¶</a></h3>
+<p>The file name rule is suggested by Maxime Coste &lt;<a class="reference external" href="mailto:frrrwww&#37;&#52;&#48;gmail&#46;com">frrrwww<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;.</p>
+</section>
+</section>
+<section id="reviewing-the-result-of-units-test">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Reviewing the result of Units test</a><a class="headerlink" href="#reviewing-the-result-of-units-test" title="Permalink to this heading">¶</a></h2>
+<p>Try misc/review.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>misc/review<span class="w"> </span>--help
+<span class="go">Usage:</span>
+<span class="go">        misc/review          help|--help|-h                 show this message</span>
+<span class="go">        misc/review          [list] [-b]                    list failed Units and Tmain</span>
+<span class="go">                             -b                             list .b (known bug) marked cases</span>
+<span class="go">        misc/review          inspect [-b]                   inspect difference interactively</span>
+<span class="go">                             -b                             inspect .b (known bug) marked cases</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+</section>
+<section id="semi-fuzz-fuzz-testing">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Semi-fuzz(<em>Fuzz</em>) testing</a><a class="headerlink" href="#semi-fuzz-fuzz-testing" title="Permalink to this heading">¶</a></h2>
+<p>Unexpected input can lead ctags to enter an infinite loop. The fuzz
+target tries to identify these conditions by passing
+semi-random (semi-broken) input to ctags.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make fuzz LANGUAGES=LANG1[,LANG2,...]
+</pre></div>
+</div>
+<p>With this command line, ctags is run for random variations of all test
+inputs under <em>Units/*/input.*</em> of languages defined by <code class="docutils literal notranslate"><span class="pre">LANGUAGES</span></code>
+macro variable. In this target, the output of ctags is ignored and
+only the exit status is analyzed. The ctags binary is also run under
+timeout command, such that if an infinite loop is found it will exit
+with a non-zero status. The timeout will be reported as following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">timeout</span> <span class="n">C</span><span class="p">]</span>                <span class="n">Units</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">vhd</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="nb">input</span><span class="o">.</span><span class="n">vhd</span>
+</pre></div>
+</div>
+<p>This means that if C parser doesn’t stop within N seconds when
+<em>Units/test.vhd.t/input.vhd</em> is given as an input, timeout will
+interrupt ctags. The default duration can be changed using
+<code class="docutils literal notranslate"><span class="pre">TIMEOUT=N</span></code> argument in <em>make</em> command. If there is no timeout but
+the exit status is non-zero, the target reports it as following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">unexpected</span><span class="o">-</span><span class="n">status</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="n">C</span><span class="p">]</span>                <span class="n">Units</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">vhd</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="nb">input</span><span class="o">.</span><span class="n">vhd</span>
+</pre></div>
+</div>
+<p>The list of parsers which can be used as a value for <code class="docutils literal notranslate"><span class="pre">LANGUAGES</span></code> can
+be obtained with following command line</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --list-languages
+</pre></div>
+</div>
+<p>Besides <code class="docutils literal notranslate"><span class="pre">LANGUAGES</span></code> and <code class="docutils literal notranslate"><span class="pre">TIMEOUT</span></code>, fuzz target also takes the
+following parameters:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">VG=1</span></code></p>
+<blockquote>
+<div><p>Run ctags under valgrind. If valgrind finds a memory
+error it is reported as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">valgrind</span><span class="o">-</span><span class="n">error</span> <span class="n">Verilog</span><span class="p">]</span>                <span class="n">Units</span><span class="o">/</span><span class="n">array_spec</span><span class="o">.</span><span class="n">f90</span><span class="o">.</span><span class="n">t</span><span class="o">/</span><span class="nb">input</span><span class="o">.</span><span class="n">f90</span>
+</pre></div>
+</div>
+<p>The valgrind report is recorded at
+<code class="docutils literal notranslate"><span class="pre">Units/\*/VALGRIND-${language}.tmp</span></code>.</p>
+</div></blockquote>
+</div></blockquote>
+<p>As the same as units target, this semi-fuzz test target also calls
+<em>misc/units shrink</em> when a test case is failed. See “<em>Units</em> test facility”
+about the shrunk result.</p>
+</section>
+<section id="noise-testing">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink"><em>Noise</em> testing</a><a class="headerlink" href="#noise-testing" title="Permalink to this heading">¶</a></h2>
+<p>After enjoying developing Semi-fuzz testing, I’m looking for a more unfair
+approach. Run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make noise LANGUAGES=LANG1[,LANG2,...]
+</pre></div>
+</div>
+<p>The noise target generates test cases by inserting or deleting one
+character to the test cases of <em>Units</em>.</p>
+<p>It takes a long time, even without <code class="docutils literal notranslate"><span class="pre">VG=1</span></code>, so this cannot be run
+under Travis CI. However, it is a good idea to run it locally.</p>
+</section>
+<section id="chop-and-slap-testing">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink"><em>Chop</em> and <em>slap</em> testing</a><a class="headerlink" href="#chop-and-slap-testing" title="Permalink to this heading">¶</a></h2>
+<p>After reviving many bug reports, we recognized some of them spot
+unexpected EOF. The chop target was developed based on this recognition.</p>
+<p>The chop target generates many input files from an existing input file
+under <em>Units</em> by truncating the existing input file at variety file
+positions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make chop  LANGUAGES=LANG1[,LANG2,...]
+</pre></div>
+</div>
+<p>It takes a long time, especially with <code class="docutils literal notranslate"><span class="pre">VG=1</span></code>, so this cannot be run
+under Travis CI. However, it is a good idea to run it locally.</p>
+<p>slap target is derived from chop target. While chop target truncates
+the existing input files from tail, the slap target does the same
+from head.</p>
+</section>
+<section id="input-validation-for-units">
+<span id="input-validation"></span><h2><a class="toc-backref" href="#id17" role="doc-backlink">Input validation for <em>Units</em></a><a class="headerlink" href="#input-validation-for-units" title="Permalink to this heading">¶</a></h2>
+<p>We have to maintain parsers for languages that we don’t know well.  We
+don’t have enough time to learn the languages.</p>
+<p><em>Units</em> test cases help us not introduce wrong changes to a parser.</p>
+<p>However, there is still an issue; a developer who doesn’t know a
+target language well may write a broken test input file for the
+language.  Here comes “Input validation.”</p>
+<section id="how-to-run-an-example-session-of-input-validation">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">How to run an example session of input validation</a><a class="headerlink" href="#how-to-run-an-example-session-of-input-validation" title="Permalink to this heading">¶</a></h3>
+<p>You can validate the test input files of <em>Units</em> with <em>validate-input</em>
+make target if a validator or a language is defined.</p>
+<p>Here is an example validating an input file for JSON.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>validate-input<span class="w"> </span><span class="nv">VALIDATORS</span><span class="o">=</span>jq
+<span class="go">...</span>
+<span class="go">Category: ROOT</span>
+<span class="go">------------------------------------------------------------</span>
+<span class="go">simple-json.d/input.json with jq                                 valid</span>
+
+<span class="go">Summary</span>
+<span class="go">------------------------------------------------------------</span>
+<span class="gp">  #</span>valid:<span class="w">                                 </span><span class="m">1</span>
+<span class="gp">  #</span>invalid:<span class="w">                               </span><span class="m">0</span>
+<span class="gp">  #</span>skipped<span class="w"> </span><span class="o">(</span>known<span class="w"> </span>invalidation<span class="o">)</span><span class="w">           </span><span class="m">0</span>
+<span class="gp">  #</span>skipped<span class="w"> </span><span class="o">(</span>validator<span class="w"> </span>unavailable<span class="o">)</span><span class="w">        </span><span class="m">0</span>
+</pre></div>
+</div>
+<p>This example shows validating <em>simple-json.d/input.json</em> as an input
+file with <em>jq</em> validator. With VALIDATORS variable passed via
+command-line, you can specify validators to run. Multiple validators
+can be specified using a comma-separated list.  If you don’t give
+VALIDATORS, the make target tries to use all available validators.</p>
+<p>The meanings of “valid” and “invalid” in “Summary” are apparent.  In
+two cases, the target skips validating input files:</p>
+<p>#skipped (known invalidation)</p>
+<blockquote>
+<div><p>A test case specifies KNOWN-INVALIDATION in its <em>validator</em> file.</p>
+</div></blockquote>
+<p>#skipped (validator unavailable)</p>
+<blockquote>
+<div><p>A command for a validator is not available.</p>
+</div></blockquote>
+</section>
+<section id="validator-file">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink"><em>validator</em> file</a><a class="headerlink" href="#validator-file" title="Permalink to this heading">¶</a></h3>
+<p><em>validator</em> file in a <em>Units</em> test directory specifies which
+validator the make target should use.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>Units/simple-json.d/validator
+<span class="go">jq</span>
+</pre></div>
+</div>
+<p>If you put <em>validator</em> file to a category directory (a directory
+having <em>.r</em> suffix), the make target uses the validator specified in
+the file as default.  The default validator can be overridden with a
+<em>validator</em> file in a subdirectory.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>Units/parser-puppetManifest.r/validator
+<span class="go">puppet</span>
+<span class="gp"># </span>cat<span class="w"> </span>Units/parser-puppetManifest.r/puppet-append.d/validator
+<span class="go">KNOWN-INVALIDATION</span>
+</pre></div>
+</div>
+<p>In the example, the make target uses <em>puppet</em> validator for validating
+the most of all input files under <em>Units/parser-puppetManifest.r</em>
+directory. An exception is an input file under
+<em>Units/parser-puppetManifest.r/puppet-append.d</em> directory.  The
+directory has its specific <em>validator</em> file.</p>
+<p>If a <em>Unit</em> test case doesn’t have <em>expected.tags</em> file, the make
+target doesn’t run the validator on the file even if a default
+validator is given in its category directory.</p>
+<p>If a <em>Unit</em> test case specifies KNOWN-INVALIDATION in its <em>validator</em>
+file, the make target just increments “#skipped (known invalidation)”
+counter. The target reports the counter at the end of execution.</p>
+</section>
+<section id="validator-command">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">validator command</a><a class="headerlink" href="#validator-command" title="Permalink to this heading">¶</a></h3>
+<p>A validator specified in a <em>validator</em> file is a command file put
+under <em>misc/validators</em> directory.  The command must have “validator-”
+as prefix in its file name. For an example,
+<em>misc/validators/validator-jq</em> is the command for “jq”.</p>
+<p>The command file must be an executable. <em>validate-input</em> make target
+runs the command in two ways.</p>
+<p><em>is_runnable</em> method</p>
+<blockquote>
+<div><p>Before running the command as a validator, the target runs
+the command with “is_runnable” as the first argument.
+A validator command can let the target know whether the
+validator command is runnable or not with exit status.
+0 means ready to run. Non-zero means not ready to run.</p>
+<p>The make target never runs the validator command for
+validation purpose if the exit status is non-zero.</p>
+<p>For an example, <em>misc/validators/validator-jq</em> command uses <em>jq</em>
+command as its backend. If <em>jq</em> command is not available on a
+system, <em>validator-jq</em> can do nothing.  If such case,
+<em>is_runnable</em> method of <em>validator-jq</em> command should exit with
+non-zero value.</p>
+<p>The second argument is dummy. Don’t use it. The third argument
+is the directory (<em>misc/validators</em>) where the command is.</p>
+</div></blockquote>
+<p><em>validate</em> method</p>
+<blockquote>
+<div><p>The make target runs the command with “validate”, an input
+file name for validating the input file, and the directory
+(<em>misc/validators</em>) where the command is. The command exits
+non-zero if the input file contains invalid syntax. This method
+will never run if <em>is_runnable</em> method of the command exits with
+non-zero.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="testing-examples-in-language-specific-man-pages">
+<span id="man-test"></span><h2><a class="toc-backref" href="#id21" role="doc-backlink">Testing examples in language specific man pages</a><a class="headerlink" href="#testing-examples-in-language-specific-man-pages" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><cite>man-test</cite> is a target for testing the examples in the language
+specific man pages (<code class="docutils literal notranslate"><span class="pre">man/ctags-lang-&lt;LANG&gt;.7.rst.in</span></code>). The command
+line for running the target is:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>man-test
+</pre></div>
+</div>
+<p>An example for testing must have following form:</p>
+<div class="highlight-ReStructuredText notranslate"><div class="highlight"><pre><span></span>&quot;input.&lt;EXT&gt;&quot;
+
+<span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> <span class="k">&lt;LANG&gt;</span>
+
+<span class="s">  &lt;INPUT LINES&gt;</span>
+
+&quot;output.tags&quot;
+with &quot;&lt;OPTIONS FOR CTAGS&gt;&quot;
+
+<span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> tags
+
+  &lt;TAGS OUTPUT LINES&gt;
+</pre></div>
+</div>
+<p>The man-test target recognizes the form and does the same as
+the following shell code for each example in the man page:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>&lt;INPUT<span class="w"> </span>LINES&gt;<span class="w"> </span>&gt;<span class="w"> </span>input.&lt;EXT&gt;
+<span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>&lt;TAGS<span class="w"> </span>OUTPUT<span class="w"> </span>LINES&gt;<span class="w"> </span>&gt;<span class="w"> </span>output.tags
+<span class="gp">$ </span>ctags<span class="w"> </span>&lt;OPTIONS<span class="w"> </span>FOR<span class="w"> </span>CTAGS&gt;<span class="w"> </span>&gt;<span class="w"> </span>actual.tags
+<span class="gp">$ </span>diff<span class="w"> </span>output.tags<span class="w"> </span>actual.tags
+</pre></div>
+</div>
+<p>A backslash character at the end of <code class="docutils literal notranslate"><span class="pre">&lt;INPUT</span> <span class="pre">LINES&gt;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&lt;TAGS</span> <span class="pre">OUTPUT</span> <span class="pre">LINES&gt;</span></code> represents the continuation of lines;
+a subsequent newline is ignored.</p>
+<div class="highlight-ReStructuredText notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> <span class="k">tags</span>
+
+<span class="s">   very long\</span>
+<span class="s">        line</span>
+</pre></div>
+</div>
+<p>is read as:</p>
+<div class="highlight-ReStructuredText notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> tags
+
+   very long     line
+</pre></div>
+</div>
+<p>Here is an example of a test case taken from
+<code class="docutils literal notranslate"><span class="pre">ctags-lang-python.7.rst.in</span></code>:</p>
+<div class="highlight-ReStructuredText notranslate"><div class="highlight"><pre><span></span>&quot;input.py&quot;
+
+<span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> <span class="k">Python</span>
+
+   <span class="kn">import</span> <span class="nn">X0</span>
+
+&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzK input.py&quot;
+
+<span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> tags
+
+        X0      input.py        /^import X0$/;&quot; kind:module     roles:imported
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">man-test</span></code> returns 0 if the all test cases in the all language
+specific man pages are passed.</p>
+<p>Here is an example output of the man-test target.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>man-test
+<span class="go">  RUN      man-test</span>
+<span class="gp"># </span>Run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>cases<span class="w"> </span><span class="k">in</span><span class="w"> </span>./man/ctags-lang-julia.7.rst.in
+<span class="go">```</span>
+<span class="go">./man/ctags-lang-julia.7.rst.in[0]:75...passed</span>
+<span class="go">./man/ctags-lang-julia.7.rst.in[1]:93...passed</span>
+<span class="go">```</span>
+<span class="gp"># </span>Run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>cases<span class="w"> </span><span class="k">in</span><span class="w"> </span>./man/ctags-lang-python.7.rst.in
+<span class="go">```</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[0]:116...passed</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[1]:133...passed</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[2]:154...passed</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[3]:170...passed</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[4]:187...passed</span>
+<span class="go">./man/ctags-lang-python.7.rst.in[5]:230...passed</span>
+<span class="go">```</span>
+<span class="gp"># </span>Run<span class="w"> </span><span class="nb">test</span><span class="w"> </span>cases<span class="w"> </span><span class="k">in</span><span class="w"> </span>./man/ctags-lang-verilog.7.rst.in
+<span class="go">```</span>
+<span class="go">./man/ctags-lang-verilog.7.rst.in[0]:51...passed</span>
+<span class="go">```</span>
+<span class="go">OK</span>
+</pre></div>
+</div>
+<p>NOTE: keep examples in the man pages simple. If you want to test ctags
+complicated (and or subtle) input, use the units target. The main
+purpose of the examples is for explaining the parser.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Testing a parser</a><ul>
+<li><a class="reference internal" href="#units-test-facility"><em>Units</em> test facility</a><ul>
+<li><a class="reference internal" href="#how-to-write-a-test-case">How to write a test case</a></li>
+<li><a class="reference internal" href="#note-for-importing-a-test-case-from-test-directory">Note for importing a test case from Test directory</a></li>
+<li><a class="reference internal" href="#example-of-files">Example of files</a></li>
+<li><a class="reference internal" href="#how-to-run-unit-tests">How to run unit tests</a></li>
+<li><a class="reference internal" href="#example-of-running">Example of running</a></li>
+<li><a class="reference internal" href="#running-unit-tests-for-specific-languages">Running unit tests for specific languages</a></li>
+<li><a class="reference internal" href="#gathering-test-cases-for-known-bugs">Gathering test cases for known bugs</a></li>
+<li><a class="reference internal" href="#running-under-valgrind-and-timeout">Running under valgrind and timeout</a></li>
+<li><a class="reference internal" href="#categories">Categories</a></li>
+<li><a class="reference internal" href="#finding-minimal-bad-input">Finding minimal bad input</a></li>
+<li><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reviewing-the-result-of-units-test">Reviewing the result of Units test</a></li>
+<li><a class="reference internal" href="#semi-fuzz-fuzz-testing">Semi-fuzz(<em>Fuzz</em>) testing</a></li>
+<li><a class="reference internal" href="#noise-testing"><em>Noise</em> testing</a></li>
+<li><a class="reference internal" href="#chop-and-slap-testing"><em>Chop</em> and <em>slap</em> testing</a></li>
+<li><a class="reference internal" href="#input-validation-for-units">Input validation for <em>Units</em></a><ul>
+<li><a class="reference internal" href="#how-to-run-an-example-session-of-input-validation">How to run an example session of input validation</a></li>
+<li><a class="reference internal" href="#validator-file"><em>validator</em> file</a></li>
+<li><a class="reference internal" href="#validator-command">validator command</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-examples-in-language-specific-man-pages">Testing examples in language specific man pages</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="testing-ctags.html"
+                          title="previous chapter">Testing ctags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="testing-readtags.html"
+                          title="next chapter">Testing readtags</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="testing-readtags.html" title="Testing readtags"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="testing-ctags.html" title="Testing ctags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing a parser</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

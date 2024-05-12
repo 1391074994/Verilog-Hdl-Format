@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-optlib &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-client-tools" href="ctags-client-tools.7.html" />
+    <link rel="prev" title="tags" href="tags.5.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-client-tools.7.html" title="ctags-client-tools"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tags.5.html" title="tags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-optlib</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-optlib">
+<span id="ctags-optlib-7"></span><h1>ctags-optlib<a class="headerlink" href="#ctags-optlib" title="Permalink to this heading">¶</a></h1>
+<p>Universal Ctags parser definition language</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> [options] [file(s)]</div>
+<div class="line"><strong>etags</strong> [options] [file(s)]</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><em>Exuberant Ctags</em>, the ancestor of <em>Universal Ctags</em>, has provided
+the way to define a new parser from command line.  Universal Ctags
+extends and refines this feature. <em>optlib parser</em> is the name for such
+parser in Universal Ctags. “opt” intends a parser is defined with
+combination of command line options. “lib” intends an optlib parser
+can be more than ad-hoc personal configuration.</p>
+<p>This man page is for people who want to define an optlib parser. The
+readers should read <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> of Universal Ctags first.</p>
+<p>Following options are for defining (or customizing) a parser:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--langdef=&lt;name&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></code></p></li>
+</ul>
+<p>Following options are for controlling loading parser definition:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--options=&lt;pathname&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--options-maybe=&lt;pathname&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--optlib-dir=[+]&lt;directory&gt;</span></code></p></li>
+</ul>
+<p>The design of options and notations for defining a parser in
+Exuberant Ctags may focus on reducing the number of typing by user.
+Reducing the number of typing is important for users who want to
+define (or customize) a parser quickly.</p>
+<p>On the other hand, the design in Universal Ctags focuses on
+maintainability. The notation of Universal Ctags is redundant than
+that of Exuberant Ctags; the newly introduced kind should be declared
+explicitly, (long) names are approved than one-letter flags
+specifying kinds, and naming rules are stricter.</p>
+<p>This man page explains only stable options and flags.  Universal Ctags
+also introduces experimental options and flags which have names starting
+with <code class="docutils literal notranslate"><span class="pre">_</span></code>. For documentation on these options and flags, visit
+Universal Ctags web site at <a class="reference external" href="https://ctags.io/">https://ctags.io/</a>.</p>
+<section id="storing-a-parser-definition-to-a-file">
+<h3>Storing a parser definition to a file<a class="headerlink" href="#storing-a-parser-definition-to-a-file" title="Permalink to this heading">¶</a></h3>
+<p>Though it is possible to define a parser from command line, you don’t
+want to type the same command line each time when you need the parser.
+You can store options for defining a parser into a file.</p>
+<p>ctags loads files (preload files) listed in “FILES”
+section of <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> at program starting up. You can put your parser
+definition needed usually to the files.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--options=&lt;pathname&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">--options-maybe=&lt;pathname&gt;</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">--optlib-dir=[+]&lt;directory&gt;</span></code> are for loading optlib files you need
+occasionally. See “Option File Options” section of <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> for
+these options.</p>
+<p>As explained in “FILES” section of <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, options for defining a
+parser listed line by line in an optlib file. Prefixed white spaces are
+ignored. A line starting with ‘#’ is treated as a comment.  Escaping
+shell meta character is not needed.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.ctags</span></code> as file extension for optlib file. You can define
+multiple parsers in an optlib file but it is better to make a file for
+each parser definition.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--_echo=&lt;msg&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--_force-quit=&lt;num&gt;</span></code> options are for debugging
+optlib parser.</p>
+</section>
+<section id="overview-for-defining-a-parser">
+<h3>Overview for defining a parser<a class="headerlink" href="#overview-for-defining-a-parser" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Design the parser</p>
+<p>You need know both the target language and the ctags’
+concepts (definition, reference, kind, role, field, extra). About
+the concepts, <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> of Universal Ctags may help you.</p>
+</li>
+<li><p>Give a name to the parser</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--langdef=&lt;name&gt;</span></code> option. <em>&lt;name&gt;</em> is referred as <em>&lt;LANG&gt;</em> in
+the later steps.</p>
+</li>
+<li><p>Give a file pattern or file extension for activating the parser</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></code>.</p>
+</li>
+<li><p>Define kinds</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code> option.
+Universal Ctags introduces this option.  Exuberant Ctags doesn’t
+have. In Exuberant Ctags, a kind is defined as a side effect of
+specifying <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=</span></code> option. So user doesn’t have a
+chance to recognize how important the definition of kind.</p>
+</li>
+<li><p>Define patterns</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></code>
+option for a single-line regular expression. You can also use
+<code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></code>
+option for a multi-line regular expression.</p>
+<p>As <em>&lt;kind-spec&gt;</em>, you can use the one-letter flag defined with
+<code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code> option.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="options">
+<h2>OPTIONS<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--langdef=&lt;name&gt;</span></code></dt><dd><p>Defines a new user-defined language, <em>&lt;name&gt;</em>, to be parsed with regular
+expressions. Once defined, <em>&lt;name&gt;</em> may be used in other options taking
+language names.</p>
+<p><em>&lt;name&gt;</em> must consist of alphanumeric characters, ‘<code class="docutils literal notranslate"><span class="pre">#</span></code>’, or ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’
+(‘[a-zA-Z0-9#+]+’). The graph characters other than ‘<code class="docutils literal notranslate"><span class="pre">#</span></code>’ and
+‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ are disallowed (or reserved). Some of them (<code class="docutils literal notranslate"><span class="pre">[-=:{.]</span></code>) are
+disallowed because they can make the command line parser of
+ctags confused. The rest of them are just
+reserved for future extending ctags.</p>
+<p><code class="docutils literal notranslate"><span class="pre">all</span></code> is an exception.  <code class="docutils literal notranslate"><span class="pre">all</span></code> as <em>&lt;name&gt;</em> is not acceptable. It is
+a reserved word. See the description of
+<code class="docutils literal notranslate"><span class="pre">--kinds-(&lt;LANG&gt;|all)=[+|-](&lt;kinds&gt;|*)</span></code> option in <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> about how the
+reserved word is used.</p>
+<p><code class="docutils literal notranslate"><span class="pre">NONE</span></code> is another exception. <code class="docutils literal notranslate"><span class="pre">NONE</span></code> as <em>&lt;name&gt;</em> is not acceptable.</p>
+<p>The names of built-in parsers are capitalized. When
+ctags evaluates an option in a command line, and
+chooses a parser, ctags uses the names of
+parsers in a case-insensitive way. Therefore, giving a name
+started from a lowercase character doesn’t help you to avoid the
+parser name confliction. However, in a tags file,
+ctags prints parser names in a case-sensitive
+way; it prints a parser name as specified in <code class="docutils literal notranslate"><span class="pre">--langdef=&lt;name&gt;</span></code>
+option.  Therefore, we recommend you to give a name started from a
+lowercase character to your private optlib parser. With this
+convention, people can know where a tag entry in a tag file comes
+from a built-in parser or a private optlib parser.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code></dt><dd><p>Define a kind for <em>&lt;LANG&gt;</em>.
+Be not confused this with <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>.</p>
+<p><em>&lt;letter&gt;</em> must be an alphabetical character (‘[a-zA-EG-Z]’)
+other than “F”. “F” has been reserved for representing a file
+since Exuberant Ctags.</p>
+<p><em>&lt;name&gt;</em> must start with an alphabetic character, and the rest
+must  be alphanumeric (‘[a-zA-Z][a-zA-Z0-9]*’). Do not use
+“file” as <em>&lt;name&gt;</em>. It has been reserved for representing a file
+since Exuberant Ctags.</p>
+<p>Note that using a number character in a <em>&lt;name&gt;</em> violates the
+version 2 of tags file format though ctags
+accepts it. For more detail, see <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a>.</p>
+<p><em>&lt;description&gt;</em> comes from any printable ASCII characters. The
+exception is <code class="docutils literal notranslate"><span class="pre">{</span></code> and <code class="docutils literal notranslate"><span class="pre">\</span></code>. <code class="docutils literal notranslate"><span class="pre">{</span></code> is reserved for adding flags
+this option in the future. So put <code class="docutils literal notranslate"><span class="pre">\</span></code> before <code class="docutils literal notranslate"><span class="pre">{</span></code> to include
+<code class="docutils literal notranslate"><span class="pre">{</span></code> to a description. To include <code class="docutils literal notranslate"><span class="pre">\</span></code> itself to a description,
+put <code class="docutils literal notranslate"><span class="pre">\</span></code> before <code class="docutils literal notranslate"><span class="pre">\</span></code>.</p>
+<p>Both <em>&lt;letter&gt;</em>, <em>&lt;name&gt;</em> and their combination must be unique in
+a <em>&lt;LANG&gt;</em>.</p>
+<p>This option is newly introduced in Universal Ctags.  This option
+reduces the typing defining a regex pattern with
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=</span></code>, and keeps the consistency of kind
+definitions in a language.</p>
+<p>The <em>&lt;letter&gt;</em> can be used as an argument for <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>
+option to enable or disable the kind. Unless <code class="docutils literal notranslate"><span class="pre">K</span></code> field is
+enabled, the <em>&lt;letter&gt;</em> is used as value in the “kind” extension
+field in tags output.</p>
+<p>The <em>&lt;name&gt;</em> surrounded by braces can be used as an argument for
+<code class="docutils literal notranslate"><span class="pre">--kind-&lt;LANG&gt;</span></code> option. If <code class="docutils literal notranslate"><span class="pre">K</span></code> field is enabled, the <em>&lt;name&gt;</em>
+is used as value in the “kind” extension field in tags output.</p>
+<p>The <em>&lt;description&gt;</em> and <em>&lt;letter&gt;</em> are listed in <code class="docutils literal notranslate"><span class="pre">--list-kinds</span></code>
+output. All three elements of the kind-spec are listed in
+<code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code> output. Don’t use braces in the
+<em>&lt;description&gt;</em>. They will be used meta characters in the future.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></code></dt><dd><p>Define a single-line regular expression.</p>
+<p>The <em>/&lt;line_pattern&gt;/&lt;name_pattern&gt;/</em> pair defines a regular expression
+replacement pattern, similar in style to <code class="docutils literal notranslate"><span class="pre">sed</span></code> substitution
+commands, <code class="docutils literal notranslate"><span class="pre">s/regexp/replacement/</span></code>, with which to generate tags from source files mapped to
+the named language, <em>&lt;LANG&gt;</em>, (case-insensitive; either a built-in
+or user-defined language).</p>
+<p>The regular expression, <em>&lt;line_pattern&gt;</em>, defines
+an extended regular expression (roughly that used by egrep(1)),
+which is used to locate a single source line containing a tag and
+may specify tab characters using <code class="docutils literal notranslate"><span class="pre">\t</span></code>.</p>
+<p>When a matching line is
+found, a tag will be generated for the name defined by
+<em>&lt;name_pattern&gt;</em>, which generally will contain the special
+back-references <code class="docutils literal notranslate"><span class="pre">\1</span></code> through <code class="docutils literal notranslate"><span class="pre">\9</span></code> to refer to matching sub-expression
+groups within <em>&lt;line_pattern&gt;</em>.</p>
+<p>The ‘<code class="docutils literal notranslate"><span class="pre">/</span></code>’ separator characters shown in the
+parameter to the option can actually be replaced by any
+character. Note that whichever separator character is used will
+have to be escaped with a backslash (’<code class="docutils literal notranslate"><span class="pre">\</span></code>’) character wherever it is
+used in the parameter as something other than a separator. The
+regular expression defined by this option is added to the current
+list of regular expressions for the specified language unless the
+parameter is omitted, in which case the current list is cleared.</p>
+<p>Unless modified by <em>&lt;flags&gt;</em>, <em>&lt;line_pattern&gt;</em> is interpreted as a POSIX
+extended regular expression. The <em>&lt;name_pattern&gt;</em> should expand for all
+matching lines to a non-empty string of characters, or a warning
+message will be reported unless <code class="docutils literal notranslate"><span class="pre">{placeholder}</span></code> regex flag is
+specified.</p>
+<p>A kind specifier (<em>&lt;kind-spec&gt;</em>) for tags matching regexp may
+follow <em>&lt;name_pattern&gt;</em>, which will determine what kind of tag is
+reported in the <code class="docutils literal notranslate"><span class="pre">kind</span></code> extension field (see <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a>).</p>
+<p><em>&lt;kind-spec&gt;</em> has two forms: <em>one-letter form</em> and <em>full form</em>.</p>
+<p>The     one-letter form in the form of <code class="docutils literal notranslate"><span class="pre">&lt;letter&gt;</span></code>. It just refers a kind
+<em>&lt;letter&gt;</em> defined with <code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;</span></code>. This form is recommended in
+Universal Ctags.</p>
+<p>The full form of <em>&lt;kind-spec&gt;</em> is in the form of
+<code class="docutils literal notranslate"><span class="pre">&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code>. Either the kind <em>&lt;name&gt;</em> and/or the
+<em>&lt;description&gt;</em> can be omitted. See the description of
+<code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code> option about the
+elements.</p>
+<p>The full form is supported only for keeping the compatibility with Exuberant
+Ctags which does not have <code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;</span></code> option. Supporting the
+form will be removed from Universal Ctags in the future.</p>
+<p>About <em>&lt;flags&gt;</em>, see “FLAGS FOR <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> OPTION”.</p>
+<p>For more information on the regular expressions used by
+ctags, see either the regex(5,7) man page, or
+the GNU info documentation for regex (e.g. “<code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">regex</span></code>”).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-regex-flags</span></code></dt><dd><p>Lists the flags that can be used in <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-mline-regex-flags</span></code></dt><dd><p>Lists the flags that can be used in <code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;</span></code> option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/{mgroup=&lt;N&gt;}[&lt;flags&gt;]</span></code></dt><dd><p>Define a multi-line regular expression.</p>
+<p>This option is similar to <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option except the pattern is
+applied to the whole file’s contents, not line by line.</p>
+<p>See “<a class="reference internal" href="#flags-for-mline-regex-lang-option">FLAGS FOR --mline-regex-&lt;LANG&gt; OPTION</a>” about <code class="docutils literal notranslate"><span class="pre">{mgroup=&lt;N&gt;}</span></code>.
+<code class="docutils literal notranslate"><span class="pre">{mgroup=&lt;N&gt;}</span></code> flag is a must.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--_echo=&lt;message&gt;</span></code></dt><dd><p>Print <em>&lt;message&gt;</em> to the standard error stream.  This is helpful to
+understand (and debug) optlib loading feature of Universal Ctags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--_force-quit[=&lt;num&gt;]</span></code></dt><dd><p>Exits immediately when this option is processed.  If <em>&lt;num&gt;</em> is used
+as exit status. The default is 0.  This is helpful to debug optlib
+loading feature of Universal Ctags.</p>
+</dd>
+</dl>
+<section id="flags-for-regex-lang-option">
+<h3>FLAGS FOR <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> OPTION<a class="headerlink" href="#flags-for-regex-lang-option" title="Permalink to this heading">¶</a></h3>
+<p>You can specify more than one flag, <code class="docutils literal notranslate"><span class="pre">&lt;letter&gt;|{&lt;name&gt;}</span></code>, at the end of <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> to
+control how Universal Ctags uses the pattern.</p>
+<p>Exuberant Ctags uses a <em>&lt;letter&gt;</em> to represent a flag. In
+Universal Ctags, a <em>&lt;name&gt;</em> surrounded by braces (name form) can be used
+in addition to <em>&lt;letter&gt;</em>. The name form makes a user reading an optlib
+file easier.</p>
+<p>The most of all flags newly added in Universal Ctags
+don’t have the one-letter representation. All of them have only the name
+representation. <code class="docutils literal notranslate"><span class="pre">--list-regex-flags</span></code> lists all the flags.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">basic</span></code> (one-letter form <code class="docutils literal notranslate"><span class="pre">b</span></code>)</dt><dd><p>The pattern is interpreted as a POSIX basic regular expression.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">exclusive</span></code> (one-letter form <code class="docutils literal notranslate"><span class="pre">x</span></code>)</dt><dd><p>Skip testing the other patterns if a line is matched to this
+pattern. This is useful to avoid using CPU to parse line comments.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">extend</span></code> (one-letter form <code class="docutils literal notranslate"><span class="pre">e</span></code>)</dt><dd><p>The pattern is interpreted as a POSIX extended regular
+expression (default).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pcre2</span></code> (one-letter form <code class="docutils literal notranslate"><span class="pre">p</span></code>, experimental)</dt><dd><p>The pattern is interpreted as a PCRE2 regular expression explained
+in pcre2syntax(3).  This flag is available only if the ctags is
+built with <code class="docutils literal notranslate"><span class="pre">pcre2</span></code> library. See the output of
+<code class="docutils literal notranslate"><span class="pre">--list-features</span></code> option to know whether your ctags is
+built-with <code class="docutils literal notranslate"><span class="pre">pcre2</span></code> or not.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">icase</span></code> (one-letter form <code class="docutils literal notranslate"><span class="pre">i</span></code>)</dt><dd><p>The regular expression is to be applied in a case-insensitive
+manner.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">placeholder</span></code></dt><dd><p>Don’t emit a tag captured with a regex pattern.  The replacement
+can be an empty string.  See the following description of
+<code class="docutils literal notranslate"><span class="pre">scope=...</span></code> flag about how this is useful.</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">scope=(ref|push|pop|clear|set|replace)</span></code></p>
+<blockquote>
+<div><p>Specify what to do with the internal scope stack.</p>
+<p>A parser programmed with <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> has a stack (scope
+stack) internally. You can use it for tracking scope
+information. The <code class="docutils literal notranslate"><span class="pre">scope=...</span></code> flag is for manipulating and
+utilizing the scope stack.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">{scope=push}</span></code> is specified, a tag captured with
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> is pushed to the stack. <code class="docutils literal notranslate"><span class="pre">{scope=push}</span></code>
+implies <code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code>.</p>
+<p>You can fill the scope field (<code class="docutils literal notranslate"><span class="pre">scope:</span></code>) of captured tag with
+<code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code>. If <code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code> flag is given,
+ctags attaches the tag at the top to the tag
+captured with <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> as the value for the <code class="docutils literal notranslate"><span class="pre">scope:</span></code>
+field.</p>
+<p>ctags pops the tag at the top of the stack when
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">{scope=pop}</span></code> is matched to the input
+line.</p>
+<p>Specifying <code class="docutils literal notranslate"><span class="pre">{scope=clear}</span></code> removes all the tags in the scope.
+Specifying <code class="docutils literal notranslate"><span class="pre">{scope=set}</span></code> removes all the tags in the scope, and
+then pushes the captured tag as <code class="docutils literal notranslate"><span class="pre">{scope=push}</span></code> does.</p>
+<p><code class="docutils literal notranslate"><span class="pre">{scope=replace}</span></code> does the three things sequentially. First it
+does the same as <code class="docutils literal notranslate"><span class="pre">{scope=pop}</span></code>, then fills the <code class="docutils literal notranslate"><span class="pre">scope:</span></code> field
+of the tag captured with <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code>, and pushes the tag to
+the scope stack as if <code class="docutils literal notranslate"><span class="pre">{scope=push}</span></code> was given finally.
+You cannot specify another scope action together with
+<code class="docutils literal notranslate"><span class="pre">{scope=replace}</span></code>.</p>
+<p>You don’t want to specify <code class="docutils literal notranslate"><span class="pre">{scope=pop}{scope=push}</span></code> as an
+alternative to <code class="docutils literal notranslate"><span class="pre">{scope=replace}</span></code>; <code class="docutils literal notranslate"><span class="pre">{scope=pop}{scope=push}</span></code>
+fills the <code class="docutils literal notranslate"><span class="pre">scope:</span></code> field of the tag captured with <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code>
+first, then pops the tag at the top of the stack, and pushes
+the captured tag to the scope stack finally. The timing when
+filling the end field is different between <code class="docutils literal notranslate"><span class="pre">{scope=replace}</span></code> and
+<code class="docutils literal notranslate"><span class="pre">{scope=pop}{scope=push}</span></code>.</p>
+<p>In some cases, you may want to use <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> only for its
+side effects: using it only to manipulate the stack but not for
+capturing a tag. In such a case, make <em>&lt;name_pattern&gt;</em> component of
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option empty while specifying <code class="docutils literal notranslate"><span class="pre">{placeholder}</span></code>
+as a regex flag. For example, a non-named tag can be put on
+the stack by giving a regex flag “<code class="docutils literal notranslate"><span class="pre">{scope=push}{placeholder}</span></code>”.</p>
+<p>You may wonder what happens if a regex pattern with
+<code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code> flag matches an input line but the stack is empty,
+or a non-named tag is at the top. If the regex pattern contains a
+<code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code> flag and the stack is empty, the <code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code>
+flag is ignored and nothing is attached to the <code class="docutils literal notranslate"><span class="pre">scope:</span></code> field.</p>
+<p>If the top of the stack contains an unnamed tag,
+ctags searches deeper into the stack to find the
+top-most named tag. If it reaches the bottom of the stack without
+finding a named tag, the <code class="docutils literal notranslate"><span class="pre">{scope=ref}</span></code> flag is ignored and
+nothing is attached to the <code class="docutils literal notranslate"><span class="pre">scope:</span></code> field.</p>
+<p>When a named tag on the stack is popped or cleared as the side
+effect of a pattern matching, ctags attaches the
+line number of the match to the <code class="docutils literal notranslate"><span class="pre">end:</span></code> field of
+the named tag.</p>
+<p>ctags clears all of the tags on the stack when it
+reaches the end of the input source file. The line number of the
+end is attached to the <code class="docutils literal notranslate"><span class="pre">end:</span></code> field of the cleared tags.</p>
+</div></blockquote>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">warning=&lt;message&gt;</span></code></dt><dd><p>print the given <em>&lt;message&gt;</em> at WARNING level</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">fatal=&lt;message&gt;</span></code></dt><dd><p>print the given <em>&lt;message&gt;</em> and exit</p>
+</dd>
+</dl>
+</section>
+<section id="flags-for-mline-regex-lang-option">
+<h3>FLAGS FOR <code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;</span></code> OPTION<a class="headerlink" href="#flags-for-mline-regex-lang-option" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mgroup=&lt;N&gt;</span></code></dt><dd><p>decide the location of the tag extracted with
+<code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;</span></code> option.</p>
+<p><em>&lt;N&gt;</em> is the number of a capture group in the pattern, which is
+used to record the line number location of the tag. <code class="docutils literal notranslate"><span class="pre">mgroup=&lt;N&gt;</span></code>
+flag is not an optional. You <strong>must</strong> add an <code class="docutils literal notranslate"><span class="pre">mgroup=&lt;N&gt;</span></code> flag,
+even if the <em>&lt;N&gt;</em> is <code class="docutils literal notranslate"><span class="pre">0</span></code> (meaning the start position of the
+whole regex pattern).</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="examples">
+<h2>EXAMPLES<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<section id="perl-pod">
+<h3>Perl Pod<a class="headerlink" href="#perl-pod" title="Permalink to this heading">¶</a></h3>
+<p>This is the definition (pod.ctags) used in ctags for parsing Pod
+(<a class="reference external" href="https://perldoc.perl.org/perlpod.html">https://perldoc.perl.org/perlpod.html</a>) file.</p>
+<div class="highlight-ctags notranslate"><div class="highlight"><pre><span></span><span class="kn">--langdef</span><span class="p">=</span><span class="nn">pod</span>
+<span class="kd">--map-</span><span class="nn">pod</span><span class="p">=+</span>.pod
+
+<span class="kd">--kinddef-</span><span class="nn">pod</span><span class="p">=</span><span class="ni">c</span><span class="p">,</span><span class="ni">chapter</span><span class="p">,</span><span class="sd">chapters</span>
+<span class="kd">--kinddef-</span><span class="nn">pod</span><span class="p">=</span><span class="ni">s</span><span class="p">,</span><span class="ni">section</span><span class="p">,</span><span class="sd">sections</span>
+<span class="kd">--kinddef-</span><span class="nn">pod</span><span class="p">=</span><span class="ni">S</span><span class="p">,</span><span class="ni">subsection</span><span class="p">,</span><span class="sd">subsections</span>
+<span class="kd">--kinddef-</span><span class="nn">pod</span><span class="p">=</span><span class="ni">t</span><span class="p">,</span><span class="ni">subsubsection</span><span class="p">,</span><span class="sd">subsubsections</span>
+
+<span class="kd">--regex-</span><span class="nn">pod</span><span class="p">=</span>/^=head1[ \t]+(.+)/\1/c/
+<span class="kd">--regex-</span><span class="nn">pod</span><span class="p">=</span>/^=head2[ \t]+(.+)/\1/s/
+<span class="kd">--regex-</span><span class="nn">pod</span><span class="p">=</span>/^=head3[ \t]+(.+)/\1/S/
+<span class="kd">--regex-</span><span class="nn">pod</span><span class="p">=</span>/^=head4[ \t]+(.+)/\1/t/
+</pre></div>
+</div>
+</section>
+<section id="using-scope-regex-flags">
+<h3>Using scope regex flags<a class="headerlink" href="#using-scope-regex-flags" title="Permalink to this heading">¶</a></h3>
+<p>Let’s think about writing a parser for a very small subset of the Ruby
+language.</p>
+<p>input source file (<code class="docutils literal notranslate"><span class="pre">input.srb</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Example</span>
+  <span class="k">def</span> <span class="nf">methodA</span>
+        <span class="n">puts</span> <span class="s2">&quot;in class_method&quot;</span>
+  <span class="n">end</span>
+  <span class="k">def</span> <span class="nf">methodB</span>
+        <span class="n">puts</span> <span class="s2">&quot;in class_method&quot;</span>
+  <span class="n">end</span>
+<span class="n">end</span>
+</pre></div>
+</div>
+<p>The parser for the input should capture <code class="docutils literal notranslate"><span class="pre">Example</span></code> with <code class="docutils literal notranslate"><span class="pre">class</span></code> kind,
+<code class="docutils literal notranslate"><span class="pre">methodA</span></code>, and <code class="docutils literal notranslate"><span class="pre">methodB</span></code> with <code class="docutils literal notranslate"><span class="pre">method</span></code> kind. <code class="docutils literal notranslate"><span class="pre">methodA</span></code> and <code class="docutils literal notranslate"><span class="pre">methodB</span></code>
+should have <code class="docutils literal notranslate"><span class="pre">Example</span></code> as their scope. <code class="docutils literal notranslate"><span class="pre">end:</span></code> fields of each tag
+should have proper values.</p>
+<p>optlib file (<code class="docutils literal notranslate"><span class="pre">sub-ruby.ctags</span></code>):</p>
+<div class="highlight-ctags notranslate"><div class="highlight"><pre><span></span><span class="kn">--langdef</span><span class="p">=</span><span class="nn">subRuby</span>
+<span class="kd">--map-</span><span class="nn">subRuby</span><span class="p">=</span>.srb
+<span class="kd">--kinddef-</span><span class="nn">subRuby</span><span class="p">=</span><span class="ni">c</span><span class="p">,</span><span class="ni">class</span><span class="p">,</span><span class="sd">classes</span>
+<span class="kd">--kinddef-</span><span class="nn">subRuby</span><span class="p">=</span><span class="ni">m</span><span class="p">,</span><span class="ni">method</span><span class="p">,</span><span class="sd">methods</span>
+<span class="kd">--regex-</span><span class="nn">subRuby</span><span class="p">=</span>/^class[ \t]+([a-zA-Z][a-zA-Z0-9]+)/\1/c/{scope=push}
+<span class="kd">--regex-</span><span class="nn">subRuby</span><span class="p">=</span>/^end///{scope=pop}{placeholder}
+<span class="kd">--regex-</span><span class="nn">subRuby</span><span class="p">=</span>/^[ \t]+def[ \t]+([a-zA-Z][a-zA-Z0-9_]+)/\1/m/{scope=push}
+<span class="kd">--regex-</span><span class="nn">subRuby</span><span class="p">=</span>/^[ \t]+end///{scope=pop}{placeholder}
+</pre></div>
+</div>
+<p>command line and output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --quiet --fields=+eK \
+--options=./sub-ruby.ctags -o - input.srb
+Example input.srb       /^class Example$/;&quot;     class   end:8
+methodA input.srb       /^  def methodA$/;&quot;     method  class:Example   end:4
+methodB input.srb       /^  def methodB$/;&quot;     method  class:Example   end:7
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p>The official Universal Ctags web site at:</p>
+<p><a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a>, regex(3), regex(7), egrep(1), pcre2syntax(3)</p>
+</section>
+<section id="author">
+<h2>AUTHOR<a class="headerlink" href="#author" title="Permalink to this heading">¶</a></h2>
+<p>Universal Ctags project
+<a class="reference external" href="https://ctags.io/">https://ctags.io/</a>
+(This man page partially derived from <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> of
+Executable-ctags)</p>
+<p>Darren Hiebert &lt;<a class="reference external" href="mailto:dhiebert&#37;&#52;&#48;users&#46;sourceforge&#46;net">dhiebert<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a>&gt;
+<a class="reference external" href="http://DarrenHiebert.com/">http://DarrenHiebert.com/</a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-optlib</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a><ul>
+<li><a class="reference internal" href="#storing-a-parser-definition-to-a-file">Storing a parser definition to a file</a></li>
+<li><a class="reference internal" href="#overview-for-defining-a-parser">Overview for defining a parser</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#options">OPTIONS</a><ul>
+<li><a class="reference internal" href="#flags-for-regex-lang-option">FLAGS FOR <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> OPTION</a></li>
+<li><a class="reference internal" href="#flags-for-mline-regex-lang-option">FLAGS FOR <code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;</span></code> OPTION</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples">EXAMPLES</a><ul>
+<li><a class="reference internal" href="#perl-pod">Perl Pod</a></li>
+<li><a class="reference internal" href="#using-scope-regex-flags">Using scope regex flags</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+<li><a class="reference internal" href="#author">AUTHOR</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tags.5.html"
+                          title="previous chapter">tags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-client-tools.7.html"
+                          title="next chapter">ctags-client-tools</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-client-tools.7.html" title="ctags-client-tools"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tags.5.html" title="tags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-optlib</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

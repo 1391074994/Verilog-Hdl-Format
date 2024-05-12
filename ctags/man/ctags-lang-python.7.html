@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<title>ctags-lang-python</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7952 2016-07-26 18:15:59Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="ctags-lang-python">
+<span id="ctags-lang-python-7"></span>
+<h1 class="title">ctags-lang-python</h1>
+<h2 class="subtitle" id="random-notes-about-tagging-python-source-code-with-universal-ctags">Random notes about tagging python source code with Universal Ctags</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Version:</th>
+<td>6.0.0</td></tr>
+<tr class="manual-group field"><th class="docinfo-name">Manual group:</th><td class="field-body">Universal Ctags</td>
+</tr>
+<tr class="manual-section field"><th class="docinfo-name">Manual section:</th><td class="field-body">7</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="synopsis">
+<h1>SYNOPSIS</h1>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> ... --languages=+Python ...</div>
+<div class="line"><strong>ctags</strong> ... --language-force=Python ...</div>
+<div class="line"><strong>ctags</strong> ... --map-Python=+.py ...</div>
+</div>
+</div>
+<div class="section" id="description">
+<h1>DESCRIPTION</h1>
+<p>This man page gathers random notes about tagging python source code.</p>
+</div>
+<div class="section" id="tagging-import-statements">
+<h1>TAGGING <tt class="docutils literal">import</tt> STATEMENTS</h1>
+<div class="section" id="summary">
+<h2>Summary</h2>
+<p><cite>import X</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="18%" />
+<col width="33%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>X</td>
+<td>module</td>
+<td>imported</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><cite>import X as Y</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="18%" />
+<col width="33%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>X</td>
+<td>module</td>
+<td>indirectlyImported</td>
+<td>N/A</td>
+</tr>
+<tr><td>Y</td>
+<td>namespace</td>
+<td>definition</td>
+<td>nameref:module:X</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><cite>from X import *</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="18%" />
+<col width="33%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><cite>X</cite></td>
+<td>module</td>
+<td>namespace</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><cite>from X import Y</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="18%" />
+<col width="33%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><cite>X</cite></td>
+<td>module</td>
+<td>namespace</td>
+<td>N/A</td>
+</tr>
+<tr><td><cite>Y</cite></td>
+<td>unknown</td>
+<td>imported</td>
+<td>scope:module:<cite>X</cite></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><cite>from X import Y as Z</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="7%" />
+<col width="18%" />
+<col width="33%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><cite>X</cite></td>
+<td>module</td>
+<td>namespace</td>
+<td>N/A</td>
+</tr>
+<tr><td><cite>Y</cite></td>
+<td>unknown</td>
+<td>indirectlyImported</td>
+<td>scope:module:<cite>X</cite></td>
+</tr>
+<tr><td><cite>Z</cite></td>
+<td>unknown</td>
+<td>definition</td>
+<td>nameref:unknown:<cite>Y</cite></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<!-- ===================== ==== ========== ================== ===================
+input code            name kind       role               other noticeable fields
+===================== ==== ========== ================== ===================
+import X              X    module     imported
+import X as Y         X    module     indirectlyImported
+import X as Y         Y    namespace  definition         nameref:module:X
+from X import *       X    module     namespace
+from X import Y       X    module     namespace
+from X import Y       Y    unknown    imported           scope:module:X
+from X import Y as Z  X    module     namespace
+from X import Y as Z  Y    unknown    indirectlyImported scope:module:X
+from X import Y as Z  Z    unknown    definition         nameref:unknown:Y
+===================== ==== ========== ================== =================== -->
+<!-- a table having merged cells cannot be converted to man page -->
+<!-- +- - - - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+|input code          |output tags                                           |
+|                    +- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|                    |name| kind     |role              |other noticeable fields  |
++====================+====+==========+==================+===================+
+|import X            |X   | module   |imported          |                   |
++- - - - - - - - - - - - - - - - - - - -+- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|import X as Y       |X   | module   |indirectlyImported|                   |
+|                    +- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|                    |Y   | namespace|definition        |nameref:module:X   |
++- - - - - - - - - - - - - - - - - - - -+- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|from X import *     |X   | module   |namespace         |                   |
++- - - - - - - - - - - - - - - - - - - -+- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|from X import Y     |X   | module   |namespace         |                   |
+|                    +- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|                    |Y   | unknown  |imported          |scope:module:X     |
++- - - - - - - - - - - - - - - - - - - -+- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|from X import Y as Z|X   | module   |namespace         |                   |
+|                    +- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|                    |Y   | unknown  |indirectlyImported|scope:module:X     |
+|                    +- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+
+|                    |Z   | unknown  |definition        |nameref:unknown:Y  |
++- - - - - - - - - - - - - - - - - - - -+- - - -+- - - - - - - - - -+- - - - - - - - - - - - - - - - - -+- - - - - - - - - - - - - - - - - - -+ -->
+</div>
+<div class="section" id="examples">
+<h2>Examples</h2>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">import</span> <span class="name namespace">X0</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzK input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 125)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        X0      input.py        /^import X0$/;&quot; kind:module     roles:imported
+
+</pre>
+</div>
+<p>A tag for an imported module has <tt class="docutils literal">module</tt> kind with <tt class="docutils literal">imported</tt> role.  The
+module is not defined here; it is defined in another file. So the tag for the
+imported module is a reference tag; specify <tt class="docutils literal"><span class="pre">--extras=+r</span></tt> (or
+<tt class="docutils literal"><span class="pre">--extras=+{reference}</span></tt>) option for tagging it.  &quot;roles:&quot; field enabled with
+<tt class="docutils literal"><span class="pre">--fields=+r</span></tt> is for recording the module is &quot;imported&quot; to the tag file.</p>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">import</span> <span class="name namespace">X1</span> <span class="keyword">as</span> <span class="name namespace">Y1</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzK --fields-Python=+{nameref} input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 144)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        X1      input.py        /^import X1 as Y1$/;&quot;   kind:module     roles:indirectlyImported
+        Y1      input.py        /^import X1 as Y1$/;&quot;   kind:namespace  roles:def       nameref:module:X1
+
+</pre>
+</div>
+<p>&quot;Y1&quot; introduces a new name and is defined here. So &quot;Y1&quot; is tagged as a
+definition tag.  &quot;X1&quot; is imported in a way that its name cannot be used
+in this source file. For letting client tools know that the name cannot be used,
+<tt class="docutils literal">indirectlyImported</tt> role is assigned for &quot;X1&quot;.  &quot;Y1&quot; is the name for
+accessing objects defined in the module imported via &quot;X1&quot;.  For recording this
+relationship, <tt class="docutils literal">nameref:</tt> field is attached to the tag of &quot;Y1&quot;.  Instead of
+<tt class="docutils literal">module</tt> kind, <tt class="docutils literal">namespace</tt> kind is assigned to &quot;Y1&quot; because &quot;Y1&quot; itself
+isn't a module.</p>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">from</span> <span class="name namespace">X2</span> <span class="keyword namespace">import</span> <span class="operator">*</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzK input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 167)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        X2      input.py        /^from X2 import *$/;&quot;  kind:module     roles:namespace
+
+</pre>
+</div>
+<p>The module is not defined here; it is defined in another file. So the tag for
+the imported module is a reference tag. Unlike &quot;X0&quot; in &quot;import X0&quot;, &quot;X2&quot; may not
+be used because the names defined in &quot;X2&quot; can be used in this source file. To represent
+the difference <tt class="docutils literal">namespace</tt> role is attached to &quot;X2&quot; instead of <tt class="docutils literal">imported</tt>.</p>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">from</span> <span class="name namespace">X3</span> <span class="keyword namespace">import</span> <span class="name">Y3</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzKZ input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 185)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        X3      input.py        /^from X3 import Y3$/;&quot; kind:module     roles:namespace
+        Y3      input.py        /^from X3 import Y3$/;&quot; kind:unknown    scope:module:X3 roles:imported
+
+</pre>
+</div>
+<p>&quot;Y3&quot; is a name for a language object defined in &quot;X3&quot; module. &quot;scope:module:X3&quot;
+attached to &quot;Y3&quot; represents this relation between &quot;Y3&quot; and &quot;X3&quot;. ctags
+assigns <tt class="docutils literal">unknown</tt> kind to &quot;Y3&quot; because ctags cannot know whether &quot;Y3&quot; is a
+class, a variable, or a function from the input file.</p>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">from</span> <span class="name namespace">X4</span> <span class="keyword namespace">import</span> <span class="name">Y4</span> <span class="keyword">as</span> <span class="name">Z4</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --extras=+r --fields=+rzKZ input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 204)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        X4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:module     roles:namespace
+        Y4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:unknown    scope:module:X4 roles:indirectlyImported
+        Z4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:unknown    roles:def       nameref:unknown:Y4
+
+</pre>
+</div>
+<p>&quot;Y4&quot; is similar to &quot;Y3&quot; of &quot;from X3 import Y3&quot; but the name cannot be used here.
+<tt class="docutils literal">indirectlyImported</tt> role assigned to &quot;Y4&quot; representing this. &quot;Z4&quot; is the name for
+accessing the language object named in &quot;Y4&quot; in &quot;X4&quot; module. &quot;nameref:unknown:Y4&quot;
+attached to &quot;Z4&quot; and &quot;scope:module:X4&quot; attached to &quot;Y4&quot; represent the relations.</p>
+</div>
+</div>
+<div class="section" id="lambda-expression-and-type-hint">
+<h1>LAMBDA EXPRESSION AND TYPE HINT</h1>
+<div class="section" id="summary-1">
+<h2>Summary</h2>
+<p><cite>id = lambda var0: var0</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="16%" />
+<col width="29%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><cite>id</cite></td>
+<td>function</td>
+<td>definition</td>
+<td>signature:(<cite>var0</cite>)</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><cite>id_t: Callable[[int], int] = lambda var1: var1</cite></p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="17%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">kind</th>
+<th class="head">role</th>
+<th class="head">other noticeable fields</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><cite>id_t</cite></td>
+<td>variable</td>
+<td>definition</td>
+<td>typeref:typename:<cite>Callable[[int], int]</cite> nameref:function:anonFuncN</td>
+</tr>
+<tr><td>anonFuncN</td>
+<td>function</td>
+<td>definition</td>
+<td>signature:(<cite>var1</cite>)</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="examples-1">
+<h2>Examples</h2>
+<p>&quot;input.py&quot;</p>
+<pre class="code Python literal-block">
+<span class="keyword namespace">from</span> <span class="name namespace">typing</span> <span class="keyword namespace">import</span> <span class="name">Callable</span><span class="whitespace">
+</span><span class="name builtin">id</span> <span class="operator">=</span> <span class="keyword">lambda</span> <span class="name">var0</span><span class="punctuation">:</span> <span class="name">var0</span><span class="whitespace">
+</span><span class="name">id_t</span><span class="punctuation">:</span> <span class="name">Callable</span><span class="punctuation">[[</span><span class="name builtin">int</span><span class="punctuation">],</span> <span class="name builtin">int</span><span class="punctuation">]</span> <span class="operator">=</span> <span class="keyword">lambda</span> <span class="name">var1</span><span class="punctuation">:</span> <span class="name">var1</span>
+</pre>
+<p>&quot;output.tags&quot;
+with &quot;--options=NONE -o - --sort=no --fields=+KS --fields-Python=+{nameref} --extras=+{anonymous} input.py&quot;</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">ctags-lang-python.7.rst</tt>, line 251)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+        id      input.py        /^id = lambda var0: var0$/;&quot;    function        signature:(var0)
+        id_t    input.py        /^id_t: Callable[[int], int] = lambda var1: var1$/;&quot;\
+                variable        typeref:typename:Callable[[int], int]   nameref:function:anonFunc84011d2c0101
+        anonFunc84011d2c0101    input.py        /^id_t: Callable[[int], int] = lambda var1: var1$/;&quot;\
+                function        signature:(var1)
+
+</pre>
+</div>
+<p>If a variable (&quot;id&quot;) with no type hint is initialized with a lambda expression,
+ctags assigns <tt class="docutils literal">function</tt> kind for the tag of &quot;id&quot;.</p>
+<p>If a variable (&quot;id_t&quot;) with a type hint is initialized with a lambda expression,
+ctags assigns <tt class="docutils literal">variable</tt> kind for the tag of &quot;id_t&quot; with <tt class="docutils literal">typeref:</tt> and
+<tt class="docutils literal">nameref:</tt> fields. ctags fills <tt class="docutils literal">typeref:</tt> field with the value of the type
+hint. The way of filling <tt class="docutils literal">nameref:</tt> is a bit complicated.</p>
+<p>For the lambda expression used in initializing the type-hint'ed variable, ctags
+creates <tt class="docutils literal">anonymous</tt> extra tag (&quot;anonFunc84011d2c0101&quot;). ctags fills the
+<tt class="docutils literal">nameref:</tt> field of &quot;id_t&quot; with the name of <tt class="docutils literal">anonymous</tt> extra tag:
+&quot;nameref:function:anonFunc84011d2c0101&quot;.</p>
+<p>You may think why ctags does so complicated, and why ctags doesn't emit
+following tags output for the input:</p>
+<pre class="literal-block">
+id      input.py        /^id = \\$/;&quot;   function        signature:(var0)
+id_t    input.py        /^id_t: \\$/;&quot;  function        typeref:typename:Callable[[int], int]   signature:(var1)
+</pre>
+<p>There is a reason. The other languages of ctags obey the following rule: ctags fills
+<tt class="docutils literal">typeref:</tt> field for a tag of a callable object (like function) with the type
+of its return value. If we consider &quot;id_t&quot; is a function, its <tt class="docutils literal">typeref:</tt> field
+should have &quot;typename:int&quot;. However, for filling <tt class="docutils literal">typeref:</tt> with &quot;typename:int&quot;,
+ctags has to analyze &quot;Callable[[int], int]&quot; deeper. We don't want to do so.</p>
+</div>
+</div>
+<div class="section" id="see-also">
+<h1>SEE ALSO</h1>
+<p>ctags(1), ctags-client-tools(7), ctags-lang-iPythonCell(7)</p>
+</div>
+</div>
+</body>
+</html>

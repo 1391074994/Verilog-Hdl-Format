@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-julia &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-kconfig" href="ctags-lang-kconfig.7.html" />
+    <link rel="prev" title="ctags-lang-javascript" href="ctags-lang-javascript.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-kconfig.7.html" title="ctags-lang-kconfig"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-javascript.7.html" title="ctags-lang-javascript"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-julia</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-julia">
+<span id="ctags-lang-julia-7"></span><h1>ctags-lang-julia<a class="headerlink" href="#ctags-lang-julia" title="Permalink to this heading">¶</a></h1>
+<p>Random notes about tagging Julia source code with Universal-ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal-ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … --languages=+Julia …</div>
+<div class="line"><strong>ctags</strong> … --language-force=Julia …</div>
+<div class="line"><strong>ctags</strong> … --map-Julia=+.jl …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>This man page gathers random notes about tagging Julia source code.</p>
+</section>
+<section id="tagging-import-and-using-expressions">
+<h2>TAGGING <code class="docutils literal notranslate"><span class="pre">import</span></code> AND <code class="docutils literal notranslate"><span class="pre">using</span></code> EXPRESSIONS<a class="headerlink" href="#tagging-import-and-using-expressions" title="Permalink to this heading">¶</a></h2>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h3>
+<p><cite>using X</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>used</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>using X: a, b</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>a, b</p></td>
+<td><p>unknown</p></td>
+<td><p>used</p></td>
+<td><p>scope:module:X</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>import X</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>imported</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>import X.a, Y.b</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X, Y</p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>a</p></td>
+<td><p>unknown</p></td>
+<td><p>imported</p></td>
+<td><p>scope:module:X</p></td>
+</tr>
+<tr class="row-even"><td><p>b</p></td>
+<td><p>unknown</p></td>
+<td><p>imported</p></td>
+<td><p>scope:module:Y</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>import X: a, b</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>a,b</p></td>
+<td><p>unknown</p></td>
+<td><p>imported</p></td>
+<td><p>scope:module:X</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
+<p>“input.jl”</p>
+<div class="highlight-Julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">X0</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzK input.jl”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X0      input.jl        /^using X0$/;&quot;  kind:module     roles:used
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--extras=+r</span></code> (or <code class="docutils literal notranslate"><span class="pre">--extras=+{reference}</span></code>) option is needed for this tag,
+since it’s a reference tag. This is because module <code class="docutils literal notranslate"><span class="pre">X</span></code> is not defined here.
+It is defined in another file. Enable <code class="docutils literal notranslate"><span class="pre">roles:</span></code> field with <code class="docutils literal notranslate"><span class="pre">--fields=+r</span></code> is
+for recording that the module is “used”, i.e., loaded by <code class="docutils literal notranslate"><span class="pre">using</span></code>.</p>
+<p>“input.jl”</p>
+<div class="highlight-Julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="n">X1</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">X2</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">X3</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzKZ input.jl”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X1      input.jl        /^import X1.a, X2.b, X3$/;&quot;     kind:module     roles:namespace
+X2      input.jl        /^import X1.a, X2.b, X3$/;&quot;     kind:module     roles:namespace
+X3      input.jl        /^import X1.a, X2.b, X3$/;&quot;     kind:module     roles:imported
+a       input.jl        /^import X1.a, X2.b, X3$/;&quot;     kind:unknown    scope:module:X1 roles:imported
+b       input.jl        /^import X1.a, X2.b, X3$/;&quot;     kind:unknown    scope:module:X2 roles:imported
+</pre></div>
+</div>
+<p>Why <code class="docutils literal notranslate"><span class="pre">X1</span></code> and <code class="docutils literal notranslate"><span class="pre">X2</span></code> have role “namespace”, while <code class="docutils literal notranslate"><span class="pre">X3</span></code> have role “imported”?
+It’s because the symbol <code class="docutils literal notranslate"><span class="pre">a</span></code> in module <code class="docutils literal notranslate"><span class="pre">X1</span></code>, and <code class="docutils literal notranslate"><span class="pre">b</span></code> in module <code class="docutils literal notranslate"><span class="pre">X2</span></code> are
+brought to the current scope, but <code class="docutils literal notranslate"><span class="pre">X1</span></code> and <code class="docutils literal notranslate"><span class="pre">X2</span></code> themselves are not. We use
+“namespace” role for such modules.</p>
+<p><code class="docutils literal notranslate"><span class="pre">X3</span></code> is different. The symbol <code class="docutils literal notranslate"><span class="pre">X3</span></code>, together with all exported symbols in
+<code class="docutils literal notranslate"><span class="pre">X3</span></code>, is brought to current scope. For such modules, we use “imported” or
+“used” role depending whether they are loaded by <code class="docutils literal notranslate"><span class="pre">import</span></code> or <code class="docutils literal notranslate"><span class="pre">using</span></code>.</p>
+<p>Also, notice that <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> have the “unknown” kind. This is because we
+cannot know whether it’s a function, constant, or macro, etc.</p>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-julia</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#tagging-import-and-using-expressions">TAGGING <code class="docutils literal notranslate"><span class="pre">import</span></code> AND <code class="docutils literal notranslate"><span class="pre">using</span></code> EXPRESSIONS</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-lang-javascript.7.html"
+                          title="previous chapter">ctags-lang-javascript</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-kconfig.7.html"
+                          title="next chapter">ctags-lang-kconfig</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-kconfig.7.html" title="ctags-lang-kconfig"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-javascript.7.html" title="ctags-lang-javascript"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-julia</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

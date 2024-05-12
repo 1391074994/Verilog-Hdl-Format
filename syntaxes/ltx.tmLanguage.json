@@ -1,0 +1,31 @@
+{
+    "$schema": "https://json.schemastore.org/tmLanguage",
+    "name": "LTX",
+    "scopeName": "source.ltx",
+    "fileTypes": [
+        "ltx"
+    ],
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#keywords"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "begin": "//",
+            "end": "$",
+            "name": "comment.line.double-slash.ltx"
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "match": "\\b(net|const_load|parent_nets|name|id|type|direction|isVector|leftIndex|rightIndex|portIndex|nets|spec|ipName|core_location|isBus|val|state_reg|states|version|minor|ltx_data|ltx_root|active|debug_cores|clk_input_freq_hz|user_chain|slave_index|bscan_switch_index|uuid|pins|subnets)\\b",
+                    "name": "keyword.control.ltx"
+                }
+            ]
+        }
+    }
+}

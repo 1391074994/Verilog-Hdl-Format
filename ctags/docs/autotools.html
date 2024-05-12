@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Building with configure (*nix including GNU/Linux) &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building/hacking/using on MS-Windows" href="windows.html" />
+    <link rel="prev" title="Building ctags" href="building.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="windows.html" title="Building/hacking/using on MS-Windows"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building ctags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="building.html" accesskey="U">Building ctags</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building with configure (*nix including GNU/Linux)</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="building-with-configure-nix-including-gnu-linux">
+<h1>Building with configure (*nix including GNU/Linux)<a class="headerlink" href="#building-with-configure-nix-including-gnu-linux" title="Permalink to this heading">¶</a></h1>
+<p>If you are going to build Universal Ctags on a popular GNU/Linux
+distribution, you can install the tools and libraries that Universal Ctags
+requires (or may use) as packages. See <a class="reference internal" href="#gnu-linux-distributions">GNU/Linux distributions</a> about
+the packages.</p>
+<p>Like most Autotools-based projects, you need to do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/universal-ctags/ctags.git
+$ cd ctags
+$ ./autogen.sh
+$ ./configure --prefix=/where/you/want # defaults to /usr/local
+$ make
+$ make install # may require extra privileges depending on where to install
+</pre></div>
+</div>
+<p>After installation the <cite>ctags</cite> executable will be in <cite>$prefix/bin/</cite>.</p>
+<p><cite>autogen.sh</cite> runs <cite>autoreconf</cite> internally.
+If you use a (binary oriented) GNU/Linux distribution, <cite>autoreconf</cite> may
+be part of the <cite>autoconf</cite> package. In addition you may have to install
+<cite>automake</cite> and/or <cite>pkg-config</cite>, too.</p>
+<section id="gnu-linux-distributions">
+<h2>GNU/Linux distributions<a class="headerlink" href="#gnu-linux-distributions" title="Permalink to this heading">¶</a></h2>
+<p>Before running ./autogen.sh, install some packages.</p>
+<p>On Debian-based systems (including Ubuntu), do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install \
+    gcc make \
+    pkg-config autoconf automake \
+    python3-docutils \
+    libseccomp-dev \
+    libjansson-dev \
+    libyaml-dev \
+    libxml2-dev
+</pre></div>
+</div>
+<p>On Fedora systems, do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install \
+    gcc make \
+    pkgconfig autoconf automake \
+    python3-docutils \
+    libseccomp-devel \
+    jansson-devel \
+    libyaml-devel \
+    libxml2-devel
+</pre></div>
+</div>
+</section>
+<section id="changing-the-executable-s-name">
+<h2>Changing the executable’s name<a class="headerlink" href="#changing-the-executable-s-name" title="Permalink to this heading">¶</a></h2>
+<p>On some systems, like certain BSDs, there is already a ‘ctags’ program in the base
+system, so it is somewhat inconvenient to have the same name for
+Universal Ctags. During the <code class="docutils literal notranslate"><span class="pre">configure</span></code> stage you can now change
+the name of the created executable.</p>
+<p>To add a prefix ‘ex’ which will result in ‘ctags’ being renamed to ‘exctags’:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./configure<span class="w"> </span>--program-prefix<span class="o">=</span>ex
+</pre></div>
+</div>
+<p>To completely change the program’s name run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./configure<span class="w"> </span>--program-transform-name<span class="o">=</span><span class="s1">&#39;s/ctags/my_ctags/; s/etags/myemacs_tags/&#39;</span>
+</pre></div>
+</div>
+<p>Please remember there is also an ‘etags’ installed alongside ‘ctags’ which you may also want to rename as shown above.</p>
+</section>
+<section id="cross-compilation">
+<h2>Cross-compilation<a class="headerlink" href="#cross-compilation" title="Permalink to this heading">¶</a></h2>
+<p>The way of cross-compilation is a bit complicated because the
+build-system of ctags uses <cite>packcc</cite>, a code generator written in C
+language. It means that two C compilers should be installed on you build machine;
+one for compiling <cite>packcc</cite>, another for compiling <cite>ctags</cite>.</p>
+<p>We provide two sets of configure variables to affect these two C compilers:
+<cite>CC</cite>, <cite>CFLAGS</cite>, <cite>CPPFLAGS</cite>, <cite>LDFLAGS</cite> variables affect the compiler who compiles <cite>ctags</cite>.
+<cite>CC_FOR_BUILD</cite>, <cite>CPPFLAGS_FOR_BUILD</cite>, <cite>CPPFLAGS_FOR_BUILD</cite>, <cite>LDFLAGS_FOR_BUILD</cite> variables
+affect the compiler who compiles <cite>packcc</cite>.</p>
+<p>When native-compiling, <cite>FOO_FOR_BUILD</cite> is the same as <cite>FOO</cite>.</p>
+<p>Here is an example show you how to use these configure variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir ./out
+$ configure \
+        --host=armv7a-linux-androideabi \
+        --prefix=`pwd`/out \
+        --enable-static \
+        --disable-seccomp \
+        CC=/usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang \
+        CFLAGS=&#39;-v&#39; \
+        CPP=&#39;/usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang -E&#39; \
+        CPPFLAGS=&#39;-I/Users/leleliu008/.ndk-pkg/pkg/jansson/armeabi-v7a/include -I/Users/leleliu008/.ndk-pkg/pkg/libyaml/armeabi-v7a/include -I/Users/leleliu008/.ndk-pkg/pkg/libxml2/armeabi-v7a/include -I/Users/leleliu008/.ndk-pkg/pkg/libiconv/armeabi-v7a/include --sysroot /usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Qunused-arguments -Dftello=ftell -Dfseeko=fseek&#39; \
+        LDFLAGS=&#39;-L/Users/leleliu008/.ndk-pkg/pkg/jansson/armeabi-v7a/lib -L/Users/leleliu008/.ndk-pkg/pkg/libyaml/armeabi-v7a/lib -L/Users/leleliu008/.ndk-pkg/pkg/libxml2/armeabi-v7a/lib -L/Users/leleliu008/.ndk-pkg/pkg/libiconv/armeabi-v7a/lib --sysroot /usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot&#39; \
+        AR=/usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar \
+        RANLIB=/usr/local/opt/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ranlib \
+        CC_FOR_BUILD=/usr/bin/cc \
+        CFLAGS_FOR_BUILD=&#39;-v&#39; \
+        PKG_CONFIG_PATH=/Users/leleliu008/.ndk-pkg/pkg/libiconv/armeabi-v7a/lib/pkgconfig:/Users/leleliu008/.ndk-pkg/pkg/libxml2/armeabi-v7a/lib/pkgconfig:/Users/leleliu008/.ndk-pkg/pkg/libyaml/armeabi-v7a/lib/pkgconfig:/Users/leleliu008/.ndk-pkg/pkg/jansson/armeabi-v7a/lib/pkgconfig \
+        PKG_CONFIG_LIBDIR=/Users/leleliu008/.ndk-pkg/pkg
+...
+$ make
+...
+$ make install
+...
+$ ls out/bin
+ctags readtags
+</pre></div>
+</div>
+<p>Simpler example for <cite>aarch64-linux-gnu</cite> can be found in <cite>circle.yml</cite> in the source tree.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Building with configure (*nix including GNU/Linux)</a><ul>
+<li><a class="reference internal" href="#gnu-linux-distributions">GNU/Linux distributions</a></li>
+<li><a class="reference internal" href="#changing-the-executable-s-name">Changing the executable’s name</a></li>
+<li><a class="reference internal" href="#cross-compilation">Cross-compilation</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="building.html"
+                          title="previous chapter">Building ctags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="windows.html"
+                          title="next chapter">Building/hacking/using on MS-Windows</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="windows.html" title="Building/hacking/using on MS-Windows"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building ctags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="building.html" >Building ctags</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building with configure (*nix including GNU/Linux)</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

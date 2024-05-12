@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Testing ctags &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testing a parser" href="testing-parser.html" />
+    <link rel="prev" title="Input text stream" href="internal.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="testing-parser.html" title="Testing a parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="internal.html" title="Input text stream"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing ctags</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="testing-ctags">
+<span id="id1"></span><h1>Testing ctags<a class="headerlink" href="#testing-ctags" title="Permalink to this heading">¶</a></h1>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title"><cite>Table of contents</cite></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#tmain-a-facility-for-testing-main-part" id="id3"><em>Tmain</em>: a facility for testing main part</a></p></li>
+<li><p><a class="reference internal" href="#tinst-installation-test" id="id4"><em>Tinst</em>: installation test</a></p></li>
+<li><p><a class="reference internal" href="#fussy-syntax-checking" id="id5">Fussy syntax checking</a></p></li>
+<li><p><a class="reference internal" href="#finding-performance-bottleneck" id="id6">Finding performance bottleneck</a></p></li>
+<li><p><a class="reference internal" href="#checking-coverage" id="id7">Checking coverage</a></p></li>
+<li><p><a class="reference internal" href="#running-cppcheck" id="id8">Running cppcheck</a></p></li>
+</ul>
+</nav>
+<section id="tmain-a-facility-for-testing-main-part">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink"><em>Tmain</em>: a facility for testing main part</a><a class="headerlink" href="#tmain-a-facility-for-testing-main-part" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p><em>Tmain</em> is introduced to test the area where <em>Units</em>
+does not cover well.</p>
+<p><em>Units</em> works fine for testing parsers. However, it
+assumes something input is given to ctags command,
+and a <cite>tags</cite> file is generated from ctags command.</p>
+<p>Other aspects cannot be tested. Such areas are files
+and directories layout after installation, standard
+error output, exit status, etc.</p>
+<p>You can run test cases with following command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make tmain
+</pre></div>
+</div>
+<p><em>Tmain</em> is still under development so I will not write
+the details here.</p>
+<p>To write a test case, see files under <cite>Tmain/tmain-example.d</cite>.
+In the example, <em>Tmain</em> does:</p>
+<ol class="arabic simple">
+<li><p>runs new subshell and change the working directory to <cite>Tmain/tmain-example.d</cite>,</p></li>
+<li><p>runs <cite>run.sh</cite> with <cite>bash</cite>,</p></li>
+<li><p>captures stdout, stderr and exit status, and</p></li>
+<li><p>compares them with <cite>stdout-expected.txt</cite>, <cite>stderr-expected.txt</cite>,
+and <cite>exit-expected.txt</cite>.</p></li>
+<li><p>compares it with <cite>tags-expected.txt</cite> if run.sh generates <cite>tags</cite> file.</p></li>
+</ol>
+<p><cite>run.sh</cite> is run with following 3 arguments:</p>
+<ol class="arabic simple">
+<li><p>the path for the target ctags</p></li>
+<li><p>the path for <cite>builddir</cite> directory</p></li>
+<li><p>the path for the target readtags</p></li>
+</ol>
+<p>The path for readtags is not reliable; readtags command is not
+available if --disable-readcmd was given in configure time.  A case,
+testing the behavior of readtags, must verify the command existence
+with <cite>test -x $3</cite> before going into the main part of the test.</p>
+<p>When comparing <cite>tags</cite> file with <cite>tags-expected.txt</cite>, you
+must specify the path of <cite>tags</cite> explicitly with -o option
+in ctags command line like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>CTAGS=$1
+BUILDDIR=$2
+${CTAGS} ... -o $BUILDDIR/tags ...
+</pre></div>
+</div>
+<p>This makes it possible to keep the original source directory clean.</p>
+<p>See also <cite>tmain_run</cite> and <cite>tmain_compare</cite> functions in <cite>misc/units</cite>.</p>
+<p>If run.sh exits with code 77, the test case is skipped.
+The output to stdout is captured and printed as the reason
+of skipping.</p>
+<section id="todo">
+<h3>TODO<a class="headerlink" href="#todo" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Run under valgrind</p></li>
+</ul>
+</section>
+</section>
+<section id="tinst-installation-test">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><em>Tinst</em>: installation test</a><a class="headerlink" href="#tinst-installation-test" title="Permalink to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>tinst target is for testing the result of <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make tinst
+</pre></div>
+</div>
+</section>
+<section id="fussy-syntax-checking">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Fussy syntax checking</a><a class="headerlink" href="#fussy-syntax-checking" title="Permalink to this heading">¶</a></h2>
+<p>If <code class="docutils literal notranslate"><span class="pre">-Wall</span></code> of gcc is not enough, you may be interested in this.</p>
+<p>You can change C compiler warning options with ‘WARNING_CFLAGS’
+configure arg-var option.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./configure WARNING_CFLAGS=&#39;-Wall -Wextra&#39;
+</pre></div>
+</div>
+<p>If configure option ‘--with-sparse-cgcc’ is specified,
+cgcc is used as CC. cgcc is part of <a class="reference external" href="https://sparse.docs.kernel.org/en/latest/">Sparse, Semantic Parser for C</a>.
+It is used in development of Linux kernel for finding programming error.
+cgcc acts as a c compiler but more fussy. ‘-Wsparse-all’ is used as
+default option passed to cgcc but you can change with ‘CGCC_CFLAGS’
+configure arg-var option.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./configure --with-sparse-cgcc [CGCC_CFLAGS=&#39;-Wsparse-all&#39;]
+</pre></div>
+</div>
+</section>
+<section id="finding-performance-bottleneck">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Finding performance bottleneck</a><a class="headerlink" href="#finding-performance-bottleneck" title="Permalink to this heading">¶</a></h2>
+<p>See <a class="reference external" href="https://wiki.geany.org/howtos/profiling/gperftools">Profiling with gperftools</a> and <a class="reference external" href="https://github.com/universal-ctags/ctags/issues/383">#383</a>.</p>
+<p>See also <a class="reference external" href="https://github.com/universal-ctags/codebase">codebase</a>.</p>
+</section>
+<section id="checking-coverage">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Checking coverage</a><a class="headerlink" href="#checking-coverage" title="Permalink to this heading">¶</a></h2>
+<p>Before starting coverage measuring, you need to specify
+‘--enable-coverage-gcov’ configure option.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./configure --enable-coverage-gcov
+</pre></div>
+</div>
+<p>After doing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code>, you can build coverage measuring ready
+ctags by <code class="docutils literal notranslate"><span class="pre">make</span></code>. At this time <em>*.gcno</em> files are generated
+by the compiler. <em>*.gcno</em> files can be removed with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code>.</p>
+<p>After building ctags, you can run run-gcov target.  When running
+<em>*.gcda</em> files.  The target runs ctags with all input files under
+<em>Units/**/input.*</em>; and call <code class="docutils literal notranslate"><span class="pre">gcov</span></code>. Human readable result is
+printed. The detail can be shown in <em>*.gcov</em>. files. <em>*.gcda</em> files
+and <em>*.gcov</em> files can be removed with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean-gcov</span></code>.</p>
+</section>
+<section id="running-cppcheck">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Running cppcheck</a><a class="headerlink" href="#running-cppcheck" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="http://cppcheck.sourceforge.net/">cppcheck</a> is a tool for static C/C++ code
+analysis.</p>
+<p>To run it do as following after install cppcheck:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make cppcheck
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Testing ctags</a><ul>
+<li><a class="reference internal" href="#tmain-a-facility-for-testing-main-part"><em>Tmain</em>: a facility for testing main part</a><ul>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tinst-installation-test"><em>Tinst</em>: installation test</a></li>
+<li><a class="reference internal" href="#fussy-syntax-checking">Fussy syntax checking</a></li>
+<li><a class="reference internal" href="#finding-performance-bottleneck">Finding performance bottleneck</a></li>
+<li><a class="reference internal" href="#checking-coverage">Checking coverage</a></li>
+<li><a class="reference internal" href="#running-cppcheck">Running cppcheck</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="internal.html"
+                          title="previous chapter">Input text stream</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="testing-parser.html"
+                          title="next chapter">Testing a parser</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="testing-parser.html" title="Testing a parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="internal.html" title="Input text stream"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Testing ctags</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

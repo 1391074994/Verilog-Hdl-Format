@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Building/hacking/using on MS-Windows &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building on Mac OS" href="osx.html" />
+    <link rel="prev" title="Building with configure (*nix including GNU/Linux)" href="autotools.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="osx.html" title="Building on Mac OS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="autotools.html" title="Building with configure (*nix including GNU/Linux)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="building.html" accesskey="U">Building ctags</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building/hacking/using on MS-Windows</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="building-hacking-using-on-ms-windows">
+<h1>Building/hacking/using on MS-Windows<a class="headerlink" href="#building-hacking-using-on-ms-windows" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Frank Fesevur &lt;<a class="reference external" href="mailto:ffes&#37;&#52;&#48;users&#46;sourceforge&#46;net">ffes<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a>&gt;</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>This part of the documentation is written by Frank Fesevur, co-maintainer of Universal Ctags and the maintainer of the Windows port of this project. It is still very much a work in progress. Things still need to be written down, tested or even investigated. When building for Windows you should be aware that there are many compilers and build environments available. This is a summary of available options and things that have been tested so far.</p>
+<section id="compilers">
+<h2>Compilers<a class="headerlink" href="#compilers" title="Permalink to this heading">¶</a></h2>
+<p>There are many compilers for Windows. Compilers not mentioned here may work but are not tested.</p>
+<section id="microsoft-visual-studio">
+<h3>Microsoft Visual Studio<a class="headerlink" href="#microsoft-visual-studio" title="Permalink to this heading">¶</a></h3>
+<p><a class="reference external" href="https://www.visualstudio.com/">https://www.visualstudio.com/</a></p>
+<p>Obviously there is Microsoft Visual Studio 2013. Many professional developers targeting Windows use Visual Studio. Visual Studio comes in a couple of different editions. Their Express and Community editions are free to use, but a Microsoft-account is required to download the .iso and when you want to continue using it after a 30-days trial period. Other editions of Visual Studio must be purchased.</p>
+<p>Installing Visual Studio will give you the IDE, the command line compilers and the MS-version of make named nmake.</p>
+<p>Note that ctags cannot be built with Visual Studio older than 2013 anymore. There is C99 (or C11) coding used that generates syntax errors with VS2012 and older. This could affect compilers from other vendors as well.</p>
+</section>
+<section id="gcc">
+<h3>GCC<a class="headerlink" href="#gcc" title="Permalink to this heading">¶</a></h3>
+<p>You can use <a class="reference external" href="https://www.mingw-w64.org/">MinGW-w64</a> to build ctags. There are several ways to install MinGW-w64 in Windows.</p>
+<ul class="simple">
+<li><p>MSYS2 <a class="reference external" href="https://www.msys2.org/">https://www.msys2.org/</a></p></li>
+<li><p>MinGW-w64 - for 32 and 64 bit Windows <a class="reference external" href="https://sourceforge.net/projects/mingw-w64/">https://sourceforge.net/projects/mingw-w64/</a></p></li>
+<li><p>TDM-GCC <a class="reference external" href="https://jmeubank.github.io/tdm-gcc/">https://jmeubank.github.io/tdm-gcc/</a></p></li>
+</ul>
+<p>If you want to build a full-featured version, use MSYS2 (with Autotools). Otherwise, you can also use the other two distributions.</p>
+<p><strong>History</strong></p>
+<p>MinGW started it all, but development stalled for a while and no x64 was available. Then the MinGW-w64 fork emerged. It started as a 64-bit compiler, but soon they included both a 32-bit and a 64-bit compiler. But the name remained, a bit confusing. MinGW-w64 appears to be the most used flavor of MinGW at this moment. Many well known programs that originate from GNU/Linux use MinGW-w64 to compile their Windows port.</p>
+</section>
+</section>
+<section id="building-ctags-from-the-command-line">
+<h2>Building ctags from the command line<a class="headerlink" href="#building-ctags-from-the-command-line" title="Permalink to this heading">¶</a></h2>
+<section id="id1">
+<h3>Microsoft Visual Studio<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>Most users of Visual Studio will use the IDE and not the command line to compile a project. But by default a shortcut to the command prompt that sets the proper path is installed in the Start Menu. When this command prompt is used <code class="docutils literal notranslate"><span class="pre">nmake</span> <span class="pre">-f</span> <span class="pre">mk_mvc.mak</span></code> will compile ctags. You can also go into the <code class="docutils literal notranslate"><span class="pre">win32</span></code> subdirectory and run <code class="docutils literal notranslate"><span class="pre">msbuild</span> <span class="pre">ctags_vs2013.sln</span></code> for the default build. Use <code class="docutils literal notranslate"><span class="pre">msbuild</span> <span class="pre">ctags_vs2013.sln</span> <span class="pre">/p:Configuration=Release</span></code> to specifically build a release build. MSBuild is what the IDE uses internally and therefore will produce the same files as the IDE.</p>
+<p>If you want to build an iconv enabled version, you must specify <code class="docutils literal notranslate"><span class="pre">WITH_ICONV=yes</span></code> and <code class="docutils literal notranslate"><span class="pre">ICONV_DIR</span></code> like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmake</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mvc</span><span class="o">.</span><span class="n">mak</span> <span class="n">WITH_ICONV</span><span class="o">=</span><span class="n">yes</span> <span class="n">ICONV_DIR</span><span class="o">=</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">iconvlib</span>
+</pre></div>
+</div>
+<p>If you want to build a debug version using <code class="docutils literal notranslate"><span class="pre">mk_mvc.mak</span></code>, you must specify <code class="docutils literal notranslate"><span class="pre">DEBUG=1</span></code> like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmake</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mvc</span><span class="o">.</span><span class="n">mak</span> <span class="n">DEBUG</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>If you want to create PDB files for debugging even for a release version, you must specify <code class="docutils literal notranslate"><span class="pre">PDB=1</span></code> like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmake</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mvc</span><span class="o">.</span><span class="n">mak</span> <span class="n">PDB</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>GCC<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<p><strong>General</strong></p>
+<p>All the GCC’s come with installers or with zipped archives. Install or extract them in a directory without spaces.</p>
+<p>GNU Make builds for Win32 are available as well, and sometimes are included with the compilers. Make sure it is in your path, for instance by copying the make.exe in the bin directory of your compiler.</p>
+<p>Native win32 versions of the GNU/Linux commands cp, rm and mv can be useful. rm is almost always used in by the <code class="docutils literal notranslate"><span class="pre">clean</span></code> target of a makefile.</p>
+<p><strong>CMD</strong></p>
+<p>Any Windows includes a command prompt. Not the most advanced, but it is enough to do the build tasks. Make sure the path is set properly and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-f</span> <span class="pre">mk_mingw.mak</span></code> should do the trick.</p>
+<p>If you want to build an iconv enabled version, you must specify <code class="docutils literal notranslate"><span class="pre">WITH_ICONV=yes</span></code> like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mingw</span><span class="o">.</span><span class="n">mak</span> <span class="n">WITH_ICONV</span><span class="o">=</span><span class="n">yes</span>
+</pre></div>
+</div>
+<p>If you want to build a debug version, you must specify <code class="docutils literal notranslate"><span class="pre">DEBUG=1</span></code> like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">mk_mingw</span><span class="o">.</span><span class="n">mak</span> <span class="n">DEBUG</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p><strong>MSYS2</strong></p>
+<p>From mingw.org: MSYS is a collection of GNU utilities such as bash, make, gawk and grep to allow building of applications and programs which depend on traditional UNIX tools to be present. It is intended to supplement MinGW and the deficiencies of the cmd shell.</p>
+<p>MSYS2 is a more maintained version of MSYS, but specially geared towards MinGW-w64. You can also use Autotools to build ctags.
+If you use Autotools you can enable parsers which require jansson, libxml2 or libyaml, and can also do the Units testing with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">units</span></code>.
+If you don’t need such features, you can still build ctags without using Autotools: <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-f</span> <span class="pre">mk_mingw.mak</span></code>.</p>
+<p>The following packages are needed to build a full-featured version:</p>
+<ul class="simple">
+<li><p>base-devel (make, autoconf)</p></li>
+<li><p>mingw-w64-{i686,x86_64}-toolchain (mingw-w64-{i686,x86_64}-gcc, mingw-w64-{i686,x86_64}-pkg-config)</p></li>
+<li><p>mingw-w64-{i686,x86_64}-jansson</p></li>
+<li><p>mingw-w64-{i686,x86_64}-libxml2</p></li>
+<li><p>mingw-w64-{i686,x86_64}-libyaml</p></li>
+<li><p>mingw-w64-{i686,x86_64}-xz</p></li>
+</ul>
+<p>If you want to build a single static-linked binary, you can use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./autogen.sh
+./configure<span class="w"> </span>--disable-external-sort<span class="w"> </span>--enable-static
+make
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--disable-external-sort</span></code> is a recommended option for Windows builds.</p>
+<p><strong>Cygwin</strong></p>
+<p>Cygwin provides ports of many GNU/Linux tools and a POSIX API layer. This is the most complete way to get the GNU/Linux terminal feel under Windows. Cygwin has a setup that helps you install all the tools you need. One drawback of Cygwin is that it has poor performance.</p>
+<p>It is easy to build a Cygwin version of ctags using the normal GNU/Linux build steps. This ctags.exe will depend on cygwin1.dll and should only be used within the Cygwin ecosystem.</p>
+<p>The following packages are needed to build a full-featured version:</p>
+<ul class="simple">
+<li><p>libiconv-devel</p></li>
+<li><p>libjansson-devel</p></li>
+<li><p>libxml2-devel</p></li>
+<li><p>libyaml-devel</p></li>
+</ul>
+<p>Cygwin has packages with a recent version of MinGW-w64 as well. This way it is easy to cross-compile a native Windows application with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-f</span> <span class="pre">mk_mingw.mak</span>&#160; <span class="pre">CC=i686-w64-mingw32-gcc</span></code>.</p>
+<p>You can also build a native Windows version using Autotools.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./autogen.sh
+./configure<span class="w"> </span>--host<span class="o">=</span>i686-w64-mingw32<span class="w"> </span>--disable-external-sort
+make
+</pre></div>
+</div>
+<p>If you use Autotools you can also do the Units testing with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">units</span></code>.</p>
+<p>Some anti-virus software slows down the build and test process significantly, especially when <code class="docutils literal notranslate"><span class="pre">./configure</span></code> is running and during the Units tests. In that case it could help to temporarily disable them. But be aware of the risks when you disable your anti-virus software.</p>
+<p><strong>Cross-compile from GNU/Linux</strong></p>
+<p>All major distributions have both MinGW and MinGW-w64 packages. Cross-compiling works the same way as with Cygwin. You cannot do the Windows based Units tests on GNU/Linux.</p>
+</section>
+</section>
+<section id="building-ctags-with-ides">
+<h2>Building ctags with IDEs<a class="headerlink" href="#building-ctags-with-ides" title="Permalink to this heading">¶</a></h2>
+<p>I have no idea how things work for most GNU/Linux developers, but most Windows developers are used to IDEs. Not many use a command prompt and running the debugger from the command line is not a thing a Windows developers would normally do. Many IDEs exist for Windows, I use the two below.</p>
+<section id="id3">
+<h3>Microsoft Visual Studio<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<p>As already mentioned Microsoft Visual Studio 2013 has the free Express and Community editions. For ctags the Windows Desktop Express Edition is enough to get the job done. The IDE has a proper debugger. Project files for VS2013 can be found in the win32 directory.</p>
+<p>Please know that when files are added to the sources.mak, these files need to be added to the .vcxproj and .vcxproj.filters files as well. The XML of these files should not be a problem.</p>
+</section>
+<section id="code-blocks">
+<h3>Code::Blocks<a class="headerlink" href="#code-blocks" title="Permalink to this heading">¶</a></h3>
+<p><a class="reference external" href="http://www.codeblocks.org/">http://www.codeblocks.org/</a></p>
+<p>Code::Blocks is a decent GPL-licensed IDE that has good gcc and gdb integration. The TDM-GCC that can be installed together with Code::Blocks works fine and I can provide a project file. This is an easy way to have a free - free as in beer as well as in speech - solution and to have the debugger within the GUI as well.</p>
+</section>
+</section>
+<section id="other-differences-between-microsoft-windows-and-gnu-linux">
+<h2>Other differences between Microsoft Windows and GNU/Linux<a class="headerlink" href="#other-differences-between-microsoft-windows-and-gnu-linux" title="Permalink to this heading">¶</a></h2>
+<p>There other things where building ctags on Microsoft Windows differs from building on GNU/Linux.</p>
+<ul class="simple">
+<li><p>Filenames on Windows file systems are case-preserving, but not case-sensitive.</p></li>
+<li><p>Windows file systems use backslashes <code class="docutils literal notranslate"><span class="pre">&quot;\&quot;</span></code> as path separators, but paths with forward slashes <code class="docutils literal notranslate"><span class="pre">&quot;/&quot;</span></code> are no problem for a Windows program to recognize, even when a full path (include drive letter) is used.</p></li>
+<li><p>The default line-ending on Windows is CRLF. A tags file generated by the Windows build of ctags will contain CRLF.</p></li>
+<li><p>The tools used to build ctags do understand Unix-line endings without problems. There is no need to convert the line-ending of existing files in the repository.</p></li>
+<li><p>Due to the differences between the GNU/Linux and Windows C runtime library there are some things that need to be added to ctags to make the program as powerful as it is on GNU/Linux. At this moment regex and fnmatch are borrowed from glibc. mkstemp() is taken from MinGW-w64’s runtime library. scandir() is taken from <a class="reference external" href="https://github.com/ClusterLabs/pacemaker/blob/master/replace/scandir.c">Pacemaker</a>.</p></li>
+<li><p>Units testing needs a decent <code class="docutils literal notranslate"><span class="pre">bash</span></code> shell, some unix-like tools (e.g. <code class="docutils literal notranslate"><span class="pre">diff</span></code>, <code class="docutils literal notranslate"><span class="pre">sed</span></code>) and Python 3.5 or later. It is only tested using Cygwin or MSYS2.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Building/hacking/using on MS-Windows</a><ul>
+<li><a class="reference internal" href="#compilers">Compilers</a><ul>
+<li><a class="reference internal" href="#microsoft-visual-studio">Microsoft Visual Studio</a></li>
+<li><a class="reference internal" href="#gcc">GCC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-ctags-from-the-command-line">Building ctags from the command line</a><ul>
+<li><a class="reference internal" href="#id1">Microsoft Visual Studio</a></li>
+<li><a class="reference internal" href="#id2">GCC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-ctags-with-ides">Building ctags with IDEs</a><ul>
+<li><a class="reference internal" href="#id3">Microsoft Visual Studio</a></li>
+<li><a class="reference internal" href="#code-blocks">Code::Blocks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-differences-between-microsoft-windows-and-gnu-linux">Other differences between Microsoft Windows and GNU/Linux</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="autotools.html"
+                          title="previous chapter">Building with configure (*nix including GNU/Linux)</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="osx.html"
+                          title="next chapter">Building on Mac OS</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="osx.html" title="Building on Mac OS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="autotools.html" title="Building with configure (*nix including GNU/Linux)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="building.html" >Building ctags</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building/hacking/using on MS-Windows</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

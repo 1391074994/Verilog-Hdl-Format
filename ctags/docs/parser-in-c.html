@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Writing a parser in C &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Input text stream" href="internal.html" />
+    <link rel="prev" title="Extending ctags with a parser written in C" href="extending.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="internal.html" title="Input text stream"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="extending.html" title="Extending ctags with a parser written in C"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="extending.html" accesskey="U">Extending ctags with a parser written in C</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Writing a parser in C</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="writing-a-parser-in-c">
+<span id="writing-parser-in-c"></span><h1>Writing a parser in C<a class="headerlink" href="#writing-a-parser-in-c" title="Permalink to this heading">¶</a></h1>
+<p>The section is based on the section “Integrating a new language parser” in “<a class="reference external" href="http://ctags.sourceforge.net/EXTENDING.html">How
+to Add Support for a New Language to Exuberant Ctags (EXTENDING)</a>” of Exuberant Ctags documents.</p>
+<p>Now suppose that I want to truly integrate compiled-in support for Swine into
+ctags.</p>
+<section id="registering-a-parser">
+<h2>Registering a parser<a class="headerlink" href="#registering-a-parser" title="Permalink to this heading">¶</a></h2>
+<p>First, I create a new module, <code class="docutils literal notranslate"><span class="pre">swine.c</span></code>, and add one externally visible function
+to it, <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">parserDefinition</span> <span class="pre">*SwineParser(void)</span></code>, and add its name to the
+table in <code class="docutils literal notranslate"><span class="pre">parsers.h</span></code>. The job of this parser definition function is to create
+an instance of the <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> structure (using <code class="docutils literal notranslate"><span class="pre">parserNew()</span></code>) and
+populate it with information defining how files of this language are recognized,
+what kinds of tags it can locate, and the function used to invoke the parser on
+the currently open file.</p>
+<p>The structure <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> allows assignment of the following fields:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sParserDefinition</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="cm">/* defined by parser */</span>
+<span class="w">        </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* name of language */</span>
+<span class="w">        </span><span class="n">kindDefinition</span><span class="o">*</span><span class="w"> </span><span class="n">kindTable</span><span class="p">;</span><span class="w">         </span><span class="cm">/* tag kinds handled by parser */</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">kindCount</span><span class="p">;</span><span class="w">        </span><span class="cm">/* size of &#39;kinds&#39; list */</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">extensions</span><span class="p">;</span><span class="w"> </span><span class="cm">/* list of default extensions */</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">patterns</span><span class="p">;</span><span class="w">   </span><span class="cm">/* list of default file name patterns */</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">aliases</span><span class="p">;</span><span class="w">    </span><span class="cm">/* list of default aliases (alternative names) */</span>
+<span class="w">        </span><span class="n">parserInitialize</span><span class="w"> </span><span class="n">initialize</span><span class="p">;</span><span class="w">   </span><span class="cm">/* initialization routine, if needed */</span>
+<span class="w">        </span><span class="n">parserFinalize</span><span class="w"> </span><span class="n">finalize</span><span class="p">;</span><span class="w">       </span><span class="cm">/* finalize routine, if needed */</span>
+<span class="w">        </span><span class="n">simpleParser</span><span class="w"> </span><span class="n">parser</span><span class="p">;</span><span class="w">           </span><span class="cm">/* simple parser (common case) */</span>
+<span class="w">        </span><span class="n">rescanParser</span><span class="w"> </span><span class="n">parser2</span><span class="p">;</span><span class="w">          </span><span class="cm">/* rescanning parser (unusual case) */</span>
+<span class="w">        </span><span class="n">selectLanguage</span><span class="o">*</span><span class="w"> </span><span class="n">selectLanguage</span><span class="p">;</span><span class="w"> </span><span class="cm">/* may be used to resolve conflicts */</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">method</span><span class="p">;</span><span class="w">           </span><span class="cm">/* See METHOD_ definitions above */</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">useCork</span><span class="p">;</span><span class="w">              </span><span class="cm">/* bit fields of corkUsage */</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> field must be set to a non-empty string. Also either <code class="docutils literal notranslate"><span class="pre">parser</span></code> or
+<code class="docutils literal notranslate"><span class="pre">parser2</span></code> must set to point to a parsing routine which will generate the tag
+entries. All other fields are optional.</p>
+</section>
+<section id="reading-input-file-stream">
+<h2>Reading input file stream<a class="headerlink" href="#reading-input-file-stream" title="Permalink to this heading">¶</a></h2>
+<p>Now all that is left is to implement the parser. In order to do its job, the
+parser should read the file stream using using one of the two I/O interfaces:
+either the character-oriented <code class="docutils literal notranslate"><span class="pre">getcFromInputFile()</span></code>, or the line-oriented
+<code class="docutils literal notranslate"><span class="pre">readLineFromInputFile()</span></code>.</p>
+<p>See “<a class="reference internal" href="internal.html#input-text-stream"><span class="std std-ref">Input text stream</span></a>” for more details.</p>
+</section>
+<section id="parsing">
+<h2>Parsing<a class="headerlink" href="#parsing" title="Permalink to this heading">¶</a></h2>
+<p>How our Swine parser actually parses the contents of the file is entirely up to
+the writer of the parser--it can be as crude or elegant as desired. You will
+note a variety of examples from the most complex (<code class="docutils literal notranslate"><span class="pre">parsers/cxx/*.[hc]</span></code>) to the
+simplest (<code class="docutils literal notranslate"><span class="pre">parsers/make.[ch]</span></code>).</p>
+</section>
+<section id="adding-a-tag-to-the-tag-file">
+<h2>Adding a tag to the tag file<a class="headerlink" href="#adding-a-tag-to-the-tag-file" title="Permalink to this heading">¶</a></h2>
+<p>When the Swine parser identifies an interesting token for which it wants to add
+a tag to the tag file, it should create a <code class="docutils literal notranslate"><span class="pre">tagEntryInfo</span></code> structure and
+initialize it by calling <code class="docutils literal notranslate"><span class="pre">initTagEntry()</span></code>, which initializes defaults and
+fills information about the current line number and the file position of the
+beginning of the line. After filling in information defining the current entry
+(and possibly overriding the file position or other defaults), the parser passes
+this structure to <code class="docutils literal notranslate"><span class="pre">makeTagEntry()</span></code>.</p>
+<p>See “<a class="reference internal" href="internal.html#output-tag-stream"><span class="std std-ref">Output tag stream</span></a>” for more details.</p>
+</section>
+<section id="adding-the-parser-to-ctags">
+<h2>Adding the parser to <code class="docutils literal notranslate"><span class="pre">ctags</span></code><a class="headerlink" href="#adding-the-parser-to-ctags" title="Permalink to this heading">¶</a></h2>
+<p>Lastly, be sure to add your the name of the file containing your parser (e.g.
+<code class="docutils literal notranslate"><span class="pre">parsers/swine.c</span></code>) to the macro <code class="docutils literal notranslate"><span class="pre">PARSER_SRCS</span></code> in the file <code class="docutils literal notranslate"><span class="pre">source.mak</span></code>, so
+that your new module will be compiled into the program.</p>
+</section>
+<section id="misc">
+<h2>Misc.<a class="headerlink" href="#misc" title="Permalink to this heading">¶</a></h2>
+<p>This is all there is to it. All other details are specific to the parser and how
+it wants to do its job.</p>
+<p>There are some support functions which can take care of some commonly needed
+parsing tasks, such as <em>keyword table lookups</em> (see <code class="docutils literal notranslate"><span class="pre">main/keyword.c</span></code>), which you
+can make use of if desired (examples of its use can be found in <code class="docutils literal notranslate"><span class="pre">parsers/c.c</span></code>,
+<code class="docutils literal notranslate"><span class="pre">parsers/eiffel.c</span></code>, and <code class="docutils literal notranslate"><span class="pre">parsers/fortran.c</span></code>).</p>
+<p>Support functions can be found in <code class="docutils literal notranslate"><span class="pre">main/*.h</span></code> excluding <code class="docutils literal notranslate"><span class="pre">main/*_p.h</span></code>.</p>
+<p>Almost everything is already taken care of automatically for you by the
+infrastructure. Writing the actual parsing algorithm is the hardest part, but is
+not constrained by any need to conform to anything in ctags other than that
+mentioned above.</p>
+<p>There are several different approaches used in the parsers inside Universal
+Ctags and you can browse through these as examples of how to go about creating
+your own.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Writing a parser in C</a><ul>
+<li><a class="reference internal" href="#registering-a-parser">Registering a parser</a></li>
+<li><a class="reference internal" href="#reading-input-file-stream">Reading input file stream</a></li>
+<li><a class="reference internal" href="#parsing">Parsing</a></li>
+<li><a class="reference internal" href="#adding-a-tag-to-the-tag-file">Adding a tag to the tag file</a></li>
+<li><a class="reference internal" href="#adding-the-parser-to-ctags">Adding the parser to <code class="docutils literal notranslate"><span class="pre">ctags</span></code></a></li>
+<li><a class="reference internal" href="#misc">Misc.</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="extending.html"
+                          title="previous chapter">Extending ctags with a parser written in C</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="internal.html"
+                          title="next chapter">Input text stream</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="internal.html" title="Input text stream"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="extending.html" title="Extending ctags with a parser written in C"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="extending.html" >Extending ctags with a parser written in C</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Writing a parser in C</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

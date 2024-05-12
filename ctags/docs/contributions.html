@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Contributions &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to release a new version" href="releasing.html" />
+    <link rel="prev" title="Request for extending a parser (or Reporting a bug of parser)" href="reporting.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="releasing.html" title="How to release a new version"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="reporting.html" title="Request for extending a parser (or Reporting a bug of parser)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="contributions">
+<span id="id1"></span><h1>Contributions<a class="headerlink" href="#contributions" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title"><cite>Table of contents</cite></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#basic-rules" id="id3">Basic rules</a></p></li>
+<li><p><a class="reference internal" href="#before-you-start" id="id4">Before You Start</a></p>
+<ul>
+<li><p><a class="reference internal" href="#what-should-be-tagged" id="id5">What should be tagged?</a></p></li>
+<li><p><a class="reference internal" href="#defining-kinds-and-roles" id="id6">Defining kinds and roles</a></p></li>
+<li><p><a class="reference internal" href="#scope-information-and-full-qualified-tags" id="id7">Scope information and full qualified tags</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#developing-a-parser" id="id8">Developing a parser</a></p>
+<ul>
+<li><p><a class="reference internal" href="#origin-of-changes-and-license" id="id9">Origin of changes and license</a></p></li>
+<li><p><a class="reference internal" href="#reference" id="id10">Reference</a></p></li>
+<li><p><a class="reference internal" href="#c-language" id="id11">C language</a></p>
+<ul>
+<li><p><a class="reference internal" href="#notes-for-gnu-emacs-users" id="id12">Notes for GNU emacs users</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#compatibility" id="id13">Compatibility</a></p></li>
+<li><p><a class="reference internal" href="#command-line-options" id="id14">Command line options</a></p></li>
+<li><p><a class="reference internal" href="#writing-parser" id="id15">Writing parser</a></p></li>
+<li><p><a class="reference internal" href="#build-script" id="id16">Build script</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#testing" id="id17">Testing</a></p>
+<ul>
+<li><p><a class="reference internal" href="#test-cases" id="id18">Test cases</a></p></li>
+<li><p><a class="reference internal" href="#testing-your-parser" id="id19">Testing your parser</a></p></li>
+<li><p><a class="reference internal" href="#add-realistic-examples-for-you-parser-to-codebase" id="id20">Add realistic examples for you parser to <em>codebase</em></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#writing-documents" id="id21">Writing Documents</a></p>
+<ul>
+<li><p><a class="reference internal" href="#how-to-add-a-new-man-page-for-your-parser" id="id22">How to add a new man page for your parser</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#committing-and-submitting-a-pull-request" id="id23">Committing and submitting a pull request</a></p>
+<ul>
+<li><p><a class="reference internal" href="#title-of-commit-log-and-pull-request" id="id24">Title of commit log and pull request</a></p></li>
+<li><p><a class="reference internal" href="#commit-log" id="id25">Commit log</a></p></li>
+<li><p><a class="reference internal" href="#squashing-commits" id="id26">Squashing commits</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#rules-for-reviewing-a-pull-request" id="id27">Rules for reviewing a pull request</a></p>
+<ul>
+<li><p><a class="reference internal" href="#testing-a-pr-locally-before-being-merged" id="id28">Testing a PR locally before being merged</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<hr class="docutils" />
+<p>You are welcome.</p>
+<p>Supporting many parsers with few developers is impossible.  We invite
+the person who contributes a parser to u-ctags team, especially if the
+target language is updated frequently. TypeScript is a typical
+frequently updated language.</p>
+<p>This is what we would like potential contributors to know. In this
+section “you” means a contributor, and “we” means reviewers. “I” means
+Masatake YAMATO, the author of this section.</p>
+<p>This page gathers random notes for newly joined members.</p>
+<section id="basic-rules">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Basic rules</a><a class="headerlink" href="#basic-rules" title="Permalink to this heading">¶</a></h2>
+<p>You are the maintainer of your parser, of course.</p>
+<p>You may update your parser as you want under the rules described
+later.</p>
+<p>You may review pull requests changing your parser.</p>
+<p>A parser exists and is maintained independently form other
+parsers. However, considering the consistency between parsers are not
+bad.</p>
+<p>You can put your name to docs/developers.rst.</p>
+<p>Read docs.ctags.io.</p>
+</section>
+<section id="before-you-start">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Before You Start</a><a class="headerlink" href="#before-you-start" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div></div></blockquote>
+<p>When working on ctags I take into account the following uses for
+tags:</p>
+<ol class="arabic simple">
+<li><p>inserting the name with completion,</p></li>
+<li><p>jumping to the definition of the name (in an editor or similar tool),</p></li>
+<li><p>navigating the source code tree,</p></li>
+<li><p>summarizing the source code tree, and</p></li>
+<li><p>answering a query about the source code tree.</p></li>
+</ol>
+<p>When I review new parser code, I expect the parser to contribute to
+these purposes.</p>
+<section id="what-should-be-tagged">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">What should be tagged?</a><a class="headerlink" href="#what-should-be-tagged" title="Permalink to this heading">¶</a></h3>
+<p>There are two classes of tags. The primary class is a <em>definition tag</em>.
+If a name is defined in a file, the name and the line and the file
+where the name is defined should be tagged (recorded). However, in
+some languages answering, “What is a definition?” is not so obvious.
+You may have to decide what is tagged in your parser thoughtfully.
+The purposes listed at the top of this subsection should help you
+decide.</p>
+<p>The secondary class is a <em>reference tag</em>. This is newly introduced in
+Universal Ctags and is not available in Exuberant Ctags. If a name is
+used (or referenced) in a file, it can be tagged as a reference tag.</p>
+<p>Don’t be confused by the two tag classes.</p>
+</section>
+<section id="defining-kinds-and-roles">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Defining kinds and roles</a><a class="headerlink" href="#defining-kinds-and-roles" title="Permalink to this heading">¶</a></h3>
+<p>Defining kinds is the most important task in writing a new parser.
+Once a kind is introduced, we cannot change it because it breaks
+tags file compatibility.</p>
+<p>See <a class="reference internal" href="man/ctags.1.html#tag-entries"><span class="std std-ref">TAG ENTRIES</span></a> in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> for more details of kinds
+and roles.</p>
+</section>
+<section id="scope-information-and-full-qualified-tags">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Scope information and full qualified tags</a><a class="headerlink" href="#scope-information-and-full-qualified-tags" title="Permalink to this heading">¶</a></h3>
+<p>Optional.
+TBW.</p>
+</section>
+</section>
+<section id="developing-a-parser">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Developing a parser</a><a class="headerlink" href="#developing-a-parser" title="Permalink to this heading">¶</a></h2>
+<section id="origin-of-changes-and-license">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Origin of changes and license</a><a class="headerlink" href="#origin-of-changes-and-license" title="Permalink to this heading">¶</a></h3>
+<p>Make clear where the patches come from and who wrote them.</p>
+<p>If you backport patches from Geany or some other project, their
+commit IDs should be logged, too.</p>
+<p>Include a copyright notice when adding a new
+<code class="docutils literal notranslate"><span class="pre">{parsers,main}/*.[ch]</span></code> file.
+A new file also requires a license notice at the head of the file.</p>
+<p>We expect your change (or new code) to be provided under the terms of
+the General Public License version 2 or any later version. We would
+like you to express “version 2 or any later version”.</p>
+</section>
+<section id="reference">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Reference</a><a class="headerlink" href="#reference" title="Permalink to this heading">¶</a></h3>
+<p>In the comment at the head of your source file, include a URL for a
+web page that explains the language your parser deals with.
+Especially if the language is not well known.</p>
+<p>Here is an example.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">*</span>
+<span class="cm">*   Copyright (c) 2016, Masatake YAMATO</span>
+<span class="cm">*   Copyright (c) 2016, Red Hat, K.K.</span>
+<span class="cm">*</span>
+<span class="cm">*   This source code is released for free distribution under the terms of the</span>
+<span class="cm">*   GNU General Public License version 2 or (at your option) any later version.</span>
+<span class="cm">*</span>
+<span class="cm">*   This module contains functions for generating tags for property list defined</span>
+<span class="cm">*   in http://www.apple.com/DTDs/PropertyList-1.0.dtd.</span>
+<span class="cm">*/</span>
+</pre></div>
+</div>
+</section>
+<section id="c-language">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">C language</a><a class="headerlink" href="#c-language" title="Permalink to this heading">¶</a></h3>
+<p>Don’t forget to use <cite>static</cite> modifiers. Don’t introduce unnecessary
+global variables.</p>
+<p>Remove unused variables and types. If you want to keep them in your
+source code, include a descriptive comment.</p>
+<p>Use the available facilities provided by the ctags core. If the
+facilities are not enough for writing a parser, consider extending
+the core first.</p>
+<p>Use underscores in names only in file scope objects.
+Don’t use them in function declarations, variable declarations or
+macro names in header files.</p>
+<p>Basic whitespace settings are specified in the <a class="reference external" href="https://editorconfig.org/">EditorConfig</a> configuration file (<cite>.editorconfig</cite>).
+There are <a class="reference external" href="https://editorconfig.org/#download">plugins</a> available
+for most popular editors to automatically configure these settings.</p>
+<p>Style guidelines are largely captured in the <a class="reference external" href="http://uncrustify.sourceforge.net/">Uncrustify</a> configuration file
+(<cite>.uncrustify.cfg</cite>). Formatting can be checked with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uncrustify<span class="w"> </span>-c<span class="w"> </span>.uncrustify.cfg<span class="w"> </span>-f<span class="w"> </span>parsers/awk.c<span class="w"> </span><span class="p">|</span><span class="w"> </span>diff<span class="w"> </span>-u<span class="w"> </span>parsers/awk.c<span class="w"> </span>-
+</pre></div>
+</div>
+<p>Don’t mix <cite>whitespace cleanup</cite> fixes and other improvements in one
+commit when changing the existing code. Style fixes, including
+<cite>whitespace cleanup</cite>, should be in a separate commit. Mixing
+functional changes with style fixes makes reviewing harder.</p>
+<p>If possible, don’t use file static variables. Find an alternative way
+that uses parameters.</p>
+<section id="notes-for-gnu-emacs-users">
+<h4><a class="toc-backref" href="#id12" role="doc-backlink">Notes for GNU emacs users</a><a class="headerlink" href="#notes-for-gnu-emacs-users" title="Permalink to this heading">¶</a></h4>
+<p>If you use GNU emacs, utilize the <cite>.editorconfig</cite> configuration based
+on non-GNU C style. Here non-GNU C style means
+“align a keyword for control flow and <cite>{</cite> of the block start”.</p>
+<p>GNU style:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(...)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+</pre></div>
+</div>
+<p>non-GNU style:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(...)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+</pre></div>
+</div>
+<p>For combining the style and <cite>.editorconfig</cite> configuration, put
+following code snippet to your .emacs:</p>
+<div class="highlight-emacs notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">add-hook</span><span class="w"> </span><span class="ss">&#39;hack-local-variables-hook</span>
+<span class="w">        </span><span class="p">(</span><span class="nb">lambda</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="nv">editorconfig-apply</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p><cite>.dir-locals.el</cite> in ctags source tree applies “linux” style of <cite>cc-mode</cite>.
+Above code snippet applies the <cite>.editorconfig</cite> configuration AFTER
+installing the “linux” style to the current buffer.</p>
+<p>I like GNU style, but for keeping consistency in existing code of
+Exuberant Ctags, the origin of Universal Ctags, I introduced the style
+and configuration to my .emacs.  Please, do the same.</p>
+</section>
+</section>
+<section id="compatibility">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Compatibility</a><a class="headerlink" href="#compatibility" title="Permalink to this heading">¶</a></h3>
+<p>We are trying to maintain compatibility with Exuberant-ctags in the
+following two areas.</p>
+<ul class="simple">
+<li><p>Command line option</p></li>
+<li><p>Tag file compatibility</p></li>
+</ul>
+</section>
+<section id="command-line-options">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Command line options</a><a class="headerlink" href="#command-line-options" title="Permalink to this heading">¶</a></h3>
+<p>Don’t introduce <cite>--&lt;LANG&gt;-foo=…</cite> style options. They are less
+suitable for command-line completion by the zsh/bash completion
+engines. Instead, introduce <cite>--foo-&lt;LANG&gt;=…</cite> style options.</p>
+<p>Add an entry to docs/news.rst if you change the behavior of an option
+or introduce a new option. If you think the option is stable enough,
+add it to ctags.1.in, too.</p>
+<p>Use underscore as a prefix for experimental options. Once an option
+is introduced, it must be maintained. We don’t want to remove it
+later. If you are not sure of the usefulness of the option, use an
+underscore at the start of a long option name like: <cite>--_echo</cite>.</p>
+<p>Write a test case for Tmain or Units.</p>
+<p>Don’t remove an option, especially if it exists in Exuberant Ctags.</p>
+</section>
+<section id="writing-parser">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Writing parser</a><a class="headerlink" href="#writing-parser" title="Permalink to this heading">¶</a></h3>
+<p>There are two ways to write a parser, writing in C and using <em>optlib parser</em>.</p>
+<p>Universal Ctags extends the <em>optlib parser</em> feature so extensively that it can
+implement most of functions of a parser.
+<em>optlib parser</em> is also suitable for prototyping.</p>
+<p>See <a class="reference internal" href="man/ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a> and <a class="reference internal" href="optlib.html#optlib"><span class="std std-ref">Extending ctags with Regex parser (optlib)</span></a> for details.
+See <a class="reference internal" href="optlib.html#optlib2c"><span class="std std-ref">Translating an option file into C source code (optlib2c)</span></a> how to add a optlib parser on <code class="docutils literal notranslate"><span class="pre">ctags</span></code>.</p>
+<p>For writing a parser in C see <a class="reference internal" href="parser-in-c.html#writing-parser-in-c"><span class="std std-ref">Writing a parser in C</span></a>.</p>
+</section>
+<section id="build-script">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Build script</a><a class="headerlink" href="#build-script" title="Permalink to this heading">¶</a></h3>
+<p>To add your optlib parser, <code class="docutils literal notranslate"><span class="pre">foo.ctags</span></code>, into <code class="docutils literal notranslate"><span class="pre">ctags</span></code> do the following steps;</p>
+<ul class="simple">
+<li><p>put <code class="docutils literal notranslate"><span class="pre">foo.ctags</span></code> file on <code class="docutils literal notranslate"><span class="pre">optlib/</span></code> directory</p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">foo.ctags</span></code> on <code class="docutils literal notranslate"><span class="pre">OPTLIB2C_INPUT</span></code> variable in <code class="docutils literal notranslate"><span class="pre">source.mak</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">fooParser</span></code> on <code class="docutils literal notranslate"><span class="pre">PARSER_LIST</span></code> macro variable in <code class="docutils literal notranslate"><span class="pre">main/parser_p.h</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">foo</span></code> on the list in the section “New parsers” in <code class="docutils literal notranslate"><span class="pre">docs/news.rst</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">&quot;..\optlib\foo.c&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">win32/ctags_vs2013.vcxproj</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">&quot;..\optlib\foo.c&quot;</span></code> in  <code class="docutils literal notranslate"><span class="pre">win32/ctags_vs2013.vcxproj.filters</span></code></p></li>
+</ul>
+<p>Translated C code is also committed to our git repository. The translated code
+is useful for building ctags on the platforms where optlib2c doesn’t run.</p>
+<p>To add your parser file, <code class="docutils literal notranslate"><span class="pre">foo.c</span></code>, into <code class="docutils literal notranslate"><span class="pre">ctags</span></code> do the following steps;</p>
+<ul class="simple">
+<li><p>put <code class="docutils literal notranslate"><span class="pre">foo.c</span></code> file on <code class="docutils literal notranslate"><span class="pre">parsers/</span></code> directory</p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">foo.c</span></code> on <code class="docutils literal notranslate"><span class="pre">PARSER_SRCS</span></code> variable in <code class="docutils literal notranslate"><span class="pre">sources.mak</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">foo</span></code> on the list in the section “New parsers” in <code class="docutils literal notranslate"><span class="pre">docs/news.rst</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">&quot;..\parsers\foo.c&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">win32/ctags_vs2013.vcxproj</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">&quot;..\parsers\foo.c&quot;</span></code> in  <code class="docutils literal notranslate"><span class="pre">win32/ctags_vs2013.vcxproj.filters</span></code></p></li>
+</ul>
+<p>If you have GNU make, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">win32</span></code> updates the win32 files described above
+from <code class="docutils literal notranslate"><span class="pre">makefile.mak</span></code>.
+Without updating win32 files our CI process run on
+Appveyor will fail.</p>
+<p>See <a class="reference external" href="https://github.com/universal-ctags/ctags/pull/2765">this pull request</a>
+for the <cite>Meson</cite> parser as an example of optlib parser.</p>
+</section>
+</section>
+<section id="testing">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Testing</a><a class="headerlink" href="#testing" title="Permalink to this heading">¶</a></h2>
+<p>Add test cases, and run both existing cases and your new cases.</p>
+<p>If you add a new parser or modify an existing parser, add new test
+cases to “Units”. If you modify the core, add new test cases to
+“Tmain”. The way to write and run test cases is described in
+<a class="reference internal" href="testing-ctags.html#testing-ctags"><span class="std std-ref">Testing ctags</span></a> and <a class="reference internal" href="testing-parser.html#testing-parser"><span class="std std-ref">Testing a parser</span></a> section of this guide.</p>
+<p>With the exception of the tmain test harness, you can specify VG=1
+for running test cases under the Valgrind memory debugger.</p>
+<p>A parse should not enter an infinite loop for bad input.
+A parse should not crash for bad input.
+A parse should return control to its caller for bad input.</p>
+<p>Describe what kind of tests are passed in the commit message.
+e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">units</span> <span class="n">LANGUAGES</span><span class="o">=</span><span class="n">TTCN</span> <span class="n">VG</span><span class="o">=</span><span class="mi">1</span> <span class="ow">is</span> <span class="n">passed</span><span class="o">.</span>
+<span class="n">make</span> <span class="n">fuzz</span> <span class="n">LANGUAGES</span><span class="o">=</span><span class="n">TTCN</span> <span class="n">VG</span><span class="o">=</span><span class="mi">1</span>  <span class="ow">is</span> <span class="n">passed</span><span class="o">.</span>
+<span class="n">make</span> <span class="n">chop</span> <span class="n">LANGUAGES</span><span class="o">=</span><span class="n">TTCN</span> <span class="n">VG</span><span class="o">=</span><span class="mi">1</span>  <span class="ow">is</span> <span class="n">passed</span><span class="o">.</span>
+</pre></div>
+</div>
+<section id="test-cases">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Test cases</a><a class="headerlink" href="#test-cases" title="Permalink to this heading">¶</a></h3>
+<p>Add a test case to Unit when creating or modifying a parser.</p>
+<p>Add a test case to Tmain when modifying the core.</p>
+<p>Add a test case to Tinst when modifying the install target in the
+Makefile.</p>
+</section>
+<section id="testing-your-parser">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Testing your parser</a><a class="headerlink" href="#testing-your-parser" title="Permalink to this heading">¶</a></h3>
+<p>If possible, prepare a simple test and a complex one. The simple one
+for helping us, the maintainers, understand the intent of the
+modification.</p>
+<p>If there are more than 3 test cases for a parser, a parser specific
+test case directory should be prepared like <cite>Units/parser-c.r</cite>.</p>
+</section>
+<section id="add-realistic-examples-for-you-parser-to-codebase">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Add realistic examples for you parser to <em>codebase</em></a><a class="headerlink" href="#add-realistic-examples-for-you-parser-to-codebase" title="Permalink to this heading">¶</a></h3>
+<p>At <a class="reference external" href="https://github.com/universal-ctags/codebase">codebase</a>, we
+collect realistic examples that can be used for evaluating your parser
+especially about its performance aspect. Consider contributing to the
+repository when adding a new parser to Universal Ctags.</p>
+</section>
+</section>
+<section id="writing-documents">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Writing Documents</a><a class="headerlink" href="#writing-documents" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">man/*.rst</span></code> files are the source files of our man pages.
+The man pages are for users. See “<a class="reference internal" href="#how-to-add-a-new-man-page-for-your-parser">How to add a new man page for your parser</a>”.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/*.rst</span></code> files explain experimental
+new features. The files are for developers. The parts of contents
+of <code class="docutils literal notranslate"><span class="pre">docs/*.rst</span></code> should be moved to <code class="docutils literal notranslate"><span class="pre">man/*.rst</span></code> in the future.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">docs/news.rst</span></code> especially if you add a new parser.</p></li>
+<li><p>Write <code class="docutils literal notranslate"><span class="pre">docs/parser-&lt;NAME-OF-YOUR-PARSER&gt;.rst</span></code> as you want.
+A FAQ and the design or your parser are common topics.
+Consider the maintenance of your parser after you left the
+project for some reason.</p></li>
+</ul>
+<section id="how-to-add-a-new-man-page-for-your-parser">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">How to add a new man page for your parser</a><a class="headerlink" href="#how-to-add-a-new-man-page-for-your-parser" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>write what the users of your parser may want to (or should) know to <code class="docutils literal notranslate"><span class="pre">man/ctags-lang-LANGUAGE.7.rst.in</span></code></p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">man/ctags-lang-LANGUAGE.7</span></code> to <code class="docutils literal notranslate"><span class="pre">GEN_IN_MAN_FILES</span></code> of <code class="docutils literal notranslate"><span class="pre">man/Makefile.am</span></code>.</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-C</span> <span class="pre">man</span> <span class="pre">update-docs</span></code>. This step generates the rst file at <code class="docutils literal notranslate"><span class="pre">docs/man/ctags-lang-LANGUAGE.7.rst</span></code>.</p></li>
+<li><p>add <code class="docutils literal notranslate"><span class="pre">ctags-lang-LANGUAGE(7)</span></code> to (toctree of) <code class="docutils literal notranslate"><span class="pre">docs/man-pages.rst</span></code>.</p></li>
+<li><dl class="simple">
+<dt>do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> for</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">man/ctags-lang-LANGUAGE.7.rst.in</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/man/ctags-lang-LANGUAGE.7.rst</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>git commit with a log header: “<code class="docutils literal notranslate"><span class="pre">docs(man):</span> <span class="pre">add</span> <span class="pre">a</span> <span class="pre">man</span> <span class="pre">page</span> <span class="pre">for</span> <span class="pre">LANGUAGE</span></code>”.</p></li>
+<li><p>make a pull request</p></li>
+</ol>
+</section>
+</section>
+<section id="committing-and-submitting-a-pull-request">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Committing and submitting a pull request</a><a class="headerlink" href="#committing-and-submitting-a-pull-request" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Make a pull request even if the change is small enough.</p></li>
+<li><p>Wait for one day till merging even if the change is small enough.</p></li>
+<li><p>Wait for 3 days at least for non-small change to your parser.</p></li>
+<li><p>Wait for 7 days at least and get an LGTM (Looks Good To Me) comment from a
+member of the team if your commit changes the other parts than your parser and
+the changes are not obvious.</p></li>
+<li><p>Add a test case to your pull request. To make git-bisect happy,
+don’t add a test case for a feature or a bugfix before adding the
+code for the feature or the bugfix.</p></li>
+<li><p>Even if a pull request includes multiple commits, each commit must
+be semantically well separated. Sometimes you may want to adjust
+whitespaces in the code. Adjusting whitespaces is o.k., but don’t
+mix the other change with it. Make a commit just for the whitespaces
+adjustment.</p></li>
+</ul>
+<section id="title-of-commit-log-and-pull-request">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Title of commit log and pull request</a><a class="headerlink" href="#title-of-commit-log-and-pull-request" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>“Misc Fixes” is allowed as far as each commit in a pull request is
+semantically well separated. Sometimes, you may fix various minor
+things randomly. Making pull requests for each of them is
+boring. You may want to make “mix fixes” pull request especially if
+your code is young.</p></li>
+<li><p>Use [WIP] (Work In Progress) prefix as the title of your pull request, if you don’t
+want people to take time for reviewing your code. Removing [WIP]
+implies “ready to be reviewed.”</p></li>
+<li><p>Use [FYI] (For Your Information) prefix as the title to show your idea or sketch represented
+in C language.</p></li>
+<li><p>Use the name of your parser as the prefix of a commit log.</p>
+<div class="highlight-git notranslate"><div class="highlight"><pre><span></span>C++: record template type parameters to detect the end of template prefix
+
+If we know Foo is a name of type, it becomes easier to detect whether
+&quot;&gt;&gt;&quot; in &quot;Foo&gt;&gt;&quot; is a shift operator or the end marker of the template
+prefix.
+</pre></div>
+</div>
+<p>In the above example, “C++: ” is the prefix.</p>
+</li>
+<li><p>Use the name of your parser as the prefix of a pull request if your
+change is about a parser.</p></li>
+<li><p>Use following prefixes for the changes other than parsers.</p>
+<dl class="simple">
+<dt>main</dt><dd><p>Changes for files under <code class="docutils literal notranslate"><span class="pre">main/</span></code> directory</p>
+</dd>
+<dt>Units</dt><dd><p>Changes for the test cases under <code class="docutils literal notranslate"><span class="pre">Units/</span></code> directory</p>
+</dd>
+<dt>Tmain</dt><dd><p>Changes for the test cases under <code class="docutils literal notranslate"><span class="pre">Tmain/</span></code> directory</p>
+</dd>
+<dt>units</dt><dd><p>Changes for the test harness (misc/units.py) itself</p>
+</dd>
+<dt>docs(web)</dt><dd><p>Changes for the <code class="docutils literal notranslate"><span class="pre">docs/*.rst</span></code></p>
+</dd>
+<dt>docs(man)</dt><dd><p>Changes for the <code class="docutils literal notranslate"><span class="pre">man/*.rst</span></code></p>
+</dd>
+<dt>dsl</dt><dd><p>Changes operators that can be used in optscript command</p>
+</dd>
+<dt>operators</dt><dd><p>Changes operators that can be used in optlib <cite>{{</cite> … <cite>}}</cite> blocks</p>
+</dd>
+<dt>prelude</dt><dd><p>Changes optlib procedures defined in main/CommonPrelude.ps</p>
+</dd>
+<dt>CXX (or Cxx)</dt><dd><p>Changes affecting all parsers defined in parsers/cxx</p>
+</dd>
+</dl>
+<p>See also the output of <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">log</span></code> command.</p>
+</li>
+<li><p>Combine prefixes with a comma if a change modifies multiple parts of our source tree</p>
+<p>Here is an example.</p>
+<div class="highlight-git notranslate"><div class="highlight"><pre><span></span>commit 64a05963c108af4b7832a2215006ff5cafcaaebb
+Author: Masatake YAMATO &lt;yamato@redhat.com&gt;
+Date:   Tue Mar 19 12:19:37 2019 +0900
+
+main,Flex,JavaScript,SQL,refactor: introduce a helper function to skip two character sequence
+
+...
+</pre></div>
+</div>
+</li>
+<li><p>Use following prefixes if the change as no run-time impact.</p>
+<dl class="simple">
+<dt>cosmetic</dt><dd><ul class="simple">
+<li><p>Remove whitespaces at the end of lines</p></li>
+<li><p>Adjust indentation</p></li>
+<li><p>Remove an empty line</p></li>
+<li><p>…</p></li>
+</ul>
+</dd>
+<dt>style</dt><dd><ul class="simple">
+<li><p>Rename symbol names</p></li>
+<li><p>…</p></li>
+</ul>
+</dd>
+<dt>refactor</dt><dd><ul class="simple">
+<li><p>Code transformation that doesn’t intent changing run-time behavior</p></li>
+</ul>
+</dd>
+</dl>
+<p>These prefixes reduce the load of reviewers.</p>
+</li>
+<li><p>Use [INCOMPATIBLE] as a prefix for both pull request and commit log
+if the change breaks the compatibility with Exuberant Ctags. Write
+an explanation in <code class="docutils literal notranslate"><span class="pre">man/ctags-incompatibilities.7.rst.in</span></code> about the
+detail of breakage.</p></li>
+<li><p>Use [SELF-INCOMPATIBLE] as a prefix for both pull request and commit
+log if the change breaks the compatibility with Universal Ctags
+itself.</p></li>
+</ul>
+</section>
+<section id="commit-log">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Commit log</a><a class="headerlink" href="#commit-log" title="Permalink to this heading">¶</a></h3>
+<p>(For new parsers the following criteria is not applicable.)</p>
+<p>Make clear the original motivation for the change and/or the impact
+on the tags file.</p>
+<p>If you fix a bug reported somewhere on the web, its URL should be
+logged, too.</p>
+<p>If the bug is reported in the Exuberant Ctags tracker on the
+SourceForge web site, log it as <code class="docutils literal notranslate"><span class="pre">sf-bugs:N</span></code>, <code class="docutils literal notranslate"><span class="pre">sf-patches:N</span></code>,
+<code class="docutils literal notranslate"><span class="pre">sf-support-requests:N</span></code>, or <code class="docutils literal notranslate"><span class="pre">sf-feature-requests:N</span></code>.
+<code class="docutils literal notranslate"><span class="pre">docs/tracking.rst</span></code> also should be updated.</p>
+</section>
+<section id="squashing-commits">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Squashing commits</a><a class="headerlink" href="#squashing-commits" title="Permalink to this heading">¶</a></h3>
+<p>When you submit a pull request you might receive some comments from a
+reviewer and, in response, update your patches. After updating, we
+would like you to squash your patches into logical units of work
+before we merge them to keep the repository history as simple as
+possible.</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">-i</span></code> and <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span> <span class="pre">--force</span></code> to refine your change in
+the meaning of “semantically well separated.”  “semantically well
+separated” is important than “recording the history of your try and
+error.”</p></li>
+</ul>
+<p>Quoted from &#64;steveno in <a class="reference external" href="https://github.com/universal-ctags/ctags/issues/393">#393</a> :</p>
+<blockquote>
+<div><p>You can check out this page for a good example of how to squash
+commits
+<a class="reference external" href="http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html">http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html</a></p>
+<p>Once you’ve squashed all your commits, simply do a git push -f to
+your fork, and GitHub will update the pull request for you
+automatically.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="rules-for-reviewing-a-pull-request">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">Rules for reviewing a pull request</a><a class="headerlink" href="#rules-for-reviewing-a-pull-request" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Put your rough schedule as a comment if you don’t have time, but you
+want to review.</p></li>
+</ul>
+<section id="testing-a-pr-locally-before-being-merged">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Testing a PR locally before being merged</a><a class="headerlink" href="#testing-a-pr-locally-before-being-merged" title="Permalink to this heading">¶</a></h3>
+<p>You may want to test a PR locally before it is merged into the master
+repository.</p>
+<p>If you want to test a PR #2234 on a repository <cite>upstream</cite> as branch name
+<cite>BRANCHNAME</cite>;:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git fetch upstream pull/2234/head:BRANCHNAME
+$ git checkout BRANCHNAME
+</pre></div>
+</div>
+<p>This creates a branch <cite>BRANCHNAME</cite>, and pulls the PR into the branch, and
+switches to the branch. The branch name <cite>BRANCHNAME</cite> does not have to be the
+same as the branch name of the PR.</p>
+<p>Alternatively suppose you want to test <code class="docutils literal notranslate"><span class="pre">USERNAME</span></code>’s PR with branch
+name <code class="docutils literal notranslate"><span class="pre">main-fix-foo</span></code>;:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="n">tmp</span><span class="o">-</span><span class="n">main</span><span class="o">-</span><span class="n">fix</span><span class="o">-</span><span class="n">foo</span> <span class="n">master</span>
+<span class="n">git</span> <span class="n">pull</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">USERNAME</span><span class="o">/</span><span class="n">ctags</span><span class="o">.</span><span class="n">git</span> <span class="n">main</span><span class="o">-</span><span class="n">fix</span><span class="o">-</span><span class="n">foo</span>
+</pre></div>
+</div>
+<p>This creates a branch <code class="docutils literal notranslate"><span class="pre">tmp-main-fix-fix-foo</span></code> from a branch <code class="docutils literal notranslate"><span class="pre">master</span></code> and
+switches to it, then pulls the branch <code class="docutils literal notranslate"><span class="pre">main-fix-foo</span></code> from
+<code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/ctags.git</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Contributions</a><ul>
+<li><a class="reference internal" href="#basic-rules">Basic rules</a></li>
+<li><a class="reference internal" href="#before-you-start">Before You Start</a><ul>
+<li><a class="reference internal" href="#what-should-be-tagged">What should be tagged?</a></li>
+<li><a class="reference internal" href="#defining-kinds-and-roles">Defining kinds and roles</a></li>
+<li><a class="reference internal" href="#scope-information-and-full-qualified-tags">Scope information and full qualified tags</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#developing-a-parser">Developing a parser</a><ul>
+<li><a class="reference internal" href="#origin-of-changes-and-license">Origin of changes and license</a></li>
+<li><a class="reference internal" href="#reference">Reference</a></li>
+<li><a class="reference internal" href="#c-language">C language</a><ul>
+<li><a class="reference internal" href="#notes-for-gnu-emacs-users">Notes for GNU emacs users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li><a class="reference internal" href="#command-line-options">Command line options</a></li>
+<li><a class="reference internal" href="#writing-parser">Writing parser</a></li>
+<li><a class="reference internal" href="#build-script">Build script</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing">Testing</a><ul>
+<li><a class="reference internal" href="#test-cases">Test cases</a></li>
+<li><a class="reference internal" href="#testing-your-parser">Testing your parser</a></li>
+<li><a class="reference internal" href="#add-realistic-examples-for-you-parser-to-codebase">Add realistic examples for you parser to <em>codebase</em></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#writing-documents">Writing Documents</a><ul>
+<li><a class="reference internal" href="#how-to-add-a-new-man-page-for-your-parser">How to add a new man page for your parser</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#committing-and-submitting-a-pull-request">Committing and submitting a pull request</a><ul>
+<li><a class="reference internal" href="#title-of-commit-log-and-pull-request">Title of commit log and pull request</a></li>
+<li><a class="reference internal" href="#commit-log">Commit log</a></li>
+<li><a class="reference internal" href="#squashing-commits">Squashing commits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rules-for-reviewing-a-pull-request">Rules for reviewing a pull request</a><ul>
+<li><a class="reference internal" href="#testing-a-pr-locally-before-being-merged">Testing a PR locally before being merged</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="reporting.html"
+                          title="previous chapter">Request for extending a parser (or Reporting a bug of parser)</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="releasing.html"
+                          title="next chapter">How to release a new version</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="releasing.html" title="How to release a new version"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="reporting.html" title="Request for extending a parser (or Reporting a bug of parser)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

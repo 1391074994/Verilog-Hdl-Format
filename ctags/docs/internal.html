@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Input text stream &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Testing ctags" href="testing-ctags.html" />
+    <link rel="prev" title="Writing a parser in C" href="parser-in-c.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="testing-ctags.html" title="Testing ctags"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parser-in-c.html" title="Writing a parser in C"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="extending.html" accesskey="U">Extending ctags with a parser written in C</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Input text stream</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="input-text-stream">
+<span id="id1"></span><h1>Input text stream<a class="headerlink" href="#input-text-stream" title="Permalink to this heading">¶</a></h1>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/input-text-stream.svg"><img alt="_images/input-text-stream.svg" height="301" src="_images/input-text-stream.svg" width="507" /></a>
+</figure>
+<p>Function prototypes for handling input text stream are declared in
+<code class="docutils literal notranslate"><span class="pre">main/read.h</span></code>. The file exists in Exuberant Ctags, too.  However, the
+names functions are changed when overhauling <code class="docutils literal notranslate"><span class="pre">--line-directive</span></code>
+option. (In addition macros were converted to functions for making
+data structures for the input text stream opaque.)</p>
+<p>Ctags has 3 groups of functions for handling input: <em>input</em>, <em>bypass</em>, and
+<em>raw</em>. Parser developers should use input group. The rest of two
+are for ctags main part.</p>
+<section id="inputfile-type-and-the-functions-of-input-group">
+<span id="inputfile"></span><h2><cite>inputFile</cite> type and the functions of input group<a class="headerlink" href="#inputfile-type-and-the-functions-of-input-group" title="Permalink to this heading">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The original version of this section was written
+before <code class="docutils literal notranslate"><span class="pre">inputFile</span></code> type and <code class="docutils literal notranslate"><span class="pre">File</span></code> variable are made private.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">inputFile</span></code> is the type for representing the input file and stream for
+a parser. It was declared in <code class="docutils literal notranslate"><span class="pre">main/read.h</span></code> but now it is defined in
+<code class="docutils literal notranslate"><span class="pre">main/read.c</span></code>.</p>
+<p>Ctags uses a file static variable <code class="docutils literal notranslate"><span class="pre">File</span></code> having type <code class="docutils literal notranslate"><span class="pre">inputFile</span></code> for
+maintaining the input file and stream. <code class="docutils literal notranslate"><span class="pre">File</span></code> is also defined in
+main/read.c as <code class="docutils literal notranslate"><span class="pre">inputFile</span></code> is.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fp</span></code> and <code class="docutils literal notranslate"><span class="pre">line</span></code> are the essential fields of <code class="docutils literal notranslate"><span class="pre">File</span></code>. <code class="docutils literal notranslate"><span class="pre">fp</span></code> having type
+well known <code class="docutils literal notranslate"><span class="pre">MIO</span></code> declared in <code class="docutils literal notranslate"><span class="pre">main/mio.h</span></code>. By calling functions of input group
+(<code class="docutils literal notranslate"><span class="pre">getcFromInputFile</span></code> and <code class="docutils literal notranslate"><span class="pre">readLineFromInputFile</span></code>), a parser gets input
+text from <code class="docutils literal notranslate"><span class="pre">fp</span></code>.</p>
+<p>The functions of input group updates fields <code class="docutils literal notranslate"><span class="pre">input</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code> of <code class="docutils literal notranslate"><span class="pre">File</span></code> variable.
+These two fields has type <code class="docutils literal notranslate"><span class="pre">inputFileInfo</span></code>. These two fields are for mainly
+tracking the name of file and the current line number. Usually ctags uses
+only <code class="docutils literal notranslate"><span class="pre">input</span></code> field. <code class="docutils literal notranslate"><span class="pre">source</span></code> field is used only when <code class="docutils literal notranslate"><span class="pre">#line</span></code> directive is found
+in the current input text stream.</p>
+<p>A case when a tool generates the input file from another file, a tool
+can record the original source file to the generated file with using
+the <code class="docutils literal notranslate"><span class="pre">#line</span></code> directive. <code class="docutils literal notranslate"><span class="pre">source</span></code> field is used for tracking/recording the
+information appeared on <code class="docutils literal notranslate"><span class="pre">#line</span></code> directives.</p>
+<p>Regex pattern matching are also done behind calling the functions of
+this group.</p>
+</section>
+<section id="the-functions-of-bypass-group">
+<h2>The functions of bypass group<a class="headerlink" href="#the-functions-of-bypass-group" title="Permalink to this heading">¶</a></h2>
+<p>The functions of bypass group (<code class="docutils literal notranslate"><span class="pre">readLineFromBypass</span></code> and
+<code class="docutils literal notranslate"><span class="pre">readLineFromBypassSlow</span></code>) are used for reading text from <code class="docutils literal notranslate"><span class="pre">fp</span></code> field of
+<code class="docutils literal notranslate"><span class="pre">File</span></code> static variable without updating <code class="docutils literal notranslate"><span class="pre">input</span></code> and <code class="docutils literal notranslate"><span class="pre">source</span></code> fields of
+<code class="docutils literal notranslate"><span class="pre">File</span></code> variable.</p>
+<p>Parsers may not need the functions of this group.  The functions are
+used in ctags main part. The functions are used to make pattern
+fields of tags file, for example.</p>
+</section>
+<section id="the-functions-of-raw-group">
+<h2>The functions of raw group<a class="headerlink" href="#the-functions-of-raw-group" title="Permalink to this heading">¶</a></h2>
+<p>The functions of this group (<code class="docutils literal notranslate"><span class="pre">readLineRaw</span></code> and <code class="docutils literal notranslate"><span class="pre">readLineRawWithNoSeek</span></code>)
+take a parameter having type <code class="docutils literal notranslate"><span class="pre">MIO</span></code>; and don’t touch <code class="docutils literal notranslate"><span class="pre">File</span></code> static
+variable.</p>
+<p>Parsers may not need the functions of this group.  The functions are
+used in ctags main part. The functions are used to load option files,
+for example.</p>
+</section>
+<section id="escaping-and-unescaping-input-fields">
+<h2>Escaping and unescaping input fields<a class="headerlink" href="#escaping-and-unescaping-input-fields" title="Permalink to this heading">¶</a></h2>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/input-escaping.svg"><img alt="_images/input-escaping.svg" height="860" src="_images/input-escaping.svg" width="618" /></a>
+</figure>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/input-unescaping.svg"><img alt="_images/input-unescaping.svg" height="526" src="_images/input-unescaping.svg" width="1018" /></a>
+</figure>
+</section>
+</section>
+<section id="output-tag-stream">
+<span id="id2"></span><h1>Output tag stream<a class="headerlink" href="#output-tag-stream" title="Permalink to this heading">¶</a></h1>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/output-tag-stream.svg"><img alt="_images/output-tag-stream.svg" height="456" src="_images/output-tag-stream.svg" width="608" /></a>
+</figure>
+<p>Ctags provides <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code> to parsers as an entry point for writing
+tag information to MIO. <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code> calls <code class="docutils literal notranslate"><span class="pre">writeTagEntry</span></code> if the
+parser does not set <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code> to <code class="docutils literal notranslate"><span class="pre">useCork</span></code> field. <code class="docutils literal notranslate"><span class="pre">writeTagEntry</span></code> calls <code class="docutils literal notranslate"><span class="pre">writerWriteTag</span></code>.
+<code class="docutils literal notranslate"><span class="pre">writerWriteTag</span></code> just calls <code class="docutils literal notranslate"><span class="pre">writeEntry</span></code> of writer backends.
+<code class="docutils literal notranslate"><span class="pre">writerTable</span></code> variable holds the four backends: ctagsWriter, etagsWriter,
+xrefWriter, and jsonWriter.
+One of them is chosen depending on the arguments passed to ctags.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code> is set to <code class="docutils literal notranslate"><span class="pre">useCork</span></code>, the tag information goes to a queue on memory.
+The queue is flushed when <code class="docutils literal notranslate"><span class="pre">useCork</span></code> in unset. See “<a class="reference internal" href="#cork-api">cork API</a>” for more
+details.</p>
+<section id="cork-api">
+<h2>cork API<a class="headerlink" href="#cork-api" title="Permalink to this heading">¶</a></h2>
+<section id="background-and-idea">
+<h3>Background and Idea<a class="headerlink" href="#background-and-idea" title="Permalink to this heading">¶</a></h3>
+<p><em>cork API</em> is introduced for recording scope information easier.</p>
+<p>Before introducing cork API, a scope information must be recorded as
+strings. It is flexible but memory management is required.
+Following code is taken from <code class="docutils literal notranslate"><span class="pre">clojure.c</span></code> (with some modifications).</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vStringLength</span><span class="w"> </span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">current</span><span class="p">.</span><span class="n">extensionFields</span><span class="p">.</span><span class="n">scopeKind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClojureKinds</span><span class="p">[</span><span class="n">K_NAMESPACE</span><span class="p">].</span><span class="n">name</span><span class="p">;</span>
+<span class="w">        </span><span class="n">current</span><span class="p">.</span><span class="n">extensionFields</span><span class="p">.</span><span class="n">scopeName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vStringValue</span><span class="w"> </span><span class="p">(</span><span class="n">parent</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">makeTagEntry</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">current</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">parent</span></code>, <code class="docutils literal notranslate"><span class="pre">scopeKind</span></code> and <code class="docutils literal notranslate"><span class="pre">scopeName</span></code> are vStrings. The parser must manage
+their life cycles; the parser cannot free them till the tag referring them via
+its scope fields are emitted, and must free them after emitting.</p>
+<p>cork API provides more solid way to hold scope information. cork API
+expects <code class="docutils literal notranslate"><span class="pre">parent</span></code>, which represents scope of a tag(<code class="docutils literal notranslate"><span class="pre">current</span></code>)
+currently parser dealing, is recorded to a <em>tags</em> file before recording
+the <code class="docutils literal notranslate"><span class="pre">current</span></code> tag via <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code> function.</p>
+<p>For passing the information about <code class="docutils literal notranslate"><span class="pre">parent</span></code> to <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code>,
+<code class="docutils literal notranslate"><span class="pre">tagEntryInfo</span></code> object was created. It was used just for recording; and
+freed after recording.  In cork API, it is not freed after recording;
+a parser can reused it as scope information.</p>
+</section>
+<section id="how-to-use">
+<h3>How to use<a class="headerlink" href="#how-to-use" title="Permalink to this heading">¶</a></h3>
+<p>See a commit titled with “<a class="reference external" href="https://github.com/universal-ctags/ctags/commit/ef181e6">clojure: use cork</a>”.
+I applied cork API to the clojure parser.</p>
+<p>Cork API can be enabled and disabled per parser,
+and is disabled by default. So there is no impact till you
+enables it in your parser.</p>
+<p><code class="docutils literal notranslate"><span class="pre">useCork</span></code> field is introduced in <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> type:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="p">...</span>
+<span class="w">                </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">useCork</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="p">}</span><span class="w"> </span><span class="n">parserDefinition</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Set <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code> to <code class="docutils literal notranslate"><span class="pre">useCork</span></code> like:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="w"> </span><span class="o">*</span><span class="nf">ClojureParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="w"> </span><span class="o">*</span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;Clojure&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">useCork</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CORK_QUEUE</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">def</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>When ctags running a parser with <code class="docutils literal notranslate"><span class="pre">useCork</span></code> being <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code>, all output
+requested via <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code> function calling is stored to an internal
+queue, not to <code class="docutils literal notranslate"><span class="pre">tags</span></code> file.  When parsing an input file is done, the
+tag information stored automatically to the queue are flushed to
+<code class="docutils literal notranslate"><span class="pre">tags</span></code> file in batch.</p>
+<p>When calling <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code> with a <code class="docutils literal notranslate"><span class="pre">tagEntryInfo</span></code> object (<code class="docutils literal notranslate"><span class="pre">parent</span></code>),
+it returns an integer. The integer can be used as handle for referring
+the object after calling.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CORK_NIL</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeTagEntry</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">e</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The handle can be used by setting to a <code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code>
+field of <code class="docutils literal notranslate"><span class="pre">current</span></code> tag, which is in the scope of <code class="docutils literal notranslate"><span class="pre">parent</span></code>.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">current</span><span class="p">.</span><span class="n">extensionFields</span><span class="p">.</span><span class="n">scopeIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>When passing <code class="docutils literal notranslate"><span class="pre">current</span></code> to <code class="docutils literal notranslate"><span class="pre">makeTagEntry</span></code>, the <code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code> is
+referred for emitting the scope information of <code class="docutils literal notranslate"><span class="pre">current</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code> must be set to <code class="docutils literal notranslate"><span class="pre">CORK_NIL</span></code> if a tag is not in any scope.
+When using <code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code> of <code class="docutils literal notranslate"><span class="pre">current</span></code>, <code class="docutils literal notranslate"><span class="pre">KIND_GHOST_INDEX</span></code> must be assigned
+to <code class="docutils literal notranslate"><span class="pre">current.extensionFields.scopeKindIndex</span></code> and  <code class="docutils literal notranslate"><span class="pre">NULL</span></code> must be assigned to
+<code class="docutils literal notranslate"><span class="pre">current.extensionFields.scopeName</span></code>.  <code class="docutils literal notranslate"><span class="pre">initTagEntry</span></code> function does this
+initialization internally, so you generally you don’t have to write
+the initialization explicitly.</p>
+</section>
+<section id="automatic-full-qualified-tag-generation">
+<h3>Automatic full qualified tag generation<a class="headerlink" href="#automatic-full-qualified-tag-generation" title="Permalink to this heading">¶</a></h3>
+<p>If a parser uses the cork API for recording and emitting scope
+information, ctags can reuse it for generating <em>full qualified (FQ)
+tags</em>. Set <code class="docutils literal notranslate"><span class="pre">requestAutomaticFQTag</span></code> field of <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> to
+<code class="docutils literal notranslate"><span class="pre">TRUE</span></code> then the main part of ctags emits FQ tags on behalf of the parser
+if <code class="docutils literal notranslate"><span class="pre">--extras=+q</span></code> is given.</p>
+<p>An example can be found in DTS parser:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="nf">DTSParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">extensions</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;dts&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dtsi&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;DTS&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">requestAutomaticFQTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRUE</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">def</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">requestAutomaticFQTag</span></code> to <code class="docutils literal notranslate"><span class="pre">TRUE</span></code> implies setting
+<code class="docutils literal notranslate"><span class="pre">useCork</span></code> to <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code>.</p>
+</section>
+<section id="symbol-table-api">
+<span id="symtabapi"></span><h3>symbol table API<a class="headerlink" href="#symbol-table-api" title="Permalink to this heading">¶</a></h3>
+<p><em>symbol table</em> API is an extension to the cork API. The cork API was
+introduced to provide the simple way to represent mapping (<em>forward
+mapping</em>) from a language object (<em>child object</em>) to its upper scope
+(<em>parent object</em>). <em>symbol table</em> API is for representing the mapping
+(<em>reverse mapping</em>) opposite direction; you can look up (or traverse)
+child tags defined (or used) in a given tag.</p>
+<p>To use this API, a parser must set <code class="docutils literal notranslate"><span class="pre">CORK_SYMTAB</span></code> to <code class="docutils literal notranslate"><span class="pre">useCork</span></code> member
+of <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> in addition to setting <code class="docutils literal notranslate"><span class="pre">CORK_QUEUE</span></code> as preparation.</p>
+<p>An example taken from R parser:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="w"> </span><span class="o">*</span><span class="nf">RParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">extensions</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;q&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;R&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="p">...</span>
+
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">useCork</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CORK_QUEUE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CORK_SYMTAB</span><span class="p">;</span>
+
+<span class="w">        </span><span class="p">...</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">def</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To install a reverse mapping between a parent and its child tags,
+call <code class="docutils literal notranslate"><span class="pre">registerEntry</span></code> with the cork index for a child after making
+the child tag filling <code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CORK_NIL</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeTagEntry</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">e_parent</span><span class="p">);</span>
+
+<span class="p">...</span>
+
+<span class="n">tagEntryInfo</span><span class="w"> </span><span class="n">e_child</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="n">initTagEntry</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">e_child</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+<span class="n">e_child</span><span class="p">.</span><span class="n">extensionFields</span><span class="p">.</span><span class="n">scopeIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">;</span><span class="w">    </span><span class="cm">/* setting up forward mapping */</span>
+<span class="p">...</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeTagEntry</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="n">e_child</span><span class="p">);</span>
+
+<span class="n">registerEntry</span><span class="w"> </span><span class="p">(</span><span class="n">child</span><span class="p">);</span><span class="w">                          </span><span class="cm">/* setting up reverse mapping */</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">registerEntry</span></code> stores <code class="docutils literal notranslate"><span class="pre">child</span></code> to the symbol table of <code class="docutils literal notranslate"><span class="pre">parent</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">scopeIndex</span></code> of <code class="docutils literal notranslate"><span class="pre">child</span></code> is <code class="docutils literal notranslate"><span class="pre">CORK_NIL</span></code>, the <code class="docutils literal notranslate"><span class="pre">child</span></code> is stores
+to the <em>toplevel scope</em>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">unregisterEntry</span></code> is for clearing (and updating) the reverse mapping
+of a child. Consider the case you want to change the scope of <code class="docutils literal notranslate"><span class="pre">child</span></code>
+from <code class="docutils literal notranslate"><span class="pre">newParent</span></code>.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">unregisterEntry</span><span class="w"> </span><span class="p">(</span><span class="n">child</span><span class="p">);</span><span class="w">                         </span><span class="cm">/* delete the reverse mapping. */</span>
+<span class="n">tagEntryInfo</span><span class="w"> </span><span class="o">*</span><span class="n">e_child</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getEntryInCorkQueue</span><span class="w"> </span><span class="p">(</span><span class="n">child</span><span class="p">);</span>
+<span class="n">e_child</span><span class="o">-&gt;</span><span class="n">extensionFields</span><span class="p">.</span><span class="n">scopeIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newParent</span><span class="p">;</span><span class="w"> </span><span class="cm">/* update the forward mapping. */</span>
+<span class="n">registerEntry</span><span class="w"> </span><span class="p">(</span><span class="n">child</span><span class="p">);</span><span class="w">                           </span><span class="cm">/* set the new reverse mapping. */</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">foreachEntriesInScope</span></code> is the function for traversing all child
+tags stored to the parent tag specified with <code class="docutils literal notranslate"><span class="pre">corkIndex</span></code>.
+If the <code class="docutils literal notranslate"><span class="pre">corkIndex</span></code> is <code class="docutils literal notranslate"><span class="pre">CORK_NIL</span></code>, the children defined (and/or
+used) in <em>toplevel scope</em>  are traversed.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">entryForeachFunc</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">corkIndex</span><span class="p">,</span>
+<span class="w">                                                                   </span><span class="n">tagEntryInfo</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">entry</span><span class="p">,</span>
+<span class="w">                                                                   </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w">          </span><span class="nf">foreachEntriesInScope</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">corkIndex</span><span class="p">,</span>
+<span class="w">                                                                         </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="cm">/* or NULL */</span>
+<span class="w">                                                                         </span><span class="n">entryForeachFunc</span><span class="w"> </span><span class="n">func</span><span class="p">,</span>
+<span class="w">                                                                         </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">foreachEntriesInScope</span></code>  takes a <code class="docutils literal notranslate"><span class="pre">foreachEntriesInScope</span></code> typed
+callback function.  <code class="docutils literal notranslate"><span class="pre">foreachEntriesInScope</span></code> passes the cork
+index and a pointer for <code class="docutils literal notranslate"><span class="pre">tagEntryInfo</span></code> object of children.</p>
+<p><cite>anyEntryInScope</cite> is a function for finding a child tag stored
+to the parent tag specified with <code class="docutils literal notranslate"><span class="pre">corkIndex</span></code>. It returns
+the cork index for the child tag. If <code class="docutils literal notranslate"><span class="pre">corkIndex</span></code> is <code class="docutils literal notranslate"><span class="pre">CORK_NIL</span></code>,
+<cite>anyEntryInScope</cite> finds a tag stored to the toplevel scope.
+The returned child tag has <code class="docutils literal notranslate"><span class="pre">name</span></code> as its name as far as <code class="docutils literal notranslate"><span class="pre">name</span></code>
+is not <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w">           </span><span class="nf">anyEntryInScope</span><span class="w">       </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">corkIndex</span><span class="p">,</span>
+<span class="w">                                                                         </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span>
+<span class="w">                                                                         </span><span class="kt">bool</span><span class="w"> </span><span class="n">onlyDefinitionTag</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="tokeninfo-api">
+<span id="tokeninfo"></span><h1>tokenInfo API<a class="headerlink" href="#tokeninfo-api" title="Permalink to this heading">¶</a></h1>
+<p>In Exuberant Ctags, a developer can write a parser anyway; only input
+stream and tagEntryInfo data structure is given.</p>
+<p>However, while maintaining Universal Ctags I (Masatake YAMATO) think
+we should have a framework for writing parser. Of course the framework
+is optional; you can still write a parser without the framework.</p>
+<p>To design a framework, I have studied how &#64;b4n (Colomban Wendling)
+writes parsers. tokenInfo API is the first fruit of my study.</p>
+<p>TBW</p>
+</section>
+<section id="multiple-parsers">
+<h1>Multiple parsers<a class="headerlink" href="#multiple-parsers" title="Permalink to this heading">¶</a></h1>
+<section id="guest-parser-promise-api">
+<span id="promiseapi"></span><h2>Guest parser (promise API)<a class="headerlink" href="#guest-parser-promise-api" title="Permalink to this heading">¶</a></h2>
+<p>See “<a class="reference internal" href="running-multi-parsers.html#host-guest-parsers"><span class="std std-ref">Guest parser: Applying a parser to specified areas of input file</span></a>” about the concept of guest parsers.</p>
+<section id="id3">
+<h3>Background and Idea<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<p>More than one programming languages can be used in one input text stream.
+<em>promise API</em> allows a host parser running a <a class="reference internal" href="running-multi-parsers.html#host-guest-parsers"><span class="std std-ref">guest parser</span></a> in the specified area of input text stream.</p>
+<p>e.g. Code written in c language (C code) is embedded
+in code written in Yacc language (Yacc code). Let’s think about this
+input stream.</p>
+<div class="highlight-yacc notranslate"><div class="highlight"><pre><span></span>/* foo.y */
+ %token
+         END_OF_FILE 0
+         ERROR               255
+         BELL                1
+
+ %{
+ /* C language */
+ int counter;
+ %}
+ %right      EQUALS
+ %left       PLUS MINUS
+ ...
+ %%
+ CfgFile             :       CfgEntryList
+                         { InterpretConfigs($1); }
+                 ;
+
+ ...
+ %%
+ int
+ yyerror(char *s)
+ {
+     (void)fprintf(stderr,&quot;%s: line %d of %s\n&quot;,s,lineNum,
+                                         (scanFile?scanFile:&quot;(unknown)&quot;));
+     if (scanStr)
+         (void)fprintf(stderr,&quot;last scanned symbol is: %s\n&quot;,scanStr);
+     return 1;
+ }
+</pre></div>
+</div>
+<p>In the input the area started from <code class="docutils literal notranslate"><span class="pre">%{</span></code> to <code class="docutils literal notranslate"><span class="pre">%}</span></code> and the area started from
+the second <code class="docutils literal notranslate"><span class="pre">%%</span></code> to the end of file are written in C. Yacc can be called
+<em>host language</em>, and C can be called <em>guest language</em>.</p>
+<p>Ctags may choose the Yacc parser for the input. However, the parser
+doesn’t know about C syntax. Implementing C parser in the Yacc parser
+is one of approach. However, ctags has already C parser.  The Yacc
+parser should utilize the existing C parser. The promise API allows this.</p>
+<p>See also “<a class="reference internal" href="running-multi-parsers.html#host-guest-parsers"><span class="std std-ref">Guest parser: Applying a parser to specified areas of input file</span></a>” about more concept and examples of the
+guest parser.</p>
+</section>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h3>
+<p>See a commit titled with “<a class="reference external" href="https://github.com/universal-ctags/ctags/commit/757673f">Yacc: run C parser in the areas where code
+is written in C</a>”.
+I applied promise API to the Yacc parser.</p>
+<p>The parser for host language must track and record the <code class="docutils literal notranslate"><span class="pre">start</span></code> and the
+<code class="docutils literal notranslate"><span class="pre">end</span></code> of a guest language. Pairs of <code class="docutils literal notranslate"><span class="pre">line</span> <span class="pre">number</span></code> and <code class="docutils literal notranslate"><span class="pre">byte</span> <span class="pre">offset</span></code>
+represents the <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>. When the <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code> are
+fixed, call <code class="docutils literal notranslate"><span class="pre">makePromise</span></code> with (1) the guest parser name, (2) <code class="docutils literal notranslate"><span class="pre">start</span></code>,
+and (3) <code class="docutils literal notranslate"><span class="pre">end</span></code>. (This description is a bit simplified the real usage.)</p>
+<p>Let’s see the actual code from “<a class="reference external" href="https://github.com/universal-ctags/ctags/blob/master/parsers/yacc.c">parsers/yacc.c</a>”.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">cStart</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">input</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">source</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Both fields are for recording <code class="docutils literal notranslate"><span class="pre">start</span></code>. <code class="docutils literal notranslate"><span class="pre">input</span></code> field
+is for recording the value returned from <code class="docutils literal notranslate"><span class="pre">getInputLineNumber</span></code>.
+<code class="docutils literal notranslate"><span class="pre">source</span></code> is for <code class="docutils literal notranslate"><span class="pre">getSourceLineNumber</span></code>. See “<a class="reference internal" href="#inputfile">inputFile</a>” for the
+difference of the two.</p>
+<p><code class="docutils literal notranslate"><span class="pre">enter_c_prologue</span></code> shown in the next is a function called when <code class="docutils literal notranslate"><span class="pre">%{</span></code> is
+found in the current input text stream. Remember, in yacc syntax, <code class="docutils literal notranslate"><span class="pre">%{</span></code>
+is a marker of C code area.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">enter_c_prologue</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">line</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">const</span><span class="w"> </span><span class="n">regexMatch</span><span class="w"> </span><span class="o">*</span><span class="n">matches</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">       </span><span class="k">struct</span><span class="w"> </span><span class="nc">cStart</span><span class="w"> </span><span class="o">*</span><span class="n">cstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+
+
+<span class="w">       </span><span class="n">readLineFromInputFile</span><span class="w"> </span><span class="p">();</span>
+<span class="w">       </span><span class="n">cstart</span><span class="o">-&gt;</span><span class="n">input</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">getInputLineNumber</span><span class="w"> </span><span class="p">();</span>
+<span class="w">       </span><span class="n">cstart</span><span class="o">-&gt;</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getSourceLineNumber</span><span class="w"> </span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The function just records the start line.  It calls
+<code class="docutils literal notranslate"><span class="pre">readLineFromInputFile</span></code> because the C code may start the next line of
+the line where the marker is.</p>
+<p><code class="docutils literal notranslate"><span class="pre">leave_c_prologue</span></code> shown in the next is a function called when <code class="docutils literal notranslate"><span class="pre">%}</span></code>,
+the end marker of C code area, is found in the current input text stream.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">leave_c_prologue</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">line</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="k">const</span><span class="w"> </span><span class="n">regexMatch</span><span class="w"> </span><span class="o">*</span><span class="n">matches</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="n">CTAGS_ATTR_UNUSED</span><span class="p">,</span>
+<span class="w">                             </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">       </span><span class="k">struct</span><span class="w"> </span><span class="nc">cStart</span><span class="w"> </span><span class="o">*</span><span class="n">cstart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">       </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">c_end</span><span class="p">;</span>
+
+<span class="w">       </span><span class="n">c_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getInputLineNumber</span><span class="w"> </span><span class="p">();</span>
+<span class="w">       </span><span class="n">makePromise</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cstart</span><span class="o">-&gt;</span><span class="n">input</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">c_end</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">cstart</span><span class="o">-&gt;</span><span class="n">source</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After recording the line number of the end of the C code area,
+<code class="docutils literal notranslate"><span class="pre">leave_c_prologue</span></code> calls <code class="docutils literal notranslate"><span class="pre">makePromise</span></code>.</p>
+<p>Of course <code class="docutils literal notranslate"><span class="pre">&quot;C&quot;</span></code> stands for C language, the name of guest parser.
+Available parser names can be listed by running ctags with
+<code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> option. In this example two <code class="docutils literal notranslate"><span class="pre">0</span></code> characters are provided as
+the 3rd and 5th argument. They are byte offsets of the start and the end of the
+C language area from the beginning of the line which is 0 in this case. In
+general, the guest language’s section does not have to start at the beginning of
+the line in which case the two offsets have to be provided. Parsers reading
+the input character by character can obtain the current offset by calling
+<code class="docutils literal notranslate"><span class="pre">getInputLineOffset()</span></code>.</p>
+<p>In some cases, you may want to specifying the offset of the end of
+line (EOL).  A macro <code class="docutils literal notranslate"><span class="pre">EOL_CHAR_OFFSET</span></code> defined in <code class="docutils literal notranslate"><span class="pre">main/promise.h</span></code>
+can be used for specying EOL in abstracted way; you don’t have to find
+the real offset for the EOL.</p>
+</section>
+<section id="internal-design">
+<h3>Internal design<a class="headerlink" href="#internal-design" title="Permalink to this heading">¶</a></h3>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/promise.svg"><img alt="_images/promise.svg" height="148" src="_images/promise.svg" width="425" /></a>
+</figure>
+<p>A host parser cannot run a guest parser directly. What the host parser
+can do is just asking the ctags main part scheduling of running the
+guest parser for specified area which defined with the <code class="docutils literal notranslate"><span class="pre">start</span></code> and
+<code class="docutils literal notranslate"><span class="pre">end</span></code>. These scheduling requests are called <em>promises</em>.</p>
+<p>After running the host parser, before closing the input stream, the
+ctags main part checks the existence of promise(s). If there is, the
+main part makes a sub input stream and run the guest parser specified
+in the promise. The sub input stream is made from the original input
+stream by narrowing as requested in the promise. The main part
+iterates the above process till there is no promise.</p>
+<p>Theoretically a guest parser can be nested; it can make a promise.
+The level 2 guest is also just scheduled. (However, I have never
+tested such a nested guest parser).</p>
+<p>Why not running the guest parser directly from the context of the host
+parser? Remember many parsers have their own file static variables. If
+a parser is called from the parser, the variables may be crashed.</p>
+</section>
+</section>
+<section id="api-for-subparser">
+<h2>API for subparser<a class="headerlink" href="#api-for-subparser" title="Permalink to this heading">¶</a></h2>
+<p>See “<a class="reference internal" href="running-multi-parsers.html#base-sub-parsers"><span class="std std-ref">Subparser: Tagging definitions of higher (upper) level language</span></a>” about the concept of subparser.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Consider using optlib when implementing a subparser. It is much more
+easy and simple. See “<a class="reference internal" href="optlib.html#defining-subparsers"><span class="std std-ref">Defining a subparser</span></a>” for details.</p>
+</div>
+<section id="outline">
+<h3>Outline<a class="headerlink" href="#outline" title="Permalink to this heading">¶</a></h3>
+<p>You have to work on both sides: a base parser and subparsers.</p>
+<p>A base parser must define a data structure type (<code class="docutils literal notranslate"><span class="pre">baseMethodTable</span></code>) for
+its subparsers by extending <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">subparser</span></code> defined in
+<code class="docutils literal notranslate"><span class="pre">main/subparser.h</span></code>.  A subparser defines a variable (<code class="docutils literal notranslate"><span class="pre">subparser</span> <span class="pre">var</span></code>)
+having type <code class="docutils literal notranslate"><span class="pre">baseMethodTable</span></code> by filling its fields and registers
+<code class="docutils literal notranslate"><span class="pre">subparser</span> <span class="pre">var</span></code> to the base parser using dependency API.</p>
+<p>The base parser calls functions pointed by <code class="docutils literal notranslate"><span class="pre">baseMethodTable</span></code> of
+subparsers during parsing. A function for probing a higher level
+language may be included in <code class="docutils literal notranslate"><span class="pre">baseMethodTable</span></code>.  What kind of fields
+should be included in <code class="docutils literal notranslate"><span class="pre">baseMethodTable</span></code> is up to the design of a base
+parser and the requirements of its subparsers. A method for
+probing is one of them.</p>
+<p>Registering a <code class="docutils literal notranslate"><span class="pre">subparser</span> <span class="pre">var</span></code> to a base parser is enough for the
+bottom up choice. For handling the top down choice (e.g. specifying
+<code class="docutils literal notranslate"><span class="pre">--language-force=&lt;subparser&gt;</span></code> in a command line), more code is needed.</p>
+<p>In the top down choice, the subparser must call <code class="docutils literal notranslate"><span class="pre">scheduleRunningBasepaser</span></code>,
+declared in <code class="docutils literal notranslate"><span class="pre">main/subparser.h</span></code>, in its <code class="docutils literal notranslate"><span class="pre">parser</span></code> method.
+Here, <code class="docutils literal notranslate"><span class="pre">parser</span></code> method means a function assigned to the <code class="docutils literal notranslate"><span class="pre">parser</span></code> member of
+the <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code> of the subparser.
+<code class="docutils literal notranslate"><span class="pre">scheduleRunningBaseparser</span></code> takes an integer argument
+that specifies the dependency used for registering the <code class="docutils literal notranslate"><span class="pre">subparser</span> <span class="pre">var</span></code>.</p>
+<p>By extending <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">subparser</span></code> you can define a type for
+your subparser. Then make a variable for the type and
+declare a dependency on the base parser.</p>
+</section>
+<section id="fields-of-subparser-type">
+<h3>Fields of <code class="docutils literal notranslate"><span class="pre">subparser</span></code> type<a class="headerlink" href="#fields-of-subparser-type" title="Permalink to this heading">¶</a></h3>
+<p>Here the source code of Autoconf/m4 parsers is referred as an example.</p>
+<p><code class="docutils literal notranslate"><span class="pre">main/types.h</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sSubparser</span><span class="p">;</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sSubparser</span><span class="w"> </span><span class="n">subparser</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">main/subparser.h</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">eSubparserRunDirection</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SUBPARSER_BASE_RUNS_SUB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SUBPARSER_SUB_RUNS_BASE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SUBPARSER_BI_DIRECTION</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">SUBPARSER_BASE_RUNS_SUB</span><span class="o">|</span><span class="n">SUBPARSER_SUB_RUNS_BASE</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="n">subparserRunDirection</span><span class="p">;</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">sSubparser</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+
+<span class="w">        </span><span class="cm">/* public to the parser */</span>
+<span class="w">        </span><span class="n">subparserRunDirection</span><span class="w"> </span><span class="n">direction</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">inputStart</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">subparser</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">inputEnd</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">subparser</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">exclusiveSubparserChosenNotify</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">subparser</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>A subparser must fill the fields of <code class="docutils literal notranslate"><span class="pre">subparser</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">direction</span></code> field specifies how the subparser is called. See
+“<a class="reference internal" href="running-multi-parsers.html#multiple-parsers-directions"><span class="std std-ref">Direction flags</span></a>” in “<a class="reference internal" href="running-multi-parsers.html#multiple-parsers"><span class="std std-ref">Running multiple parsers on an input file</span></a>” about
+<em>direction flags</em>, and see “<a class="reference internal" href="optlib.html#optlib-directions"><span class="std std-ref">Direction flags</span></a>” in “<a class="reference internal" href="optlib.html#optlib"><span class="std std-ref">Extending ctags with Regex parser (optlib)</span></a>” for
+examples of using the direction flags.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">direction</span></code> field</p></th>
+<th class="head"><p>Direction Flag</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SUBPARSER_BASE_RUNS_SUB</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">shared</span></code> (default)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SUBPARSER_SUB_RUNS_BASE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dedicated</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SUBPARSER_BI_DIRECTION</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bidirectional</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>If a subparser runs exclusively and is chosen in top down way, set
+<code class="docutils literal notranslate"><span class="pre">SUBPARSER_SUB_RUNS_BASE</span></code> flag. If a subparser runs coexisting way and
+is chosen in bottom up way, set <code class="docutils literal notranslate"><span class="pre">SUBPARSER_BASE_RUNS_SUB</span></code>.  Use
+<code class="docutils literal notranslate"><span class="pre">SUBPARSER_BI_DIRECTION</span></code> if both cases can be considered.</p>
+<p>SystemdUnit parser runs as a subparser of iniconf base parser.
+SystemdUnit parser specifies <code class="docutils literal notranslate"><span class="pre">SUBPARSER_SUB_RUNS_BASE</span></code> because
+unit files of systemd have very specific file extensions though
+they are written in iniconf syntax. Therefore we expect SystemdUnit
+parser is chosen in top down way. The same logic is applicable to
+YumRepo parser.</p>
+<p>Autoconf parser specifies <code class="docutils literal notranslate"><span class="pre">SUBPARSER_BI_DIRECTION</span></code>. For input
+file having name <code class="docutils literal notranslate"><span class="pre">configure.ac</span></code>, by pattern matching, Autoconf parser
+is chosen in top down way. In other hand, for file name <code class="docutils literal notranslate"><span class="pre">foo.m4</span></code>,
+Autoconf parser can be chosen in bottom up way.</p>
+<p><code class="docutils literal notranslate"><span class="pre">inputStart</span></code> is called before the base parser starting parsing a new input file.
+<code class="docutils literal notranslate"><span class="pre">inputEnd</span></code> is called after the base parser finishing parsing the input file.
+Universal Ctags main part calls these methods. Therefore, a base parser doesn’t
+have to call them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">exclusiveSubparserChosenNotify</span></code> is called when a parser is chosen
+as an exclusive parser. Calling this method is a job of a base parser.</p>
+</section>
+<section id="extending-subparser-type">
+<h3>Extending <code class="docutils literal notranslate"><span class="pre">subparser</span></code> type<a class="headerlink" href="#extending-subparser-type" title="Permalink to this heading">¶</a></h3>
+<p>The m4 parser extends <code class="docutils literal notranslate"><span class="pre">subparser</span></code> type like following:</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/m4.h</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sM4Subparser</span><span class="w"> </span><span class="n">m4Subparser</span><span class="p">;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sM4Subparser</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">subparser</span><span class="w"> </span><span class="n">subparser</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">probeLanguage</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">token</span><span class="p">);</span>
+
+<span class="w">        </span><span class="cm">/* return value: Cork index */</span>
+<span class="w">        </span><span class="kt">int</span><span class="w">  </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">newMacroNotify</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">token</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">doesLineCommentStart</span><span class="p">)</span><span class="w">   </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">token</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">doesStringLiteralStart</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Put <code class="docutils literal notranslate"><span class="pre">subparser</span></code> as the first member of the extended struct (here sM4Subparser).
+In addition the first field, 4 methods are defined in the extended struct.</p>
+<p>Till choosing a subparser for the current input file, the m4 parser calls
+<code class="docutils literal notranslate"><span class="pre">probeLanguage</span></code> method of its subparsers each time when find a token
+in the input file. A subparser returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if it recognizes the
+input file is for the itself by analyzing tokens passed from the
+base parser.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="nf">AutoconfParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">patterns</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;configure.in&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">extensions</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;ac&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="p">(</span><span class="s">&quot;Autoconf&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">m4Subparser</span><span class="w"> </span><span class="n">autoconfSubparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">.</span><span class="n">subparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SUBPARSER_BI_DIRECTION</span><span class="p">,</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">exclusiveSubparserChosenNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exclusiveSubparserChosenCallback</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">.</span><span class="n">probeLanguage</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">probeLanguage</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">newMacroNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newMacroCallback</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">doesLineCommentStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doesLineCommentStart</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">doesStringLiteralStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doesStringLiteralStart</span><span class="p">,</span>
+<span class="w">        </span><span class="p">};</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">probeLanguage</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">autoconf.c</span></code> is connected to
+the <code class="docutils literal notranslate"><span class="pre">probeLanguage</span></code> member of <code class="docutils literal notranslate"><span class="pre">autoconfSubparser</span></code>. The <code class="docutils literal notranslate"><span class="pre">probeLanguage</span></code> function
+of Autoconf is very simple:</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">probeLanguage</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">token</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">strncmp</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;m4_&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="o">||</span><span class="w"> </span><span class="n">strncmp</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AC_&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="o">||</span><span class="w"> </span><span class="n">strncmp</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AM_&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="o">||</span><span class="w"> </span><span class="n">strncmp</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AS_&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="o">||</span><span class="w"> </span><span class="n">strncmp</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AH_&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">                </span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This function checks the prefix of passed tokens. If known
+prefix is found, Autoconf assumes this is an Autoconf input
+and returns <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/m4.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m4tmp</span><span class="o">-&gt;</span><span class="n">probeLanguage</span>
+<span class="w">        </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m4tmp</span><span class="o">-&gt;</span><span class="n">probeLanguage</span><span class="w"> </span><span class="p">(</span><span class="n">m4tmp</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">chooseExclusiveSubparser</span><span class="w"> </span><span class="p">((</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">        </span><span class="n">m4found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m4tmp</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The m4 parsers calls <code class="docutils literal notranslate"><span class="pre">probeLanguage</span></code> function of a subparser. If <code class="docutils literal notranslate"><span class="pre">true</span></code>
+is returned <code class="docutils literal notranslate"><span class="pre">chooseExclusiveSubparser</span></code> function which is defined
+in the main part. <code class="docutils literal notranslate"><span class="pre">chooseExclusiveSubparser</span></code> calls
+<code class="docutils literal notranslate"><span class="pre">exclusiveSubparserChosenNotify</span></code> method of the chosen subparser.</p>
+<p>The method is implemented in Autoconf subparser like following:</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">exclusiveSubparserChosenCallback</span><span class="w"> </span><span class="p">(</span><span class="n">subparser</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">setM4Quotes</span><span class="w"> </span><span class="p">(</span><span class="sc">&#39;[&#39;</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;]&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It changes quote characters of the m4 parser.</p>
+</section>
+<section id="making-a-tag-in-a-subparser">
+<h3>Making a tag in a subparser<a class="headerlink" href="#making-a-tag-in-a-subparser" title="Permalink to this heading">¶</a></h3>
+<p>Via calling callback functions defined in subparsers, their base parser
+gives chance to them making tag entries.</p>
+<p>The m4 parser calls <code class="docutils literal notranslate"><span class="pre">newMacroNotify</span></code> method when it finds an m4 macro is used.
+The Autoconf parser connects <code class="docutils literal notranslate"><span class="pre">newMacroCallback</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">parser/autoconf.c</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">newMacroCallback</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">token</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">keyword</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CORK_NIL</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">keyword</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lookupKeyword</span><span class="w"> </span><span class="p">(</span><span class="n">token</span><span class="p">,</span><span class="w"> </span><span class="n">getInputLanguage</span><span class="w"> </span><span class="p">());</span>
+
+<span class="w">        </span><span class="cm">/* TODO:</span>
+<span class="cm">           AH_VERBATIM</span>
+<span class="cm">         */</span>
+<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">KEYWORD_NONE</span><span class="p">:</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">KEYWORD_init</span><span class="p">:</span>
+<span class="w">                </span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">makeAutoconfTag</span><span class="w"> </span><span class="p">(</span><span class="n">PACKAGE_KIND</span><span class="p">);</span>
+<span class="w">                </span><span class="k">break</span><span class="p">;</span>
+
+<span class="p">...</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="n">AutoconfParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">m4Subparser</span><span class="w"> </span><span class="n">autoconfSubparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">.</span><span class="n">subparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SUBPARSER_BI_DIRECTION</span><span class="p">,</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">exclusiveSubparserChosenNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exclusiveSubparserChosenCallback</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">.</span><span class="n">probeLanguage</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">probeLanguage</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">newMacroNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newMacroCallback</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">newMacroCallback</span></code> function, the Autoconf parser receives the name of macro
+found by the base parser and analysis whether the macro is interesting
+in the context of Autoconf language or not. If it is interesting name,
+the Autoconf parser makes a tag for it.</p>
+</section>
+<section id="calling-methods-of-subparsers-from-a-base-parser">
+<h3>Calling methods of subparsers from a base parser<a class="headerlink" href="#calling-methods-of-subparsers-from-a-base-parser" title="Permalink to this heading">¶</a></h3>
+<p>A base parser can use <code class="docutils literal notranslate"><span class="pre">foreachSubparser</span></code> macro for accessing its
+subparsers. A base should call <code class="docutils literal notranslate"><span class="pre">enterSubparser</span></code> before calling a
+method of a subparser, and call <code class="docutils literal notranslate"><span class="pre">leaveSubparser</span></code> after calling the
+method. The macro and functions are declare in <code class="docutils literal notranslate"><span class="pre">main/subparser.h</span></code> .</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/m4.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">maySwitchLanguage</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">token</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">subparser</span><span class="w"> </span><span class="o">*</span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">        </span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">foreachSubparser</span><span class="w"> </span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">                </span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="n">m4tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">m4Subparser</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">tmp</span><span class="p">;</span>
+
+<span class="w">                </span><span class="n">enterSubparser</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m4tmp</span><span class="o">-&gt;</span><span class="n">probeLanguage</span>
+<span class="w">                        </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">m4tmp</span><span class="o">-&gt;</span><span class="n">probeLanguage</span><span class="w"> </span><span class="p">(</span><span class="n">m4tmp</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">))</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">chooseExclusiveSubparser</span><span class="w"> </span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">                        </span><span class="n">m4found</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m4tmp</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="n">leaveSubparser</span><span class="p">();</span>
+
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m4found</span><span class="p">)</span>
+<span class="w">                        </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">m4found</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">foreachSubparser</span></code> takes a variable having type <code class="docutils literal notranslate"><span class="pre">subparser</span></code>.
+For each iteration, the value for the variable is updated.</p>
+<p><code class="docutils literal notranslate"><span class="pre">enterSubparser</span></code> takes a variable having type <code class="docutils literal notranslate"><span class="pre">subparser</span></code>.  With the
+calling <code class="docutils literal notranslate"><span class="pre">enterSubparser</span></code>, the current language (the value returned from
+<code class="docutils literal notranslate"><span class="pre">getInputLanguage</span></code>) can be temporary switched to the language specified
+with the variable. One of the effect of switching is that <code class="docutils literal notranslate"><span class="pre">language</span></code>
+field of tags made in the callback function called between
+<code class="docutils literal notranslate"><span class="pre">enterSubparser</span></code> and <code class="docutils literal notranslate"><span class="pre">leaveSubparser</span></code> is adjusted.</p>
+</section>
+<section id="registering-a-subparser-to-its-base-parser">
+<h3>Registering a subparser to its base parser<a class="headerlink" href="#registering-a-subparser-to-its-base-parser" title="Permalink to this heading">¶</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">DEPTYPE_SUBPARSER</span></code> dependency in a subparser for registration.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="nf">AutoconfParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="p">(</span><span class="s">&quot;Autoconf&quot;</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">m4Subparser</span><span class="w"> </span><span class="n">autoconfSubparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">.</span><span class="n">subparser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SUBPARSER_BI_DIRECTION</span><span class="p">,</span>
+<span class="w">                        </span><span class="p">.</span><span class="n">exclusiveSubparserChosenNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exclusiveSubparserChosenCallback</span><span class="p">,</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="p">.</span><span class="n">probeLanguage</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">probeLanguage</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">newMacroNotify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newMacroCallback</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">doesLineCommentStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doesLineCommentStart</span><span class="p">,</span>
+<span class="w">                </span><span class="p">.</span><span class="n">doesStringLiteralStart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">doesStringLiteralStart</span><span class="p">,</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">parserDependency</span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">DEPTYPE_SUBPARSER</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;M4&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">autoconfSubparser</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dependencies</span><span class="p">;</span>
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">dependencyCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="w"> </span><span class="p">(</span><span class="n">dependencies</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DEPTYPE_SUBPARSER</span></code> is specified in the 0th element of <code class="docutils literal notranslate"><span class="pre">dependencies</span></code>
+function static variable. In the next a literal string “M4” is
+specified and <code class="docutils literal notranslate"><span class="pre">autoconfSubparser</span></code> follows. The intent of the code is
+registering <code class="docutils literal notranslate"><span class="pre">autoconfSubparser</span></code> subparser definition to a base parser
+named “M4”.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dependencies</span></code> function static variable must be assigned to
+<code class="docutils literal notranslate"><span class="pre">dependencies</span></code> fields of a variable of <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code>.
+The main part of Universal Ctags refers the field when
+initializing parsers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> emphasizes this is “the 0th element”. The subparser may refer
+the index of the array when the subparser calls
+<code class="docutils literal notranslate"><span class="pre">scheduleRunningBaseparser</span></code>.</p>
+</section>
+<section id="scheduling-running-the-base-parser">
+<h3>Scheduling running the base parser<a class="headerlink" href="#scheduling-running-the-base-parser" title="Permalink to this heading">¶</a></h3>
+<p>For the case that a subparser is chosen in top down, the subparser
+must call <code class="docutils literal notranslate"><span class="pre">scheduleRunningBaseparser</span></code> in the main <code class="docutils literal notranslate"><span class="pre">parser</span></code> method.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsers/autoconf.c</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">findAutoconfTags</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="n">scheduleRunningBaseparser</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="nf">AutoconfParser</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="n">parserDefinition</span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parserNew</span><span class="p">(</span><span class="s">&quot;Autoconf&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">parserDependency</span><span class="w"> </span><span class="n">dependencies</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">DEPTYPE_SUBPARSER</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;M4&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">autoconfSubparser</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dependencies</span><span class="p">;</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="n">def</span><span class="o">-&gt;</span><span class="n">parser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findAutoconfTags</span><span class="p">;</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">def</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A subparser can do nothing actively. A base parser makes its subparser
+work by calling methods of the subparser.  Therefore a subparser must
+run its base parser when the subparser is chosen in a top down way,
+The main part prepares <code class="docutils literal notranslate"><span class="pre">scheduleRunningBaseparser</span></code> function for the purpose.</p>
+<p>A subparser should call the function from <code class="docutils literal notranslate"><span class="pre">parser</span></code> method of <code class="docutils literal notranslate"><span class="pre">parserDefinition</span></code>
+of the subparser. <code class="docutils literal notranslate"><span class="pre">scheduleRunningBaseparser</span></code> takes an integer. It specifies
+an index of the dependency which is used for registering the subparser.</p>
+</section>
+</section>
+</section>
+<section id="packcc-compiler-compiler">
+<h1>PackCC compiler-compiler<a class="headerlink" href="#packcc-compiler-compiler" title="Permalink to this heading">¶</a></h1>
+<p>PackCC is a compiler-compiler; it translates <code class="docutils literal notranslate"><span class="pre">.peg</span></code> grammar file to <code class="docutils literal notranslate"><span class="pre">.c</span></code>
+file.  PackCC was originally written by Arihiro Yoshida. Its source
+repository is at <a class="reference external" href="https://github.com/arithy/packcc">https://github.com/arithy/packcc</a>.</p>
+<p>The source tree of PackCC is grafted at <code class="docutils literal notranslate"><span class="pre">misc/packcc</span></code> directory.
+Building PackCC and ctags are integrated in the build-scripts of
+Universal Ctags.</p>
+<p>Refer <a class="reference external" href="https://github.com/universal-ctags/ctags/blob/master/peg/varlink.peg">peg/valink.peg</a> as a
+sample of a parser using PackCC.</p>
+</section>
+<section id="automatic-parser-guessing-tbw">
+<h1>Automatic parser guessing (TBW)<a class="headerlink" href="#automatic-parser-guessing-tbw" title="Permalink to this heading">¶</a></h1>
+</section>
+<section id="managing-regular-expression-parsers-tbw">
+<h1>Managing regular expression parsers (TBW)<a class="headerlink" href="#managing-regular-expression-parsers-tbw" title="Permalink to this heading">¶</a></h1>
+</section>
+<section id="ghost-kind-in-regex-parser-tbw">
+<h1>Ghost kind in regex parser (TBW)<a class="headerlink" href="#ghost-kind-in-regex-parser-tbw" title="Permalink to this heading">¶</a></h1>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Input text stream</a><ul>
+<li><a class="reference internal" href="#inputfile-type-and-the-functions-of-input-group"><cite>inputFile</cite> type and the functions of input group</a></li>
+<li><a class="reference internal" href="#the-functions-of-bypass-group">The functions of bypass group</a></li>
+<li><a class="reference internal" href="#the-functions-of-raw-group">The functions of raw group</a></li>
+<li><a class="reference internal" href="#escaping-and-unescaping-input-fields">Escaping and unescaping input fields</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-tag-stream">Output tag stream</a><ul>
+<li><a class="reference internal" href="#cork-api">cork API</a><ul>
+<li><a class="reference internal" href="#background-and-idea">Background and Idea</a></li>
+<li><a class="reference internal" href="#how-to-use">How to use</a></li>
+<li><a class="reference internal" href="#automatic-full-qualified-tag-generation">Automatic full qualified tag generation</a></li>
+<li><a class="reference internal" href="#symbol-table-api">symbol table API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tokeninfo-api">tokenInfo API</a></li>
+<li><a class="reference internal" href="#multiple-parsers">Multiple parsers</a><ul>
+<li><a class="reference internal" href="#guest-parser-promise-api">Guest parser (promise API)</a><ul>
+<li><a class="reference internal" href="#id3">Background and Idea</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#internal-design">Internal design</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-for-subparser">API for subparser</a><ul>
+<li><a class="reference internal" href="#outline">Outline</a></li>
+<li><a class="reference internal" href="#fields-of-subparser-type">Fields of <code class="docutils literal notranslate"><span class="pre">subparser</span></code> type</a></li>
+<li><a class="reference internal" href="#extending-subparser-type">Extending <code class="docutils literal notranslate"><span class="pre">subparser</span></code> type</a></li>
+<li><a class="reference internal" href="#making-a-tag-in-a-subparser">Making a tag in a subparser</a></li>
+<li><a class="reference internal" href="#calling-methods-of-subparsers-from-a-base-parser">Calling methods of subparsers from a base parser</a></li>
+<li><a class="reference internal" href="#registering-a-subparser-to-its-base-parser">Registering a subparser to its base parser</a></li>
+<li><a class="reference internal" href="#scheduling-running-the-base-parser">Scheduling running the base parser</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#packcc-compiler-compiler">PackCC compiler-compiler</a></li>
+<li><a class="reference internal" href="#automatic-parser-guessing-tbw">Automatic parser guessing (TBW)</a></li>
+<li><a class="reference internal" href="#managing-regular-expression-parsers-tbw">Managing regular expression parsers (TBW)</a></li>
+<li><a class="reference internal" href="#ghost-kind-in-regex-parser-tbw">Ghost kind in regex parser (TBW)</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="parser-in-c.html"
+                          title="previous chapter">Writing a parser in C</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="testing-ctags.html"
+                          title="next chapter">Testing ctags</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="testing-ctags.html" title="Testing ctags"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parser-in-c.html" title="Writing a parser in C"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="extending.html" >Extending ctags with a parser written in C</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Input text stream</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

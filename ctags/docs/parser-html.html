@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The new HTML parser &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="puppetManifest parser" href="parser-puppetManifest.html" />
+    <link rel="prev" title="The new GDScript parser" href="parser-gdscript.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="parser-puppetManifest.html" title="puppetManifest parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parser-gdscript.html" title="The new GDScript parser"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="parsers.html" accesskey="U">Parsers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The new HTML parser</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="the-new-html-parser">
+<span id="html"></span><h1>The new HTML parser<a class="headerlink" href="#the-new-html-parser" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Jiri Techet &lt;<a class="reference external" href="mailto:techet&#37;&#52;&#48;gmail&#46;com">techet<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<p>The old HTML parser was line-oriented based on regular expression matching. This
+brought several limitations like the inability of the parser to deal with tags
+spanning multiple lines and not respecting HTML comments. In addition, the speed
+of the parser depended on the number of regular expressions - the more tag types
+were extracted, the more regular expressions were needed and the slower the
+parser became. Finally, parsing of embedded JavaScript was very limited, based
+on regular expressions and detecting only function declarations.</p>
+<p>The new parser is hand-written, using separated lexical analysis (dividing
+the input into tokens) and syntax analysis. The parser has been profiled and
+optimized for speed so it is one of the fastest parsers in Universal Ctags.
+It handles HTML comments correctly and in addition to existing tags it extracts
+also &lt;h1&gt;, &lt;h2&gt; and &lt;h3&gt; headings. It should be reasonably simple to add new
+tag types.</p>
+<p>Finally, the parser uses the new functionality of Universal Ctags to use another
+parser for parsing other languages within a host language. This is used for
+parsing JavaScript within &lt;script&gt; tags and CSS within &lt;style&gt; tags. This
+simplifies the parser and generates much better results than having a simplified
+JavaScript or CSS parser within the HTML parser. To run JavaScript and CSS parsers
+from HTML parser, use <cite>--extras=+g</cite> option.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">The new HTML parser</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="parser-gdscript.html"
+                          title="previous chapter">The new GDScript parser</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="parser-puppetManifest.html"
+                          title="next chapter">puppetManifest parser</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="parser-puppetManifest.html" title="puppetManifest parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parser-gdscript.html" title="The new GDScript parser"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="parsers.html" >Parsers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The new HTML parser</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Output formats &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changes to the tags file format" href="output-tags.html" />
+    <link rel="prev" title="Option files" href="option-file.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="output-tags.html" title="Changes to the tags file format"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="option-file.html" title="Option files"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Output formats</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="output-formats">
+<span id="output-format"></span><h1>Output formats<a class="headerlink" href="#output-formats" title="Permalink to this heading">¶</a></h1>
+<p>This section deals with individual output-format topics.</p>
+<p>The command line option <code class="docutils literal notranslate"><span class="pre">--output-format=</span></code><em>format</em> chooses an output format.
+Supported <em>format</em> are <code class="docutils literal notranslate"><span class="pre">u-ctags</span></code>, <code class="docutils literal notranslate"><span class="pre">e-ctags</span></code>, <code class="docutils literal notranslate"><span class="pre">etags</span></code>, <code class="docutils literal notranslate"><span class="pre">xref</span></code>, and <code class="docutils literal notranslate"><span class="pre">json</span></code>.</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">u-ctags</span></code>, <code class="docutils literal notranslate"><span class="pre">e-ctags</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">u-ctags</span></code> is the default output format extending the Exuberant Ctags
+output format (<code class="docutils literal notranslate"><span class="pre">e-ctags</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">--format=1</span></code> and <code class="docutils literal notranslate"><span class="pre">--format=2</span></code> are same as <code class="docutils literal notranslate"><span class="pre">--output-format=e-ctags</span></code>
+and <code class="docutils literal notranslate"><span class="pre">--output-format=u-ctags</span></code> respectively.</p>
+<p>See man page <a class="reference internal" href="man/tags.5.html#tags-5"><span class="std std-ref">tags (5)</span></a> for details. The difference between
+<code class="docutils literal notranslate"><span class="pre">u-ctags</span></code> and <code class="docutils literal notranslate"><span class="pre">e-ctags</span></code> are marked as “EXCEPTION”.
+Additional changes in Universal Ctags are described in
+<a class="reference internal" href="output-tags.html#changes-tags-file"><span class="std std-ref">Changes to the tags file format</span></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">etags</span></code></dt><dd><p>Output format for Emacs etags.
+<code class="docutils literal notranslate"><span class="pre">--output-format=etags</span></code> can be abbreviated as <code class="docutils literal notranslate"><span class="pre">-e</span></code>.</p>
+<p>See <a class="reference external" href="https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/ETAGS.EBNF">emacs git</a> for
+details.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">xref</span></code></dt><dd><p>A tabular, human-readable cross reference (xref) format.
+<code class="docutils literal notranslate"><span class="pre">--output-format=xref</span></code> can be abbreviated as <code class="docutils literal notranslate"><span class="pre">-x</span></code>.</p>
+<p>See section <a class="reference internal" href="output-xref.html#output-xref"><span class="std std-ref">Xref output</span></a> for details.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">json</span></code></dt><dd><p>JSON format.</p>
+<p>See section <a class="reference internal" href="output-json.html#output-json"><span class="std std-ref">JSON output</span></a> for details.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output-tags.html">Changes to the tags file format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#f-kind-usage"><code class="docutils literal notranslate"><span class="pre">F</span></code> kind usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#reference-tags">Reference tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#pseudo-tags">Pseudo-tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#truncating-the-pattern-for-long-input-lines">Truncating the pattern for long input lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#parser-specific-fields">Parser specific fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#parser-specific-extras">Parser specific extras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html#parser-specific-parameter">Parser specific parameter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output-xref.html">Xref output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output-xref.html#customizing-xref-output">Customizing xref output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output-json.html">JSON output</a></li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="option-file.html"
+                          title="previous chapter">Option files</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="output-tags.html"
+                          title="next chapter">Changes to the tags file format</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="output-tags.html" title="Changes to the tags file format"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="option-file.html" title="Option files"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Output formats</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

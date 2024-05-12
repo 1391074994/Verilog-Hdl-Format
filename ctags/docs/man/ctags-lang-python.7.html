@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-python &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-r" href="ctags-lang-r.7.html" />
+    <link rel="prev" title="ctags-lang-kconfig" href="ctags-lang-kconfig.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-r.7.html" title="ctags-lang-r"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-kconfig.7.html" title="ctags-lang-kconfig"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-python</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-python">
+<span id="ctags-lang-python-7"></span><h1>ctags-lang-python<a class="headerlink" href="#ctags-lang-python" title="Permalink to this heading">¶</a></h1>
+<p>Random notes about tagging python source code with Universal Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … --languages=+Python …</div>
+<div class="line"><strong>ctags</strong> … --language-force=Python …</div>
+<div class="line"><strong>ctags</strong> … --map-Python=+.py …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>This man page gathers random notes about tagging python source code.</p>
+</section>
+<section id="tagging-import-statements">
+<h2>TAGGING <code class="docutils literal notranslate"><span class="pre">import</span></code> STATEMENTS<a class="headerlink" href="#tagging-import-statements" title="Permalink to this heading">¶</a></h2>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h3>
+<p><cite>import X</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>imported</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>import X as Y</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>module</p></td>
+<td><p>indirectlyImported</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>Y</p></td>
+<td><p>namespace</p></td>
+<td><p>definition</p></td>
+<td><p>nameref:module:X</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>from X import *</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>X</cite></p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>from X import Y</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>X</cite></p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>Y</cite></p></td>
+<td><p>unknown</p></td>
+<td><p>imported</p></td>
+<td><p>scope:module:<cite>X</cite></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>from X import Y as Z</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>X</cite></p></td>
+<td><p>module</p></td>
+<td><p>namespace</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>Y</cite></p></td>
+<td><p>unknown</p></td>
+<td><p>indirectlyImported</p></td>
+<td><p>scope:module:<cite>X</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><cite>Z</cite></p></td>
+<td><p>unknown</p></td>
+<td><p>definition</p></td>
+<td><p>nameref:unknown:<cite>Y</cite></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">X0</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzK input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X0      input.py        /^import X0$/;&quot; kind:module     roles:imported
+</pre></div>
+</div>
+<p>A tag for an imported module has <code class="docutils literal notranslate"><span class="pre">module</span></code> kind with <code class="docutils literal notranslate"><span class="pre">imported</span></code> role.  The
+module is not defined here; it is defined in another file. So the tag for the
+imported module is a reference tag; specify <code class="docutils literal notranslate"><span class="pre">--extras=+r</span></code> (or
+<code class="docutils literal notranslate"><span class="pre">--extras=+{reference}</span></code>) option for tagging it.  “roles:” field enabled with
+<code class="docutils literal notranslate"><span class="pre">--fields=+r</span></code> is for recording the module is “imported” to the tag file.</p>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">X1</span> <span class="k">as</span> <span class="nn">Y1</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzK --fields-Python=+{nameref} input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X1      input.py        /^import X1 as Y1$/;&quot;   kind:module     roles:indirectlyImported
+Y1      input.py        /^import X1 as Y1$/;&quot;   kind:namespace  roles:def       nameref:module:X1
+</pre></div>
+</div>
+<p>“Y1” introduces a new name and is defined here. So “Y1” is tagged as a
+definition tag.  “X1” is imported in a way that its name cannot be used
+in this source file. For letting client tools know that the name cannot be used,
+<code class="docutils literal notranslate"><span class="pre">indirectlyImported</span></code> role is assigned for “X1”.  “Y1” is the name for
+accessing objects defined in the module imported via “X1”.  For recording this
+relationship, <code class="docutils literal notranslate"><span class="pre">nameref:</span></code> field is attached to the tag of “Y1”.  Instead of
+<code class="docutils literal notranslate"><span class="pre">module</span></code> kind, <code class="docutils literal notranslate"><span class="pre">namespace</span></code> kind is assigned to “Y1” because “Y1” itself
+isn’t a module.</p>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">X2</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzK input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X2      input.py        /^from X2 import *$/;&quot;  kind:module     roles:namespace
+</pre></div>
+</div>
+<p>The module is not defined here; it is defined in another file. So the tag for
+the imported module is a reference tag. Unlike “X0” in “import X0”, “X2” may not
+be used because the names defined in “X2” can be used in this source file. To represent
+the difference <code class="docutils literal notranslate"><span class="pre">namespace</span></code> role is attached to “X2” instead of <code class="docutils literal notranslate"><span class="pre">imported</span></code>.</p>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">X3</span> <span class="kn">import</span> <span class="n">Y3</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzKZ input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X3      input.py        /^from X3 import Y3$/;&quot; kind:module     roles:namespace
+Y3      input.py        /^from X3 import Y3$/;&quot; kind:unknown    scope:module:X3 roles:imported
+</pre></div>
+</div>
+<p>“Y3” is a name for a language object defined in “X3” module. “scope:module:X3”
+attached to “Y3” represents this relation between “Y3” and “X3”. ctags
+assigns <code class="docutils literal notranslate"><span class="pre">unknown</span></code> kind to “Y3” because ctags cannot know whether “Y3” is a
+class, a variable, or a function from the input file.</p>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">X4</span> <span class="kn">import</span> <span class="n">Y4</span> <span class="k">as</span> <span class="n">Z4</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --extras=+r --fields=+rzKZ input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>X4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:module     roles:namespace
+Y4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:unknown    scope:module:X4 roles:indirectlyImported
+Z4      input.py        /^from X4 import Y4 as Z4$/;&quot;   kind:unknown    roles:def       nameref:unknown:Y4
+</pre></div>
+</div>
+<p>“Y4” is similar to “Y3” of “from X3 import Y3” but the name cannot be used here.
+<code class="docutils literal notranslate"><span class="pre">indirectlyImported</span></code> role assigned to “Y4” representing this. “Z4” is the name for
+accessing the language object named in “Y4” in “X4” module. “nameref:unknown:Y4”
+attached to “Z4” and “scope:module:X4” attached to “Y4” represent the relations.</p>
+</section>
+</section>
+<section id="lambda-expression-and-type-hint">
+<h2>LAMBDA EXPRESSION AND TYPE HINT<a class="headerlink" href="#lambda-expression-and-type-hint" title="Permalink to this heading">¶</a></h2>
+<section id="id1">
+<h3>Summary<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p><cite>id = lambda var0: var0</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>id</cite></p></td>
+<td><p>function</p></td>
+<td><p>definition</p></td>
+<td><p>signature:(<cite>var0</cite>)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><cite>id_t: Callable[[int], int] = lambda var1: var1</cite></p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>name</p></th>
+<th class="head"><p>kind</p></th>
+<th class="head"><p>role</p></th>
+<th class="head"><p>other noticeable fields</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>id_t</cite></p></td>
+<td><p>variable</p></td>
+<td><p>definition</p></td>
+<td><p>typeref:typename:<cite>Callable[[int], int]</cite> nameref:function:anonFuncN</p></td>
+</tr>
+<tr class="row-odd"><td><p>anonFuncN</p></td>
+<td><p>function</p></td>
+<td><p>definition</p></td>
+<td><p>signature:(<cite>var1</cite>)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+<section id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<p>“input.py”</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var0</span><span class="p">:</span> <span class="n">var0</span>
+<span class="n">id_t</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">var1</span><span class="p">:</span> <span class="n">var1</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --fields=+KS --fields-Python=+{nameref} --extras=+{anonymous} input.py”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>id      input.py        /^id = lambda var0: var0$/;&quot;    function        signature:(var0)
+id_t    input.py        /^id_t: Callable[[int], int] = lambda var1: var1$/;&quot;\
+        variable        typeref:typename:Callable[[int], int]   nameref:function:anonFunc84011d2c0101
+anonFunc84011d2c0101    input.py        /^id_t: Callable[[int], int] = lambda var1: var1$/;&quot;\
+        function        signature:(var1)
+</pre></div>
+</div>
+<p>If a variable (“id”) with no type hint is initialized with a lambda expression,
+ctags assigns <code class="docutils literal notranslate"><span class="pre">function</span></code> kind for the tag of “id”.</p>
+<p>If a variable (“id_t”) with a type hint is initialized with a lambda expression,
+ctags assigns <code class="docutils literal notranslate"><span class="pre">variable</span></code> kind for the tag of “id_t” with <code class="docutils literal notranslate"><span class="pre">typeref:</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nameref:</span></code> fields. ctags fills <code class="docutils literal notranslate"><span class="pre">typeref:</span></code> field with the value of the type
+hint. The way of filling <code class="docutils literal notranslate"><span class="pre">nameref:</span></code> is a bit complicated.</p>
+<p>For the lambda expression used in initializing the type-hint’ed variable, ctags
+creates <code class="docutils literal notranslate"><span class="pre">anonymous</span></code> extra tag (“anonFunc84011d2c0101”). ctags fills the
+<code class="docutils literal notranslate"><span class="pre">nameref:</span></code> field of “id_t” with the name of <code class="docutils literal notranslate"><span class="pre">anonymous</span></code> extra tag:
+“nameref:function:anonFunc84011d2c0101”.</p>
+<p>You may think why ctags does so complicated, and why ctags doesn’t emit
+following tags output for the input:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>id      input.py        /^id = \\$/;&quot;   function        signature:(var0)
+id_t    input.py        /^id_t: \\$/;&quot;  function        typeref:typename:Callable[[int], int]   signature:(var1)
+</pre></div>
+</div>
+<p>There is a reason. The other languages of ctags obey the following rule: ctags fills
+<code class="docutils literal notranslate"><span class="pre">typeref:</span></code> field for a tag of a callable object (like function) with the type
+of its return value. If we consider “id_t” is a function, its <code class="docutils literal notranslate"><span class="pre">typeref:</span></code> field
+should have “typename:int”. However, for filling <code class="docutils literal notranslate"><span class="pre">typeref:</span></code> with “typename:int”,
+ctags has to analyze “Callable[[int], int]” deeper. We don’t want to do so.</p>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>, <a class="reference internal" href="ctags-lang-iPythonCell.7.html#ctags-lang-ipythoncell-7"><span class="std std-ref">ctags-lang-iPythonCell(7)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-python</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#tagging-import-statements">TAGGING <code class="docutils literal notranslate"><span class="pre">import</span></code> STATEMENTS</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lambda-expression-and-type-hint">LAMBDA EXPRESSION AND TYPE HINT</a><ul>
+<li><a class="reference internal" href="#id1">Summary</a></li>
+<li><a class="reference internal" href="#id2">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-lang-kconfig.7.html"
+                          title="previous chapter">ctags-lang-kconfig</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-r.7.html"
+                          title="next chapter">ctags-lang-r</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-r.7.html" title="ctags-lang-r"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-kconfig.7.html" title="ctags-lang-kconfig"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-python</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

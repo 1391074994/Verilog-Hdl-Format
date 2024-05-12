@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Option files &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Output formats" href="output-format.html" />
+    <link rel="prev" title="XSLT parser" href="parser-xslt.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="output-format.html" title="Output formats"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parser-xslt.html" title="XSLT parser"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Option files</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="option-files">
+<span id="id1"></span><h1>Option files<a class="headerlink" href="#option-files" title="Permalink to this heading">¶</a></h1>
+<p>An “option file” is a file in which command line options are written line
+by line. <code class="docutils literal notranslate"><span class="pre">ctags</span></code> loads it and runs as if the options in the file were
+passed through command line.</p>
+<p>The following file is an example of an option file:</p>
+<div class="highlight-ctags notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exclude directories that don&#39;t contain real code</span>
+--exclude=Units
+<span class="w">        </span><span class="c1"># indentation is ignored</span>
+<span class="w">        </span>--exclude=tinst-root
+--exclude=Tmain
+</pre></div>
+</div>
+<p>The character <cite>#</cite> can be used as a start marker of a line comment.
+Whitespaces at the start of lines are ignored during loading.</p>
+<p>And it works exactly as if we had called:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>ctags<span class="w"> </span>--exclude<span class="o">=</span>Units<span class="w"> </span>--exclude<span class="o">=</span>tinst-root<span class="w"> </span>--exclude<span class="o">=</span>Tmain
+</pre></div>
+</div>
+<section id="order-of-loading-option-files">
+<h2>Order of loading option files<a class="headerlink" href="#order-of-loading-option-files" title="Permalink to this heading">¶</a></h2>
+<p>Option files are loaded by <code class="docutils literal notranslate"><span class="pre">ctags</span></code> automatically at start-up time.</p>
+<p>Which files are loaded at start-up time are very different from Exuberant Ctags.
+See <a class="reference internal" href="#option-file-difference"><span class="std std-ref">Difference from Exuberant Ctags</span></a> for the differences and their intentions.</p>
+<p>At start-up time, <code class="docutils literal notranslate"><span class="pre">ctags</span></code> loads files having <code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> as a
+file extension under the following statically defined directories:</p>
+<ol class="arabic simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/ctags/</span></code>, or <code class="file docutils literal notranslate"><span class="pre">$HOME/.config/ctags/</span></code> if <code class="file docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME</span></code> is not defined (on other than Windows)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">$HOME/.ctags.d/</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">$HOMEDRIVE$HOMEPATH/ctags.d/</span></code> (on Windows)</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">./.ctags.d/</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">./ctags.d/</span></code></p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">ctags</span></code> visits the directories in the order listed above for preloading files.
+<code class="docutils literal notranslate"><span class="pre">ctags</span></code> loads files having <code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> as file extension in alphabetical
+order (<code class="docutils literal notranslate"><span class="pre">strcmp(3)</span></code> is used for comparing, so for example
+<code class="file docutils literal notranslate"><span class="pre">.ctags.d/ZZZ.ctags</span></code> will be loaded <em>before</em> <code class="file docutils literal notranslate"><span class="pre">.ctags.d/aaa.ctags</span></code> in an ordinary locale).</p>
+<p>If a option file includes <code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code> option, specified files are
+loaded immediately as described in the next section. <code class="docutils literal notranslate"><span class="pre">ctags</span></code> load a option
+file only once if it is specified multiple times.</p>
+<p>Finally if <code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code> option is specified on <code class="docutils literal notranslate"><span class="pre">ctags</span></code> command line,
+option files specified are load.</p>
+</section>
+<section id="options-pathname-option">
+<h2><code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code> option<a class="headerlink" href="#options-pathname-option" title="Permalink to this heading">¶</a></h2>
+<p>Exuberant Ctags also has the <code class="docutils literal notranslate"><span class="pre">--options</span></code> option, but you can only specify a
+single file to load. Universal Ctags extends the option in two aspects:</p>
+<ul class="simple">
+<li><p>You can specify a directory, to load all the files in that directory.</p></li>
+<li><p>You can specify a PATH list to look in. See next section for details.</p></li>
+</ul>
+<section id="specifying-a-directory">
+<h3>Specifying a directory<a class="headerlink" href="#specifying-a-directory" title="Permalink to this heading">¶</a></h3>
+<p>If you specify a directory instead of a file as the argument for the
+<code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code>, <code class="docutils literal notranslate"><span class="pre">ctags</span></code> will load all files having a
+<code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> extension under said directory in alphabetical order.</p>
+</section>
+<section id="specifying-an-optlib-path-list">
+<h3>Specifying an optlib PATH list<a class="headerlink" href="#specifying-an-optlib-path-list" title="Permalink to this heading">¶</a></h3>
+<p>Much like a command line shell, <code class="docutils literal notranslate"><span class="pre">ctags</span></code> has an <em>optlib PATH list</em> in which it
+can look for a file (or directory) to load.</p>
+<p>When loading a file (or directory) specified with <code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code>,
+ctags first checks if <code class="docutils literal notranslate"><span class="pre">PATHNAME</span></code> is an absolute path or a relative path.
+An absolute path starts with ‘<code class="docutils literal notranslate"><span class="pre">/</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’.
+If <code class="docutils literal notranslate"><span class="pre">PATHNAME</span></code> is an absolute path, ctags tries to load it immediately.</p>
+<p>If, on the contrary, is a relative path, <code class="docutils literal notranslate"><span class="pre">ctags</span></code> does two things: First,
+looks for the file (or directory) in <em>optlib PATH list</em> and tries to load it.</p>
+<p>If the file doesn’t exist in the PATH list, <code class="docutils literal notranslate"><span class="pre">ctags</span></code>  treats <code class="docutils literal notranslate"><span class="pre">PATHNAME</span></code> as a
+path relative to the working directory and loads the file.</p>
+<p>By default, <em>optlib PATH list</em> is empty. To set or add a directory
+path to the list, use <code class="docutils literal notranslate"><span class="pre">--optlib-dir=PATH</span></code>.</p>
+<p>For setting (adding one after clearing):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">optlib</span><span class="o">-</span><span class="nb">dir</span><span class="o">=</span><span class="n">PATH</span>
+</pre></div>
+</div>
+<p>For adding on the beginning of the PATH list:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">optlib</span><span class="o">-</span><span class="nb">dir</span><span class="o">=+</span><span class="n">PATH</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tips-for-writing-an-option-file">
+<h2>Tips for writing an option file<a class="headerlink" href="#tips-for-writing-an-option-file" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--quiet</span> <span class="pre">--options=NONE</span></code> to disable preloading.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--_echo=MSG</span></code> and  <code class="docutils literal notranslate"><span class="pre">--_force-quit=[NUM]</span></code> options are introduced for
+debugging the process of loading option files. See “OPTIONS”
+section of <a class="reference internal" href="man/ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>.</p></li>
+<li><p>Universal Ctags has an <code class="docutils literal notranslate"><span class="pre">optlib2c</span></code> script that translates an option file
+into C source code. Your optlib parser can thus easily become a built-in parser.
+See <a class="reference internal" href="optlib.html#optlib2c"><span class="std std-ref">Translating an option file into C source code (optlib2c)</span></a> for details.</p></li>
+</ul>
+</section>
+<section id="difference-from-exuberant-ctags">
+<span id="option-file-difference"></span><h2>Difference from Exuberant Ctags<a class="headerlink" href="#difference-from-exuberant-ctags" title="Permalink to this heading">¶</a></h2>
+<p>Quoted from man page of Exuberant Ctags:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>FILES</dt><dd><ul class="simple">
+<li><p>/ctags.cnf (on MSDOS, MSWindows only)</p></li>
+<li><p>/etc/ctags.conf</p></li>
+<li><p>/usr/local/etc/ctags.conf</p></li>
+<li><p>$HOME/.ctags</p></li>
+<li><p>$HOME/ctags.cnf (on MSDOS, MSWindows only)</p></li>
+<li><p>.ctags</p></li>
+<li><p>ctags.cnf (on MSDOS, MSWindows only)</p></li>
+</ul>
+</dd>
+</dl>
+<p>If any of these configuration files exist, each will
+be expected to contain a set of default options
+which are read in the order listed when ctags
+starts, but before the CTAGS environment variable is
+read or any command line options are read.  This
+makes it possible to set up site-wide, personal or
+project-level defaults. It is possible to compile
+ctags to read an additional configuration file
+before any of those shown above, which will be
+indicated if the output produced by the --version
+option lists the “custom-conf” feature. Options
+appearing in the CTAGS environment variable or on
+the command line will override options specified in
+these files. Only options will be read from these
+files.  Note that the option files are read in
+line-oriented mode in which spaces are significant
+(since shell quoting is not possible). Each line of
+the file is read as one command line parameter (as
+if it were quoted with single quotes). Therefore,
+use new lines to indicate separate command-line
+arguments.</p>
+</div></blockquote>
+<p>What follows explains the differences and their intentions…</p>
+<section id="directory-oriented-configuration-management">
+<h3>Directory oriented configuration management<a class="headerlink" href="#directory-oriented-configuration-management" title="Permalink to this heading">¶</a></h3>
+<p>Exuberant Ctags provides a way to customize ctags with options like
+<code class="docutils literal notranslate"><span class="pre">--langdef=&lt;LANG&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code>. These options are
+powerful and make ctags popular for programmers.</p>
+<p>Universal Ctags extends this idea; we have added new options for
+defining a parser, and have extended existing options. Defining
+a new parser with the options is more than “customizing” in
+Universal Ctags.</p>
+<p>To make easier the maintenance a parser defined using the options, you can put
+each language parser in a different options file. Universal Ctags doesn’t
+preload a single file. Instead, Universal Ctags loads all the files having the
+<code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> extension under the previously specified directories. If you
+have multiple parser definitions, put them in different files.</p>
+</section>
+<section id="avoiding-option-incompatibility-issues">
+<h3>Avoiding option incompatibility issues<a class="headerlink" href="#avoiding-option-incompatibility-issues" title="Permalink to this heading">¶</a></h3>
+<p>The Universal Ctags options are different from those of Exuberant Ctags,
+therefore Universal Ctags doesn’t load any of the files Exuberant Ctags loads at
+start-up. Otherwise there would be incompatibility issues if Exuberant Ctags
+loaded an option file that used a newly introduced option in Universal Ctags,
+and vice versa.</p>
+</section>
+<section id="no-system-wide-configuration">
+<h3>No system wide configuration<a class="headerlink" href="#no-system-wide-configuration" title="Permalink to this heading">¶</a></h3>
+<p>To make the preload path list short and because it was rarely ever used,
+Universal Ctags does not load any option files for system wide configuration.
+(i.e., no <code class="file docutils literal notranslate"><span class="pre">/etc/ctags.d</span></code>)</p>
+</section>
+<section id="using-ctags-for-the-file-extension">
+<h3>Using <code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> for the file extension<a class="headerlink" href="#using-ctags-for-the-file-extension" title="Permalink to this heading">¶</a></h3>
+<p>Extensions <code class="file docutils literal notranslate"><span class="pre">.cnf</span></code> and <code class="file docutils literal notranslate"><span class="pre">.conf</span></code> are obsolete.
+Use the unified extension <code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> only.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Option files</a><ul>
+<li><a class="reference internal" href="#order-of-loading-option-files">Order of loading option files</a></li>
+<li><a class="reference internal" href="#options-pathname-option"><code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code> option</a><ul>
+<li><a class="reference internal" href="#specifying-a-directory">Specifying a directory</a></li>
+<li><a class="reference internal" href="#specifying-an-optlib-path-list">Specifying an optlib PATH list</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tips-for-writing-an-option-file">Tips for writing an option file</a></li>
+<li><a class="reference internal" href="#difference-from-exuberant-ctags">Difference from Exuberant Ctags</a><ul>
+<li><a class="reference internal" href="#directory-oriented-configuration-management">Directory oriented configuration management</a></li>
+<li><a class="reference internal" href="#avoiding-option-incompatibility-issues">Avoiding option incompatibility issues</a></li>
+<li><a class="reference internal" href="#no-system-wide-configuration">No system wide configuration</a></li>
+<li><a class="reference internal" href="#using-ctags-for-the-file-extension">Using <code class="file docutils literal notranslate"><span class="pre">.ctags</span></code> for the file extension</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="parser-xslt.html"
+                          title="previous chapter">XSLT parser</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="output-format.html"
+                          title="next chapter">Output formats</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="output-format.html" title="Output formats"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parser-xslt.html" title="XSLT parser"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Option files</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

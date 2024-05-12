@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-incompatibilities &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-faq" href="ctags-faq.7.html" />
+    <link rel="prev" title="ctags-client-tools" href="ctags-client-tools.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-faq.7.html" title="ctags-faq"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-client-tools.7.html" title="ctags-client-tools"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-incompatibilities</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-incompatibilities">
+<span id="ctags-incompatibilities-7"></span><h1>ctags-incompatibilities<a class="headerlink" href="#ctags-incompatibilities" title="Permalink to this heading">¶</a></h1>
+<p>Incompatibilities between Universal Ctags and Exuberant Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> [options] [file(s)]</div>
+<div class="line"><strong>etags</strong> [options] [file(s)]</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>This page describes major incompatible changes introduced to
+Universal Ctags forked from Exuberant Ctags.</p>
+<section id="option-files-loading-at-starting-up-time-preload-files">
+<h3>Option files loading at starting up time (preload files)<a class="headerlink" href="#option-files-loading-at-starting-up-time-preload-files" title="Permalink to this heading">¶</a></h3>
+<p>Universal Ctags doesn’t load <code class="docutils literal notranslate"><span class="pre">~/.ctags</span></code> at starting up time.
+File paths for preload files are changed.
+See “FILES” section of <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="environment-variables-for-arranging-command-lines">
+<h3>Environment variables for arranging command lines<a class="headerlink" href="#environment-variables-for-arranging-command-lines" title="Permalink to this heading">¶</a></h3>
+<p>Universal Ctags doesn’t read <code class="docutils literal notranslate"><span class="pre">CTAGS</span></code> and/or <code class="docutils literal notranslate"><span class="pre">ETAGS</span></code> environment
+variables.</p>
+</section>
+<section id="behavior-when-excmd-mixed-is-given">
+<h3>Behavior when <code class="docutils literal notranslate"><span class="pre">--excmd=mixed</span></code> is given<a class="headerlink" href="#behavior-when-excmd-mixed-is-given" title="Permalink to this heading">¶</a></h3>
+<p>Exuberant Ctags uses line numbers as addresses for C preprocessor
+macro definition tags. Universal Ctags uses patterns for the tags.</p>
+</section>
+<section id="incompatibilities-in-command-line-interface">
+<h3>Incompatibilities in command line interface<a class="headerlink" href="#incompatibilities-in-command-line-interface" title="Permalink to this heading">¶</a></h3>
+<section id="ordering-in-a-command-line">
+<h4>Ordering in a command line<a class="headerlink" href="#ordering-in-a-command-line" title="Permalink to this heading">¶</a></h4>
+<p>The command line format of Universal Ctags is “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">[options]</span>
+<span class="pre">[source_file(s)]</span></code>” following the standard POSIX convention.</p>
+<p>Exuberant Ctags accepts a option following a source file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>foo.c<span class="w"> </span>--list-kinds<span class="o">=</span>Sh
+<span class="go">f  functions</span>
+</pre></div>
+</div>
+<p>Universal Ctags warns and ignores the option <code class="docutils literal notranslate"><span class="pre">--list-kinds=Sh</span></code> as follows.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>foo.c<span class="w"> </span>--list-kinds<span class="o">=</span>Sh
+<span class="go">ctags: Warning: cannot open input file &quot;--list-kinds=Sh&quot; : No such file or directory</span>
+<span class="go">a       foo.c   /^void a () {}$/;&quot;      f       typeref:typename:void</span>
+<span class="go">b       foo.c   /^void b () {}$/;&quot;      f       typeref:typename:void</span>
+</pre></div>
+</div>
+</section>
+<section id="the-order-of-application-of-patterns-and-extensions-in-langmap">
+<h4>The order of application of patterns and extensions in <code class="docutils literal notranslate"><span class="pre">--langmap</span></code><a class="headerlink" href="#the-order-of-application-of-patterns-and-extensions-in-langmap" title="Permalink to this heading">¶</a></h4>
+<p>When applying mappings for a name of given source file,
+Exuberant Ctags tests file name patterns <em>AFTER</em> file extensions
+(<em>e-map-order</em>). Universal Ctags does this differently; it tests file
+name patterns <em>BEFORE</em> file extensions (<em>u-map-order</em>).</p>
+<p>This incompatible change is introduced to deal with the following
+situation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build.xml</span></code> as a source file,</p></li>
+<li><p>The Ant parser declares it handles a file name pattern <code class="docutils literal notranslate"><span class="pre">build.xml</span></code>, and</p></li>
+<li><p>The XML parser declares it handles a file extension <code class="docutils literal notranslate"><span class="pre">.xml</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Which parser should be used for parsing <code class="docutils literal notranslate"><span class="pre">build.xml</span></code>?  The assumption
+of Universal Ctags is the user may want to use the Ant parser; the
+file name pattern it declares is more specific than the file extension
+that the XML parser declares. However, e-map-order chooses the XML
+parser.</p>
+<p>So Universal Ctags uses the u-map-order even though it introduces an
+incompatibility.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--list-map-extensions=&lt;language&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">--list-map-patterns=&lt;language&gt;</span></code>
+options are helpful to verify and the file extensions and the file
+name patterns of given <em>&lt;language&gt;</em>.</p>
+</section>
+<section id="remove-file-tags-and-file-scope-options">
+<h4>Remove <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> and <code class="docutils literal notranslate"><span class="pre">--file-scope</span></code> options<a class="headerlink" href="#remove-file-tags-and-file-scope-options" title="Permalink to this heading">¶</a></h4>
+<p>Even in Exuberant Ctags, <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> is not documented in its man page.
+Instead of specifying <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> or <code class="docutils literal notranslate"><span class="pre">--file-tags=yes</span></code>, use
+<code class="docutils literal notranslate"><span class="pre">--extras=+f</span></code> or <code class="docutils literal notranslate"><span class="pre">--extras=+{inputFile}</span></code>.</p>
+<p>Instead of specifying <code class="docutils literal notranslate"><span class="pre">--file-tags=no</span></code>, use
+<code class="docutils literal notranslate"><span class="pre">--extras=-f</span></code> or <code class="docutils literal notranslate"><span class="pre">--extras=-{inputFile}</span></code>.</p>
+<p>Universal Ctags introduces <code class="docutils literal notranslate"><span class="pre">F/fileScope</span></code> extra as the replacement for
+<code class="docutils literal notranslate"><span class="pre">--file-scope</span></code> option.</p>
+<p>Instead of specifying <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> or <code class="docutils literal notranslate"><span class="pre">--file-tags=yes</span></code>, use
+<code class="docutils literal notranslate"><span class="pre">--extras=+F</span></code> or <code class="docutils literal notranslate"><span class="pre">--extras=+{fileScope}</span></code>.</p>
+<p>Instead of specifying <code class="docutils literal notranslate"><span class="pre">--file-tags=no</span></code>, use
+<code class="docutils literal notranslate"><span class="pre">--extras=-F</span></code> or <code class="docutils literal notranslate"><span class="pre">--extras=-{fileScope}</span></code>.</p>
+</section>
+</section>
+<section id="incompatibilities-in-language-and-kind-definitions">
+<h3>Incompatibilities in language and kind definitions<a class="headerlink" href="#incompatibilities-in-language-and-kind-definitions" title="Permalink to this heading">¶</a></h3>
+<section id="language-name-defined-with-langdef-name-option">
+<h4>Language name defined with <code class="docutils literal notranslate"><span class="pre">--langdef=name</span></code> option<a class="headerlink" href="#language-name-defined-with-langdef-name-option" title="Permalink to this heading">¶</a></h4>
+<p>The characters you can use are more restricted than Exuberant Ctags.
+For more details, see the description of <code class="docutils literal notranslate"><span class="pre">--langdef=name</span></code> in <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>.</p>
+</section>
+<section id="obsoleting-lang-kinds-option">
+<h4>Obsoleting <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds</span></code> option<a class="headerlink" href="#obsoleting-lang-kinds-option" title="Permalink to this heading">¶</a></h4>
+<p>Some options have <em>&lt;LANG&gt;</em> as parameterized parts in their name like
+<code class="docutils literal notranslate"><span class="pre">--foo-&lt;LANG&gt;=...</span></code> or <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-foo=...</span></code>. The most of all such
+options in Exuberant Ctags have the former form, <code class="docutils literal notranslate"><span class="pre">--foo-&lt;LANG&gt;=...</span></code>.
+The exception is <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds</span></code>.</p>
+<p>Universal Ctags uses the former form for all <em>&lt;LANG&gt;</em> parameterized
+option. Use <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds</span></code> in
+Universal Ctags. <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds</span></code> still works but it will be
+removed in the future.</p>
+<p>The former form may be friendly to shell completion engines.</p>
+</section>
+<section id="disallowing-to-define-a-kind-with-file-as-name">
+<h4>Disallowing to define a kind with <code class="docutils literal notranslate"><span class="pre">file</span></code> as name<a class="headerlink" href="#disallowing-to-define-a-kind-with-file-as-name" title="Permalink to this heading">¶</a></h4>
+<p>The kind name <code class="docutils literal notranslate"><span class="pre">file</span></code> is reserved.  Using it as part of kind spec in
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option is now disallowed.</p>
+</section>
+<section id="disallowing-to-define-a-kind-with-f-as-letter">
+<h4>Disallowing to define a kind with ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ as letter<a class="headerlink" href="#disallowing-to-define-a-kind-with-f-as-letter" title="Permalink to this heading">¶</a></h4>
+<p>The kind letter ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ is reserved.  Using it as part of a kind spec in
+<code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option is now disallowed.</p>
+</section>
+<section id="disallowing-to-use-other-than-alphabetical-character-as-kind-letter">
+<h4>Disallowing to use other than alphabetical character as kind letter<a class="headerlink" href="#disallowing-to-use-other-than-alphabetical-character-as-kind-letter" title="Permalink to this heading">¶</a></h4>
+<p>Exuberant Ctags accepts a character other than alphabetical character
+as kind letter in <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=...</span></code> option.  Universal Ctags
+accepts only an alphabetical character.</p>
+</section>
+<section id="acceptable-characters-as-parts-of-a-kind-name">
+<h4>Acceptable characters as parts of a kind name<a class="headerlink" href="#acceptable-characters-as-parts-of-a-kind-name" title="Permalink to this heading">¶</a></h4>
+<p>Exuberant Ctags accepts any character as a part of a kind name
+defined with <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=/regex/replacement/kind-spec/</span></code>.</p>
+<p>Universal Ctags accepts only an alphabetical character as
+the initial letter of a kind name.
+Universal Ctags accepts only an alphabetical character or
+numerical character as the rest letters.</p>
+<p>An example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--regex-Foo=/abstract +class +([a-z]+)/\1/a,abstract class/i
+</pre></div>
+</div>
+<p>Universal Ctags rejects this because the kind name, <code class="docutils literal notranslate"><span class="pre">abstract</span> <span class="pre">class</span></code>,
+includes a whitespace character.</p>
+<p>This requirement is for making the output of Universal Ctags follow
+the tags file format.</p>
+</section>
+<section id="a-combination-of-a-kind-letter-and-a-kind-name">
+<h4>A combination of a kind letter and a kind name<a class="headerlink" href="#a-combination-of-a-kind-letter-and-a-kind-name" title="Permalink to this heading">¶</a></h4>
+<p>In Universal Ctags, the combination of
+a kind letter and a kind name must be unique in a language.</p>
+<p>You cannot define more than one kind reusing a kind letter with
+different kind names. You cannot define more than one kind reusing a
+kind name with different kind letters.</p>
+<p>An example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>--regex-Foo=/abstract +class +([a-z]+)/\1/a,abstractClass/i
+--regex-Foo=/attribute +([a-z]+)/\1/a,attribute/i
+</pre></div>
+</div>
+<p>Universal Ctags rejects this because the kind letter, ‘<code class="docutils literal notranslate"><span class="pre">a</span></code>’, used twice
+for defining a kind <code class="docutils literal notranslate"><span class="pre">abstractClass</span></code> and <code class="docutils literal notranslate"><span class="pre">attribute</span></code>.</p>
+</section>
+</section>
+<section id="incompatibilities-in-tags-file-format">
+<h3>Incompatibilities in tags file format<a class="headerlink" href="#incompatibilities-in-tags-file-format" title="Permalink to this heading">¶</a></h3>
+<section id="using-numerical-character-in-the-name-part-of-tag-tagfield">
+<h4>Using numerical character in the name part of tag tagfield<a class="headerlink" href="#using-numerical-character-in-the-name-part-of-tag-tagfield" title="Permalink to this heading">¶</a></h4>
+<p>The version 2 tags file format, the default output format of
+Exuberant Ctags, accepts only alphabetical characters in the name part
+of tag tagfield.</p>
+<p>Universal Ctags introduces an exception to this specification; it may
+use numerical characters in addition to alphabetical characters as the
+letters other than initial letter of the name part.</p>
+<p>The kinds <code class="docutils literal notranslate"><span class="pre">heading1</span></code>, <code class="docutils literal notranslate"><span class="pre">heading2</span></code>, and <code class="docutils literal notranslate"><span class="pre">heading3</span></code> in the HTML parser
+are the examples.</p>
+</section>
+<section id="truncating-the-pattern-for-long-input-lines">
+<h4>Truncating the pattern for long input lines<a class="headerlink" href="#truncating-the-pattern-for-long-input-lines" title="Permalink to this heading">¶</a></h4>
+<p>To prevent generating overly large tags files, a pattern field is
+truncated, by default, when its size exceeds 96 bytes. A different
+limit can be specified with <code class="docutils literal notranslate"><span class="pre">--pattern-length-limit=N</span></code>. Specifying
+0 as <em>N</em> results no truncation as Exuberant Ctags does not.</p>
+</section>
+<section id="kind-letters-and-names">
+<h4>Kind letters and names<a class="headerlink" href="#kind-letters-and-names" title="Permalink to this heading">¶</a></h4>
+<p>A kind letter ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ and a kind name <code class="docutils literal notranslate"><span class="pre">file</span></code> are reserved in the
+main part. A parser cannot have a kind conflicting with
+these reserved ones. Some incompatible changes are introduced
+to follow the above rule.</p>
+<ul class="simple">
+<li><p>Cobol’s <code class="docutils literal notranslate"><span class="pre">file</span></code> kind is renamed to <code class="docutils literal notranslate"><span class="pre">fileDesc</span></code> because the
+kind name <code class="docutils literal notranslate"><span class="pre">file</span></code> is reserved.</p></li>
+<li><p>Ruby’s ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ (singletonMethod) is changed to ‘<code class="docutils literal notranslate"><span class="pre">S</span></code>’.</p></li>
+<li><p>SQL’s ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ (field) is changed to ‘<code class="docutils literal notranslate"><span class="pre">E</span></code>’.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>, and <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-incompatibilities</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a><ul>
+<li><a class="reference internal" href="#option-files-loading-at-starting-up-time-preload-files">Option files loading at starting up time (preload files)</a></li>
+<li><a class="reference internal" href="#environment-variables-for-arranging-command-lines">Environment variables for arranging command lines</a></li>
+<li><a class="reference internal" href="#behavior-when-excmd-mixed-is-given">Behavior when <code class="docutils literal notranslate"><span class="pre">--excmd=mixed</span></code> is given</a></li>
+<li><a class="reference internal" href="#incompatibilities-in-command-line-interface">Incompatibilities in command line interface</a><ul>
+<li><a class="reference internal" href="#ordering-in-a-command-line">Ordering in a command line</a></li>
+<li><a class="reference internal" href="#the-order-of-application-of-patterns-and-extensions-in-langmap">The order of application of patterns and extensions in <code class="docutils literal notranslate"><span class="pre">--langmap</span></code></a></li>
+<li><a class="reference internal" href="#remove-file-tags-and-file-scope-options">Remove <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> and <code class="docutils literal notranslate"><span class="pre">--file-scope</span></code> options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#incompatibilities-in-language-and-kind-definitions">Incompatibilities in language and kind definitions</a><ul>
+<li><a class="reference internal" href="#language-name-defined-with-langdef-name-option">Language name defined with <code class="docutils literal notranslate"><span class="pre">--langdef=name</span></code> option</a></li>
+<li><a class="reference internal" href="#obsoleting-lang-kinds-option">Obsoleting <code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds</span></code> option</a></li>
+<li><a class="reference internal" href="#disallowing-to-define-a-kind-with-file-as-name">Disallowing to define a kind with <code class="docutils literal notranslate"><span class="pre">file</span></code> as name</a></li>
+<li><a class="reference internal" href="#disallowing-to-define-a-kind-with-f-as-letter">Disallowing to define a kind with ‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ as letter</a></li>
+<li><a class="reference internal" href="#disallowing-to-use-other-than-alphabetical-character-as-kind-letter">Disallowing to use other than alphabetical character as kind letter</a></li>
+<li><a class="reference internal" href="#acceptable-characters-as-parts-of-a-kind-name">Acceptable characters as parts of a kind name</a></li>
+<li><a class="reference internal" href="#a-combination-of-a-kind-letter-and-a-kind-name">A combination of a kind letter and a kind name</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#incompatibilities-in-tags-file-format">Incompatibilities in tags file format</a><ul>
+<li><a class="reference internal" href="#using-numerical-character-in-the-name-part-of-tag-tagfield">Using numerical character in the name part of tag tagfield</a></li>
+<li><a class="reference internal" href="#truncating-the-pattern-for-long-input-lines">Truncating the pattern for long input lines</a></li>
+<li><a class="reference internal" href="#kind-letters-and-names">Kind letters and names</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-client-tools.7.html"
+                          title="previous chapter">ctags-client-tools</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-faq.7.html"
+                          title="next chapter">ctags-faq</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-faq.7.html" title="ctags-faq"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-client-tools.7.html" title="ctags-client-tools"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-incompatibilities</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

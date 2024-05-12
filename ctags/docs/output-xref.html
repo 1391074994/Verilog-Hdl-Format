@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Xref output &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="JSON output" href="output-json.html" />
+    <link rel="prev" title="Changes to the tags file format" href="output-tags.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="output-json.html" title="JSON output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="output-tags.html" title="Changes to the tags file format"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="output-format.html" accesskey="U">Output formats</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Xref output</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="xref-output">
+<span id="output-xref"></span><h1>Xref output<a class="headerlink" href="#xref-output" title="Permalink to this heading">¶</a></h1>
+<p>Xref output is a tabular, human-readable cross reference (xref) format.</p>
+<p>The default information contained in the output includes:</p>
+<ul class="simple">
+<li><p>the tag name</p></li>
+<li><p>the kind of tag</p></li>
+<li><p>the line number</p></li>
+<li><p>file name</p></li>
+<li><p>source line (with extra white space condensed) of the file</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">--_xformat</span></code> option allows a user to customize the output information.  See
+<a class="reference internal" href="#xformat"><span class="std std-ref">Customizing xref output</span></a> for more details.</p>
+<p>Xref output goes to standard output by default.</p>
+<p>Notes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Printing <cite>z`{kind} field in xref format doesn’t include `kind:</cite> prefix.</p></li>
+<li><p>Printing <cite>Z`{scope} field in xref format doesn’t include `scope:</cite> prefix.</p></li>
+</ul>
+</div></blockquote>
+<section id="customizing-xref-output">
+<span id="xformat"></span><h2>Customizing xref output<a class="headerlink" href="#customizing-xref-output" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">--_xformat</span></code> option allows a user to customize the cross reference
+(xref) output enabled with <code class="docutils literal notranslate"><span class="pre">-x</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">_xformat</span><span class="o">=</span><span class="n">FORMAT</span>
+</pre></div>
+</div>
+<p>The notation for FORMAT is similar to that employed by <cite>printf(3)</cite> in
+the C language; <cite>%</cite> represents a slot which is substituted with a
+field value when printing. You can specify multiple slots in FORMAT.
+Here field means an item listed with <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code> option.</p>
+<p>The notation of a slot:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="p">[</span><span class="o">-</span><span class="p">][</span><span class="o">.</span><span class="p">][</span><span class="n">WIDTH</span><span class="o">-</span><span class="n">AND</span><span class="o">-</span><span class="n">ADJUSTMENT</span><span class="p">]</span><span class="n">FIELD</span><span class="o">-</span><span class="n">SPECIFIER</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">FIELD-SPECIFIER</span></code> specifies a field whose value is printed.
+Short notation and long notation are available. They can be mixed
+in a FORMAT. Specifying a field with either notation, one or more
+fields are activated internally.</p>
+<p>The short notation is just a letter listed in the LETTER column of
+the <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code> output.</p>
+<p>The long notation is a name string surrounded by braces(<cite>{</cite> and
+<cite>}</cite>). The name string is listed in the NAME column of the output of
+the same option. To specify a field owned by a parser, prepend
+the parser name to the name string with <cite>.</cite> as a separator.</p>
+<p>Wild card (<cite>*</cite>) can be used where a parser name is specified. In this
+case both common and parser specific fields are activated and printed.
+If a common field and a parser specific field have the same name,
+the common field has higher priority.</p>
+<p><cite>WIDTH-AND-ADJUSTMENT</cite> is a positive number.
+The value of the number is used as the width of
+the column where a field is printed. The printing is
+right adjusted by default, and left
+adjusted when <cite>-</cite> is given as prefix.
+The output is not truncated by default even if its field width is
+specified and smaller than width of output value. For truncating
+the output to the specified width, use <cite>.</cite> as prefix.</p>
+<p>An example of specifying common fields:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$  </span>ctags<span class="w"> </span>-x<span class="w"> </span>--_xformat<span class="o">=</span><span class="s2">&quot;%-20N %4n %-16{input}|&quot;</span><span class="w"> </span>main/main.c<span class="w"> </span><span class="p">|</span><span class="w"> </span>head
+<span class="go">CLOCKS_PER_SEC        360 main/main.c     |</span>
+<span class="go">CLOCKS_PER_SEC        364 main/main.c     |</span>
+<span class="go">CLOCK_AVAILABLE       358 main/main.c     |</span>
+<span class="go">CLOCK_AVAILABLE       363 main/main.c     |</span>
+<span class="go">Totals                 87 main/main.c     |</span>
+<span class="go">__anonae81ef0f0108     87 main/main.c     |</span>
+<span class="go">addTotals             100 main/main.c     |</span>
+<span class="go">batchMakeTags         436 main/main.c     |</span>
+<span class="go">bytes                  87 main/main.c     |</span>
+<span class="go">clock                 365 main/main.c     |</span>
+</pre></div>
+</div>
+<p>Here <cite>%-20N %4n %-16{input}|</cite> is a format string. Let’s look at the
+elements of the format.</p>
+<p><cite>%-20N</cite></p>
+<blockquote>
+<div><p>The short notation is used here.
+The element means filling the slot with the name of the tag.
+The width of the column is 20 characters and left adjusted.</p>
+</div></blockquote>
+<p><cite>%4n</cite></p>
+<blockquote>
+<div><p>The short notation is used here.
+The element means filling the slot with the line number of
+the tag. The width of the column is 4 characters and right
+adjusted.</p>
+</div></blockquote>
+<p><cite>%-16{input}</cite></p>
+<blockquote>
+<div><p>The long notation is used here.
+The element means filling the slot with the input file name
+where the tag is defined. The width of column is 16
+characters and left adjusted.</p>
+</div></blockquote>
+<p><cite>|</cite></p>
+<blockquote>
+<div><p>Printed as is.</p>
+</div></blockquote>
+<p>Another example of specifying parser specific fields:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$  </span>ctags<span class="w"> </span>-x<span class="w"> </span>--_xformat<span class="o">=</span><span class="s2">&quot;%-20N [%10{C.properties}]&quot;</span><span class="w"> </span>main/main.c
+<span class="go">CLOCKS_PER_SEC       [          ]</span>
+<span class="go">CLOCK_AVAILABLE      [          ]</span>
+<span class="go">Totals               [          ]</span>
+<span class="go">__anonae81ef0f0108   [          ]</span>
+<span class="go">addTotals            [    extern]</span>
+<span class="go">batchMakeTags        [    static]</span>
+<span class="go">bytes                [          ]</span>
+<span class="go">clock                [          ]</span>
+<span class="go">clock                [    static]</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>Here <cite>“%-20N [%10{C.properties}]”</cite> is a format string. Let’s look at
+the elements of the format.</p>
+<p><cite>%-20N</cite></p>
+<blockquote>
+<div><p>Already explained in the first example.</p>
+</div></blockquote>
+<p><cite>[</cite> and <cite>]</cite></p>
+<blockquote>
+<div><p>Printed as is.</p>
+</div></blockquote>
+<p><cite>%10{C.properties}</cite></p>
+<blockquote>
+<div><p>The long notation is used here.
+The element means filling the slot with the value
+of the properties field of the C parser.
+The width of the column is 10 characters and right adjusted.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Xref output</a><ul>
+<li><a class="reference internal" href="#customizing-xref-output">Customizing xref output</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="output-tags.html"
+                          title="previous chapter">Changes to the tags file format</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="output-json.html"
+                          title="next chapter">JSON output</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="output-json.html" title="JSON output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="output-tags.html" title="Changes to the tags file format"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="output-format.html" >Output formats</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Xref output</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

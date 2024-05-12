@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>The new C/C++ parser &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The new GDScript parser" href="parser-gdscript.html" />
+    <link rel="prev" title="CMake parser" href="parser-cmake.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="parser-gdscript.html" title="The new GDScript parser"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parser-cmake.html" title="CMake parser"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="parsers.html" accesskey="U">Parsers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The new C/C++ parser</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="the-new-c-c-parser">
+<span id="cxx"></span><h1>The new C/C++ parser<a class="headerlink" href="#the-new-c-c-parser" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Szymon Tomasz Stefanek &lt;<a class="reference external" href="mailto:s&#46;stefanek&#37;&#52;&#48;gmail&#46;com">s<span>&#46;</span>stefanek<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<p>The C++ language has strongly evolved since the old C/C++ parser was
+written. The old parser was struggling with some of the new features
+of the language and has shown signs of reaching its limits. For this
+reason in February/March 2016 the C/C++ parser was rewritten from
+scratch.</p>
+<p>In the first release several outstanding bugs were fixed and some new
+features were added. Among them:</p>
+<ul class="simple">
+<li><p>Tagging of “using namespace” declarations</p></li>
+<li><p>Tagging of function parameters</p></li>
+<li><p>Extraction of function parameter types</p></li>
+<li><p>Tagging of anonymous structures/unions/classes/enums</p></li>
+<li><p>Support for C++11 lambdas (as anonymous functions)</p></li>
+<li><p>Support for function-level scopes (for local variables and parameters)</p></li>
+<li><p>Extraction of local variables which include calls to constructors</p></li>
+<li><p>Extraction of local variables from within the for(), while(), if()
+and switch() parentheses.</p></li>
+<li><p>Support for function prototypes/declarations with trailing return type</p></li>
+</ul>
+<p>At the time of writing (March 2016) more features are planned.</p>
+</section>
+<section id="notable-new-features">
+<h2>Notable New Features<a class="headerlink" href="#notable-new-features" title="Permalink to this heading">¶</a></h2>
+<p>Some of the notable new features are described below.</p>
+<section id="properties">
+<h3>Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h3>
+<p>Several properties of functions and variables can be extracted
+and placed in a new field called <code class="docutils literal notranslate"><span class="pre">properties</span></code>.
+The syntax to enable it is:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>--fields-c++<span class="o">=</span>+<span class="o">{</span>properties<span class="o">}</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p>At the time of writing the following properties are reported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">virtual</span></code>: a function is marked as virtual</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">static</span></code>: a function/variable is marked as static</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inline</span></code>: a function implementation is marked as inline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">explicit</span></code>: a function is marked as explicit</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extern</span></code>: a function/variable is marked as extern</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">const</span></code>: a function is marked as const</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pure</span></code>: a virtual function is pure (i.e = 0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">override</span></code>: a function is marked as override</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code>: a function is marked as default</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">final</span></code>: a function is marked as final</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete</span></code>: a function is marked as delete</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mutable</span></code>: a variable is marked as mutable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">volatile</span></code>: a function is marked as volatile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">specialization</span></code>: a function is a template specialization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scopespecialization</span></code>: template specialization of scope <code class="docutils literal notranslate"><span class="pre">a&lt;x&gt;::b()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code>: a function is marked as deprecated via <code class="docutils literal notranslate"><span class="pre">__attribute__</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scopedenum</span></code>: a scoped enumeration (C++11)</p></li>
+</ul>
+</section>
+<section id="preprocessor-macros">
+<h3>Preprocessor macros<a class="headerlink" href="#preprocessor-macros" title="Permalink to this heading">¶</a></h3>
+<section id="defining-a-macro-from-command-line">
+<h4>Defining a macro from command line<a class="headerlink" href="#defining-a-macro-from-command-line" title="Permalink to this heading">¶</a></h4>
+<p>The new parser supports the definition of real preprocessor macros
+via the <code class="docutils literal notranslate"><span class="pre">-D</span></code> option. All types of macros are supported,
+including the ones with parameters and variable arguments.
+Stringification, token pasting and recursive macro expansion are also supported.</p>
+<p>Option <code class="docutils literal notranslate"><span class="pre">-I</span></code> is now simply a backward-compatible syntax to define a
+macro with no replacement.</p>
+<p>The syntax is similar to the corresponding gcc <code class="docutils literal notranslate"><span class="pre">-D</span></code> option.</p>
+<p>Some examples follow.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>-D<span class="w"> </span>IGNORE_THIS<span class="w"> </span>...
+</pre></div>
+</div>
+<p>With this commandline the following C/C++ input</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">IGNORE_THIS</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>will be processed as if it was</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Defining a macro with parameters uses the following syntax:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>-D<span class="w"> </span><span class="s2">&quot;foreach(arg)=for(arg;;)&quot;</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p>This example defines <code class="docutils literal notranslate"><span class="pre">for(arg;;)</span></code> as the replacement <code class="docutils literal notranslate"><span class="pre">foreach(arg)</span></code>.
+So the following C/C++ input</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">foreach</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="n">pointers</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>is processed in new C/C++ parser as:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="p">;;)</span>
+<span class="p">{</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and the p local variable can be extracted.</p>
+<p>The previous commandline includes quotes since the macros generally contain
+characters that are treated specially by the shells. You may need some escaping.</p>
+<p>Token pasting is performed by the <code class="docutils literal notranslate"><span class="pre">##</span></code> operator, just like in the normal
+C preprocessor.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>-D<span class="w"> </span><span class="s2">&quot;DECLARE_FUNCTION(prefix)=int prefix ## Call();&quot;</span>
+</pre></div>
+</div>
+<p>So the following code</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">DECLARE_FUNCTION</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">DECLARE_FUNCTION</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will be processed as</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">aCall</span><span class="p">();</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">bCall</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Macros with variable arguments use the gcc <code class="docutils literal notranslate"><span class="pre">__VA_ARGS__</span></code> syntax.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>-D<span class="w"> </span><span class="s2">&quot;DECLARE_FUNCTION(name,...)=int name(__VA_ARGS__);&quot;</span>
+</pre></div>
+</div>
+<p>So the following code</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">DECLARE_FUNCTION</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will be processed as</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="automatically-expanding-macros-defined-in-the-same-input-file-highly-experimental">
+<h4>Automatically expanding macros defined in the same input file (HIGHLY EXPERIMENTAL)<a class="headerlink" href="#automatically-expanding-macros-defined-in-the-same-input-file-highly-experimental" title="Permalink to this heading">¶</a></h4>
+<p>If a CPreProcessor macro defined in a C/C++/CUDA file, the macro invocation in the
+SAME file can be expanded with following options:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--param-CPreProcessor._expand=1
+--fields-C=+{macrodef}
+--fields-C++=+{macrodef}
+--fields-CUDA=+{macrodef}
+--fields=+{signature}
+</pre></div>
+</div>
+<p>Let’s see an example.</p>
+<p>input.c:
+.. code-block:: C</p>
+<blockquote>
+<div><p>#define DEFUN(NAME) int NAME (int x, int y)
+#define BEGIN {
+#define END }</p>
+<dl class="simple">
+<dt>DEFUN(myfunc)</dt><dd><p>BEGIN
+return -1
+END</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>The output without options:
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags -o - input.c
+BEGIN        input.c /^#define BEGIN /;&quot;     d       language:C      file:
+DEFUN        input.c /^#define DEFUN(/;&quot;     d       language:C      file:
+END  input.c /^#define END /;&quot;       d       language:C      file:
+</pre></div>
+</div>
+<p>The output with options:
+.. code-block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ctags --param-CPreProcessor._expand=1 --fields-C=+&#39;{macrodef}&#39; --fields=+&#39;{signature}&#39; -o - input.c
+BEGIN        input.c /^#define BEGIN /;&quot;     d       language:C      file:   macrodef:{
+DEFUN        input.c /^#define DEFUN(/;&quot;     d       language:C      file:   signature:(NAME)        macrodef:int NAME (int x, int y)
+END  input.c /^#define END /;&quot;       d       language:C      file:   macrodef:}
+myfunc       input.c /^DEFUN(myfunc)$/;&quot;     f       language:C      typeref:typename:int    signature:(int x,int y)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">myfunc</span></code> coded by <code class="docutils literal notranslate"><span class="pre">DEFUN</span></code> macro is captured well.</p>
+<p>This feature is highly experimental. At least three limitations are known.</p>
+<ul class="simple">
+<li><p>This feature doesn’t understand <code class="docutils literal notranslate"><span class="pre">#undef</span></code> yet.
+Once a macro is defined, its invocation is always expanded even
+after the parser sees <code class="docutils literal notranslate"><span class="pre">#undef</span></code> for the macro in the same input
+file.</p></li>
+<li><p>Macros are expanded incorrectly if the result of macro expansion
+includes the macro invocation again.</p></li>
+<li><p>Currently, ctags can expand a macro invocation only if its
+definitions are in the same input file. ctags cannot expand a macro
+defined in the header file included from the current input file.</p></li>
+</ul>
+<p>Enabling this macro expansion feature makes the parsing speed about
+two times slower.</p>
+</section>
+</section>
+</section>
+<section id="incompatible-changes">
+<h2>Incompatible Changes<a class="headerlink" href="#incompatible-changes" title="Permalink to this heading">¶</a></h2>
+<p>The parser is mostly compatible with the old one. There are some minor
+incompatible changes which are described below.</p>
+<section id="anonymous-structure-names">
+<h3>Anonymous structure names<a class="headerlink" href="#anonymous-structure-names" title="Permalink to this heading">¶</a></h3>
+<p>The old parser produced structure names in the form <code class="docutils literal notranslate"><span class="pre">__anonN</span></code> where N
+was a number starting at 1 in each file and increasing at each new
+structure. This caused collisions in symbol names when ctags was run
+on multiple files.</p>
+<p>In the new parser the anonymous structure names depend on the file name
+being processed and on the type of the structure itself. Collisions are
+far less likely (though not impossible as hash functions are unavoidably
+imperfect).</p>
+<p>Pitfall: the file name used for hashing includes the path as passed to the
+ctags executable. So the same file “seen” from different paths will produce
+different structure names. This is unavoidable and is up to the user to
+ensure that multiple ctags runs are started from a common directory root.</p>
+</section>
+<section id="file-scope">
+<h3>File scope<a class="headerlink" href="#file-scope" title="Permalink to this heading">¶</a></h3>
+<p>The file scope information is not 100% reliable. It never was.
+There are several cases in that compiler, linker or even source code
+tricks can “unhide” file scope symbols (for instance *.c files can be
+included into each other) and several other cases in that the limitation
+of the scope of a symbol to a single file simply cannot be determined
+with a single pass or without looking at a program as a whole.</p>
+<p>The new parser defines a simple policy for file scope association
+that tries to be as compatible as possible with the old parser and
+should reflect the most common usages. The policy is the following:</p>
+<ul class="simple">
+<li><p>Namespaces are in file scope if declared inside a .c or .cpp file</p></li>
+<li><p>Function prototypes are in file scope if declared inside a .c or .cpp file</p></li>
+<li><p>K&amp;R style function definitions are in file scope if declared static
+inside a .c file.</p></li>
+<li><p>Function definitions appearing inside a namespace are in file scope only
+if declared static inside a .c or .cpp file.
+Note that this rule includes both global functions (global namespace)
+and class/struct/union members defined outside of the class/struct/union
+declaration.</p></li>
+<li><p>Function definitions appearing inside a class/struct/union declaration
+are in file scope only if declared static inside a .cpp file</p></li>
+<li><p>Function parameters are always in file scope</p></li>
+<li><p>Local variables are always in file scope</p></li>
+<li><p>Variables appearing inside a namespace are in file scope only if
+they are declared static inside a .c or .cpp file</p></li>
+<li><p>Variables that are members of a class/struct/union are in file scope
+only if declared in a .c or .cpp file</p></li>
+<li><p>Typedefs are in file scope if appearing inside a .c or .cpp file</p></li>
+</ul>
+<p>Most of these rules are debatable in one way or the other. Just keep in mind
+that this is not 100% reliable.</p>
+</section>
+<section id="inheritance-information">
+<h3>Inheritance information<a class="headerlink" href="#inheritance-information" title="Permalink to this heading">¶</a></h3>
+<p>The new parser does not strip template names from base classes.
+For a declaration like</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">template</span><span class="o">&lt;</span><span class="n">typename</span><span class="w"> </span><span class="n">A</span><span class="o">&gt;</span><span class="w"> </span><span class="n">class</span><span class="w"> </span><span class="n">B</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">C</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>the old parser reported <code class="docutils literal notranslate"><span class="pre">C</span></code> as base class while the new one reports
+<code class="docutils literal notranslate"><span class="pre">C&lt;A&gt;</span></code>.</p>
+</section>
+<section id="typeref">
+<h3>Typeref<a class="headerlink" href="#typeref" title="Permalink to this heading">¶</a></h3>
+<p>The syntax of the typeref field (<code class="docutils literal notranslate"><span class="pre">typeref:A:B</span></code>) was designed with only
+struct/class/union/enum types in mind. Generic types don’t have <code class="docutils literal notranslate"><span class="pre">A</span></code>
+information and the keywords became entirely optional in C++:
+you just can’t tell. Furthermore, struct/class/union/enum types
+share the same namespace and their names can’t collide, so the <code class="docutils literal notranslate"><span class="pre">A</span></code>
+information is redundant for most purposes.</p>
+<p>To accommodate generic types and preserve some degree of backward
+compatibility the new parser uses struct/class/union/enum in place
+of <code class="docutils literal notranslate"><span class="pre">A</span></code> where such keyword can be inferred. Where the information is
+not available it uses the ‘typename’ keyword.</p>
+<p>Generally, you should ignore the information in field <code class="docutils literal notranslate"><span class="pre">A</span></code> and use
+only information in field <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">The new C/C++ parser</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#notable-new-features">Notable New Features</a><ul>
+<li><a class="reference internal" href="#properties">Properties</a></li>
+<li><a class="reference internal" href="#preprocessor-macros">Preprocessor macros</a><ul>
+<li><a class="reference internal" href="#defining-a-macro-from-command-line">Defining a macro from command line</a></li>
+<li><a class="reference internal" href="#automatically-expanding-macros-defined-in-the-same-input-file-highly-experimental">Automatically expanding macros defined in the same input file (HIGHLY EXPERIMENTAL)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#incompatible-changes">Incompatible Changes</a><ul>
+<li><a class="reference internal" href="#anonymous-structure-names">Anonymous structure names</a></li>
+<li><a class="reference internal" href="#file-scope">File scope</a></li>
+<li><a class="reference internal" href="#inheritance-information">Inheritance information</a></li>
+<li><a class="reference internal" href="#typeref">Typeref</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="parser-cmake.html"
+                          title="previous chapter">CMake parser</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="parser-gdscript.html"
+                          title="next chapter">The new GDScript parser</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="parser-gdscript.html" title="The new GDScript parser"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parser-cmake.html" title="CMake parser"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="parsers.html" >Parsers</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">The new C/C++ parser</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

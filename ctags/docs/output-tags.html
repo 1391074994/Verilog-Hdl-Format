@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Changes to the tags file format &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Xref output" href="output-xref.html" />
+    <link rel="prev" title="Output formats" href="output-format.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="output-xref.html" title="Xref output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="output-format.html" title="Output formats"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="output-format.html" accesskey="U">Output formats</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Changes to the tags file format</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="changes-to-the-tags-file-format">
+<span id="changes-tags-file"></span><h1>Changes to the tags file format<a class="headerlink" href="#changes-to-the-tags-file-format" title="Permalink to this heading">¶</a></h1>
+<section id="f-kind-usage">
+<h2><code class="docutils literal notranslate"><span class="pre">F</span></code> kind usage<a class="headerlink" href="#f-kind-usage" title="Permalink to this heading">¶</a></h2>
+<p>You cannot use <code class="docutils literal notranslate"><span class="pre">F</span></code> (<code class="docutils literal notranslate"><span class="pre">file</span></code>) kind in your .ctags because Universal Ctags
+reserves it. See <a class="reference internal" href="man/ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a>.</p>
+</section>
+<section id="reference-tags">
+<h2>Reference tags<a class="headerlink" href="#reference-tags" title="Permalink to this heading">¶</a></h2>
+<p>Traditionally ctags collects the information for locating where a
+language object is DEFINED.</p>
+<p>In addition Universal Ctags supports reference tags. If the extra-tag
+<code class="docutils literal notranslate"><span class="pre">r</span></code> is enabled, Universal Ctags also collects the information for
+locating where a language object is REFERENCED. This feature was
+proposed by &#64;shigio in <a class="reference external" href="https://github.com/universal-ctags/ctags/issues/569">#569</a> for GNU GLOBAL.</p>
+<p>Here are some examples. Here is the target input file named reftag.c.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;foo.h&quot;</span>
+<span class="cp">#define TYPE point</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">TYPE</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="n">TYPE</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<span class="cp">#undef TYPE</span>
+</pre></div>
+</div>
+<p>Traditional output:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>reftag.c
+<span class="go">TYPE        reftag.c        /^#define TYPE /;&quot;      d       file:</span>
+<span class="go">TYPE        reftag.c        /^struct TYPE { int x, y; };$/;&quot;        s       file:</span>
+<span class="go">p   reftag.c        /^TYPE p;$/;&quot;   v       typeref:typename:TYPE</span>
+<span class="go">x   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:</span>
+<span class="go">y   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:</span>
+</pre></div>
+</div>
+<p>Output with the extra-tag <code class="docutils literal notranslate"><span class="pre">r</span></code> enabled:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-extras<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>^r
+<span class="go">r   Include reference tags  off</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>+r<span class="w"> </span>reftag.c
+<span class="go">TYPE        reftag.c        /^#define TYPE /;&quot;      d       file:</span>
+<span class="go">TYPE        reftag.c        /^#undef TYPE$/;&quot;       d       file:</span>
+<span class="go">TYPE        reftag.c        /^struct TYPE { int x, y; };$/;&quot;        s       file:</span>
+<span class="go">foo.h       reftag.c        /^#include &quot;foo.h&quot;/;&quot;   h</span>
+<span class="go">p   reftag.c        /^TYPE p;$/;&quot;   v       typeref:typename:TYPE</span>
+<span class="go">stdio.h     reftag.c        /^#include &lt;stdio.h&gt;/;&quot; h</span>
+<span class="go">x   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:</span>
+<span class="go">y   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:</span>
+</pre></div>
+</div>
+<p><cite>#undef X</cite> and two <cite>#include</cite> are newly collected.</p>
+<p>“roles” is a newly introduced field in Universal Ctags. The field
+named is for recording how a tag is referenced. If a tag is definition
+tag, the roles field has “def” as its value.</p>
+<p>Universal Ctags prints the role information when the <cite>r</cite>
+field is enabled with <code class="docutils literal notranslate"><span class="pre">--fields=+r</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>+r<span class="w"> </span>--fields<span class="o">=</span>+r<span class="w"> </span>reftag.c
+<span class="go">TYPE        reftag.c        /^#define TYPE /;&quot;      d       file:</span>
+<span class="go">TYPE        reftag.c        /^#undef TYPE$/;&quot;       d       file:   roles:undef</span>
+<span class="go">TYPE        reftag.c        /^struct TYPE { int x, y; };$/;&quot;        s       file:   roles:def</span>
+<span class="go">foo.h       reftag.c        /^#include &quot;foo.h&quot;/;&quot;   h       roles:local</span>
+<span class="go">p   reftag.c        /^TYPE p;$/;&quot;   v       typeref:typename:TYPE   roles:def</span>
+<span class="go">stdio.h     reftag.c        /^#include &lt;stdio.h&gt;/;&quot; h       roles:system</span>
+<span class="go">x   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:   roles:def</span>
+<span class="go">y   reftag.c        /^struct TYPE { int x, y; };$/;&quot;        m       struct:TYPE     typeref:typename:int    file:   roles:def</span>
+</pre></div>
+</div>
+<p>The <cite>Reference tag marker</cite> field, <code class="docutils literal notranslate"><span class="pre">R</span></code>, is a specialized GNU global
+requirement; D is used for the traditional definition tags, and R is
+used for the new reference tags. The field can be used only with
+<code class="docutils literal notranslate"><span class="pre">--_xformat</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-x<span class="w"> </span>--_xformat<span class="o">=</span><span class="s2">&quot;%R %-16N %4n %-16F %C&quot;</span><span class="w"> </span>--extras<span class="o">=</span>+r<span class="w"> </span>reftag.c
+<span class="go">D TYPE                3 reftag.c         #define TYPE point</span>
+<span class="go">D TYPE                4 reftag.c         struct TYPE { int x, y; };</span>
+<span class="go">D p                   5 reftag.c         TYPE p;</span>
+<span class="go">D x                   4 reftag.c         struct TYPE { int x, y; };</span>
+<span class="go">D y                   4 reftag.c         struct TYPE { int x, y; };</span>
+<span class="go">R TYPE                6 reftag.c         #undef TYPE</span>
+<span class="go">R foo.h               2 reftag.c         #include &quot;foo.h&quot;</span>
+<span class="go">R stdio.h             1 reftag.c         #include &lt;stdio.h&gt;</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="output-xref.html#xformat"><span class="std std-ref">Customizing xref output</span></a> for more details about
+<code class="docutils literal notranslate"><span class="pre">--_xformat</span></code>.</p>
+<p>Although the facility for collecting reference tags is implemented,
+only a few parsers currently utilize it. All available roles can be
+listed with <code class="docutils literal notranslate"><span class="pre">--list-roles</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-roles
+<span class="gp">#</span>LANGUAGE<span class="w">      </span>KIND<span class="o">(</span>L/N<span class="o">)</span><span class="w">         </span>NAME<span class="w">                </span>ENABLED<span class="w"> </span>DESCRIPTION
+<span class="go">SystemdUnit    u/unit            Requires            on      referred in Requires key</span>
+<span class="go">SystemdUnit    u/unit            Wants               on      referred in Wants key</span>
+<span class="go">SystemdUnit    u/unit            After               on      referred in After key</span>
+<span class="go">SystemdUnit    u/unit            Before              on      referred in Before key</span>
+<span class="go">SystemdUnit    u/unit            RequiredBy          on      referred in RequiredBy key</span>
+<span class="go">SystemdUnit    u/unit            WantedBy            on      referred in WantedBy key</span>
+<span class="go">Yaml           a/anchor          alias               on      alias</span>
+<span class="go">DTD            e/element         attOwner            on      attributes owner</span>
+<span class="go">Automake       c/condition       branched            on      used for branching</span>
+<span class="go">Cobol          S/sourcefile      copied              on      copied in source file</span>
+<span class="go">Maven2         g/groupId         dependency          on      dependency</span>
+<span class="go">DTD            p/parameterEntity elementName         on      element names</span>
+<span class="go">DTD            p/parameterEntity condition           on      conditions</span>
+<span class="go">LdScript       s/symbol          entrypoint          on      entry points</span>
+<span class="go">LdScript       i/inputSection    discarded           on      discarded when linking</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>The first column shows the name of the parser.
+The second column shows the letter/name of the kind.
+The third column shows the name of the role.
+The fourth column shows whether the role is enabled or not.
+The fifth column shows the description of the role.</p>
+<p>You can define a role in an optlib parser for capturing reference
+tags. See <a class="reference internal" href="optlib.html#roles"><span class="std std-ref">Capturing reference tags</span></a> for more
+details.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--roles-&lt;LANG&gt;.&lt;KIND&gt;</span></code> is the option for enabling/disabling
+specified roles.</p>
+</section>
+<section id="pseudo-tags">
+<h2>Pseudo-tags<a class="headerlink" href="#pseudo-tags" title="Permalink to this heading">¶</a></h2>
+<p>See <a class="reference internal" href="man/ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> about the
+concept of the pseudo-tags.</p>
+<section id="tag-kind-description">
+<h3><code class="docutils literal notranslate"><span class="pre">TAG_KIND_DESCRIPTION</span></code><a class="headerlink" href="#tag-kind-description" title="Permalink to this heading">¶</a></h3>
+<p>This is a newly introduced pseudo-tag. It is not emitted by default.
+It is emitted only when <code class="docutils literal notranslate"><span class="pre">--pseudo-tags=+TAG_KIND_DESCRIPTION</span></code> is
+given.</p>
+<p>This is for describing kinds; their letter, name, and description are
+enumerated in the tag.</p>
+<p>ctags emits <code class="docutils literal notranslate"><span class="pre">TAG_KIND_DESCRIPTION</span></code> with following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_KIND_SEPARATOR!{parser}   {letter},{name} /{description}/
+</pre></div>
+</div>
+<p>A backslash and a slash in {description} is escaped with a backslash.</p>
+</section>
+<section id="tag-kind-separator">
+<h3><code class="docutils literal notranslate"><span class="pre">TAG_KIND_SEPARATOR</span></code><a class="headerlink" href="#tag-kind-separator" title="Permalink to this heading">¶</a></h3>
+<p>This is a newly introduced pseudo-tag. It is not emitted by default.
+It is emitted only when <code class="docutils literal notranslate"><span class="pre">--pseudo-tags=+TAG_KIND_SEPARATOR</span></code> is
+given.</p>
+<p>This is for describing separators placed between two kinds in a
+language.</p>
+<p>Tag entries including the separators are emitted when <code class="docutils literal notranslate"><span class="pre">--extras=+q</span></code>
+is given; fully qualified tags contain the separators. The separators
+are used in scope information, too.</p>
+<p>ctags emits <code class="docutils literal notranslate"><span class="pre">TAG_KIND_SEPARATOR</span></code> with following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_KIND_SEPARATOR!{parser}   {sep}   /{upper}{lower}/
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_KIND_SEPARATOR!{parser}   {sep}   /{lower}/
+</pre></div>
+</div>
+<p>Here {parser} is the name of language. e.g. PHP.
+{lower} is the letter representing the kind of the lower item.
+{upper} is the letter representing the kind of the upper item.
+{sep} is the separator placed between the upper item and the lower
+item.</p>
+<p>The format without {upper} is for representing a root separator. The
+root separator is used as prefix for an item which has no upper scope.</p>
+<p><cite>*</cite> given as {upper} is a fallback wild card; if it is given, the
+{sep} is used in combination with any upper item and the item
+specified with {lower}.</p>
+<p>Each backslash character used in {sep} is escaped with an extra
+backslash character.</p>
+<p>Example output:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>+p<span class="w"> </span>--pseudo-tags<span class="o">=</span><span class="w">  </span>--pseudo-tags<span class="o">=</span>+TAG_KIND_SEPARATOR<span class="w"> </span>input.php
+<span class="go">!_TAG_KIND_SEPARATOR!PHP    ::      /*c/</span>
+<span class="go">...</span>
+<span class="go">!_TAG_KIND_SEPARATOR!PHP    \\      /c/</span>
+<span class="go">...</span>
+<span class="go">!_TAG_KIND_SEPARATOR!PHP    \\      /nc/</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>The first line means <code class="docutils literal notranslate"><span class="pre">::</span></code> is used when combining something with an
+item of the class kind.</p>
+<p>The second line means <code class="docutils literal notranslate"><span class="pre">\\</span></code> is used when a class item is at the top
+level; no upper item is specified.</p>
+<p>The third line means <code class="docutils literal notranslate"><span class="pre">\\</span></code> is used when for combining a namespace item
+(upper) and a class item (lower).</p>
+<p>Of course, ctags uses the more specific line when choosing a
+separator; the third line has higher priority than the first.</p>
+</section>
+<section id="tag-output-filesep">
+<h3><code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_FILESEP</span></code><a class="headerlink" href="#tag-output-filesep" title="Permalink to this heading">¶</a></h3>
+<p>This pseudo-tag represents the separator used in file name: slash or
+backslash.  This is always ‘slash’ on Unix-like environments.
+This is also ‘slash’ by default on Windows, however when
+<code class="docutils literal notranslate"><span class="pre">--output-format=e-tags</span></code> or <code class="docutils literal notranslate"><span class="pre">--use-slash-as-filename-separator=no</span></code>
+is specified, it becomes ‘backslash’.</p>
+</section>
+<section id="tag-output-mode">
+<h3><code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_MODE</span></code><a class="headerlink" href="#tag-output-mode" title="Permalink to this heading">¶</a></h3>
+<p>This pseudo-tag represents output mode: u-ctags or e-ctags.
+This is controlled by <code class="docutils literal notranslate"><span class="pre">--output-format</span></code> option.</p>
+<p>See also <a class="reference internal" href="man/tags.5.html#compat-output"><span class="std std-ref">Compatible output and weakness</span></a>.</p>
+</section>
+</section>
+<section id="truncating-the-pattern-for-long-input-lines">
+<h2>Truncating the pattern for long input lines<a class="headerlink" href="#truncating-the-pattern-for-long-input-lines" title="Permalink to this heading">¶</a></h2>
+<p>See <code class="docutils literal notranslate"><span class="pre">--pattern-length-limit=N</span></code> option in <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>.</p>
+</section>
+<section id="parser-specific-fields">
+<span id="id2"></span><h2>Parser specific fields<a class="headerlink" href="#parser-specific-fields" title="Permalink to this heading">¶</a></h2>
+<p>A tag has a <cite>name</cite>, an <cite>input</cite> file name, and a <cite>pattern</cite> as basic
+information. Some fields like <cite>language:</cite>, <cite>signature:</cite>, etc are
+attached to the tag as optional information.</p>
+<p>In Exuberant Ctags, fields are common to all languages.
+Universal Ctags extends the concept of fields; a parser can define
+its specific field. This extension was proposed by &#64;pragmaware in
+<a class="reference external" href="https://github.com/universal-ctags/ctags/issues/857">#857</a>.</p>
+<p>For implementing the parser specific fields, the options for listing and
+enabling/disabling fields are also extended.</p>
+<p>In the output of <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code>, the owner of the field is printed
+in the <cite>LANGUAGE</cite> column:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-fields
+<span class="gp">#</span>LETTER<span class="w"> </span>NAME<span class="w">            </span>ENABLED<span class="w"> </span>LANGUAGE<span class="w">         </span>XFMT<span class="w">  </span>DESCRIPTION
+<span class="go">...</span>
+<span class="go">-       end             off     C                TRUE   end lines of various constructs</span>
+<span class="go">-       properties      off     C                TRUE   properties (static, inline, mutable,...)</span>
+<span class="go">-       end             off     C++              TRUE   end lines of various constructs</span>
+<span class="go">-       template        off     C++              TRUE   template parameters</span>
+<span class="go">-       captures        off     C++              TRUE   lambda capture list</span>
+<span class="go">-       properties      off     C++              TRUE   properties (static, virtual, inline, mutable,...)</span>
+<span class="go">-       sectionMarker   off     reStructuredText TRUE   character used for declaring section</span>
+<span class="go">-       version         off     Maven2           TRUE   version of artifact</span>
+</pre></div>
+</div>
+<p>e.g. reStructuredText is the owner of the sectionMarker field and
+both C and C++ own the end field.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--list-fields</span></code> takes one optional argument, <cite>LANGUAGE</cite>. If it is
+given, <code class="docutils literal notranslate"><span class="pre">--list-fields</span></code> prints only the fields for that parser:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-fields<span class="o">=</span>Maven2
+<span class="gp">#</span>LETTER<span class="w"> </span>NAME<span class="w">            </span>ENABLED<span class="w"> </span>LANGUAGE<span class="w">        </span>XFMT<span class="w">  </span>DESCRIPTION
+<span class="go">-       version         off     Maven2          TRUE  version of artifact</span>
+</pre></div>
+</div>
+<p>A parser specific field only has a long name, no letter. For
+enabling/disabling such fields, the name must be passed to
+<code class="docutils literal notranslate"><span class="pre">--fields-&lt;LANG&gt;</span></code>.</p>
+<p>e.g. for enabling the <cite>sectionMarker</cite> field owned by the
+<cite>reStructuredText</cite> parser, use the following command line:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields-reStructuredText<span class="o">=</span>+<span class="o">{</span>sectionMarker<span class="o">}</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p>The wild card notation can be used for enabling/disabling parser specific
+fields, too. The following example enables all fields owned by the
+<cite>C++</cite> parser.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields-C++<span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p><cite>*</cite> can also be used for specifying languages.</p>
+<p>The next example is for enabling <cite>end</cite> fields for all languages which
+have such a field.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields-<span class="s1">&#39;*&#39;</span><span class="o">=</span>+<span class="s1">&#39;{end}&#39;</span><span class="w"> </span>...
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>In this case, using wild card notation to specify the language, not
+only fields owned by parsers but also common fields having the name
+specified (<cite>end</cite> in this example) are enabled/disabled.</p>
+<p>Using the wild card notation to specify the language is helpful to
+avoid incompatibilities between versions of Universal Ctags itself
+(SELF INCOMPATIBLY).</p>
+<p>In Universal Ctags development, a parser developer may add a new
+parser specific field for a certain language.  Sometimes other developers
+then recognize it is meaningful not only for the original language
+but also other languages. In this case the field may be promoted to a
+common field. Such a promotion will break the command line
+compatibility for <code class="docutils literal notranslate"><span class="pre">--fields-&lt;LANG&gt;</span></code> usage. The wild card for
+<cite>&lt;LANG&gt;</cite> will help in avoiding this unwanted effect of the promotion.</p>
+<p>With respect to the tags file format, nothing is changed when
+introducing parser specific fields; <cite>&lt;fieldname&gt;</cite>:<cite>&lt;value&gt;</cite> is used as
+before and the name of field owner is never prefixed. The <cite>language:</cite>
+field of the tag identifies the owner.</p>
+</section>
+<section id="parser-specific-extras">
+<h2>Parser specific extras<a class="headerlink" href="#parser-specific-extras" title="Permalink to this heading">¶</a></h2>
+<p>As man page of Exuberant Ctags says, <code class="docutils literal notranslate"><span class="pre">--extras</span></code> option specifies
+whether to include extra tag entries for certain kinds of information.
+This option is available in Universal Ctags, too.</p>
+<p>In Universal Ctags it is extended; a parser can define its specific
+extra flags. They can be controlled with <code class="docutils literal notranslate"><span class="pre">--extras-&lt;LANG&gt;=[+|-]{...}</span></code>.</p>
+<p>See some examples:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-extras
+<span class="gp">#</span>LETTER<span class="w"> </span>NAME<span class="w">                   </span>ENABLED<span class="w"> </span>LANGUAGE<span class="w">         </span>DESCRIPTION
+<span class="go">F       fileScope              TRUE    NONE             Include tags ...</span>
+<span class="go">f       inputFile              FALSE   NONE             Include an entry ...</span>
+<span class="go">p       pseudo                 FALSE   NONE             Include pseudo tags</span>
+<span class="go">q       qualified              FALSE   NONE             Include an extra ...</span>
+<span class="go">r       reference              FALSE   NONE             Include reference tags</span>
+<span class="go">g       guest                  FALSE   NONE             Include tags ...</span>
+<span class="go">-       whitespaceSwapped      TRUE    Robot            Include tags swapping ...</span>
+</pre></div>
+</div>
+<p>See the <cite>LANGUAGE</cite> column. NONE means the extra flags are language
+independent (common). They can be enabled or disabled with <cite>--extras=</cite> as before.</p>
+<p>Look at <cite>whitespaceSwapped</cite>. Its language is <cite>Robot</cite>. This flag is enabled
+by default but can be disabled with <cite>--extras-Robot=-{whitespaceSwapped}</cite>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>input.robot
+<span class="go">*** Keywords ***</span>
+<span class="go">it&#39;s ok to be correct</span>
+<span class="go">    Python_keyword_2</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>input.robot
+<span class="go">it&#39;s ok to be correct       input.robot     /^it&#39;s ok to be correct$/;&quot;     k</span>
+<span class="go">it&#39;s_ok_to_be_correct       input.robot     /^it&#39;s ok to be correct$/;&quot;     k</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras-Robot<span class="o">=</span>-<span class="s1">&#39;{whitespaceSwapped}&#39;</span><span class="w"> </span>input.robot
+<span class="go">it&#39;s ok to be correct       input.robot     /^it&#39;s ok to be correct$/;&quot;     k</span>
+</pre></div>
+</div>
+<p>When disabled the name <cite>it’s_ok_to_be_correct</cite> is not included in the
+tags output.  In other words, the name <cite>it’s_ok_to_be_correct</cite> is
+derived from the name <cite>it’s ok to be correct</cite> when the extra flag is
+enabled.</p>
+<section id="discussion">
+<h3>Discussion<a class="headerlink" href="#discussion" title="Permalink to this heading">¶</a></h3>
+<p>(This subsection should move to somewhere for developers.)</p>
+<p>The question is what are extra tag entries. As far as I know none has
+answered explicitly. I have two ideas in Universal Ctags. I
+write “ideas”, not “definitions” here because existing parsers don’t
+follow the ideas. They are kept as is in variety reasons but the
+ideas may be good guide for people who wants to write a new parser
+or extend an exiting parser.</p>
+<p>The first idea is that a tag entry whose name is appeared in the input
+file as is, the entry is NOT an extra. (If you want to control the
+inclusion of such entries, the classical <code class="docutils literal notranslate"><span class="pre">--kind-&lt;LANG&gt;=[+|-]...</span></code> is
+what you want.)</p>
+<p>Qualified tags, whose inclusion is controlled by <code class="docutils literal notranslate"><span class="pre">--extras=+q</span></code>, is
+explained well with this idea.
+Let’s see an example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>input.py
+<span class="go">class Foo:</span>
+<span class="go">    def func (self):</span>
+<span class="go">        pass</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>+q<span class="w"> </span>--fields<span class="o">=</span>+E<span class="w"> </span>input.py
+<span class="go">Foo input.py        /^class Foo:$/;&quot;        c</span>
+<span class="go">Foo.func    input.py        /^    def func (self):$/;&quot;      m       class:Foo       extra:qualified</span>
+<span class="go">func        input.py        /^    def func (self):$/;&quot;      m       class:Foo</span>
+</pre></div>
+</div>
+<p><cite>Foo</cite> and <cite>func</cite> are in <cite>input.py</cite>. So they are no extra tags.  In
+other hand, <cite>Foo.func</cite> is not in <cite>input.py</cite> as is. The name is
+generated by ctags as a qualified extra tag entry.
+<cite>whitespaceSwapped</cite> extra flag of  <cite>Robot</cite> parser is also aligned well
+on the idea.</p>
+<p>I don’t say all parsers follows this idea.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>input.cc
+<span class="go">class A</span>
+<span class="go">{</span>
+<span class="go">  A operator+ (int);</span>
+<span class="go">};</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>--kinds-all<span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="w"> </span>--fields<span class="o">=</span><span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>input.cc
+<span class="go">A   input.cc        /^class A$/</span>
+<span class="go">operator +  input.cc        /^  A operator+ (int);$/</span>
+</pre></div>
+</div>
+<p>In this example <cite>operator+</cite> is in <cite>input.cc</cite>.
+In other hand, <cite>operator +</cite>  is in the ctags output as non extra tag entry.
+See a whitespace between the keyword <cite>operator</cite> and <cite>+</cite> operator.
+This is an exception of the first idea.</p>
+<p>The second idea is that if the <em>inclusion</em> of a tag cannot be
+controlled well with <code class="docutils literal notranslate"><span class="pre">--kind-&lt;LANG&gt;=[+|-]...</span></code>, the tag may be an
+extra.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>input.c
+<span class="go">static int foo (void)</span>
+<span class="go">{</span>
+<span class="go">        return 0;</span>
+<span class="go">}</span>
+<span class="go">int bar (void)</span>
+<span class="go">{</span>
+<span class="go">        return 1;</span>
+<span class="go">}</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>--sort<span class="o">=</span>no<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>+F<span class="w"> </span>input.c
+<span class="go">foo input.c /^static int foo (void)$/;&quot;     f       typeref:typename:int    file:</span>
+<span class="go">bar input.c /^int bar (void)$/;&quot;    f       typeref:typename:int</span>
+
+<span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>--extras<span class="o">=</span>-F<span class="w"> </span>input.c
+<span class="go">foo input.c /^static int foo (void)$/;&quot;     f       typeref:typename:int    file:</span>
+
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>Function <cite>foo</cite> of C language is included only when <cite>F</cite> extra flag
+is enabled. Both <cite>foo</cite> and <cite>bar</cite> are functions. Their inclusions
+can be controlled with <cite>f</cite> kind of C language: <code class="docutils literal notranslate"><span class="pre">--kind-C=[+|-]f</span></code>.</p>
+<p>The difference between static modifier or implicit extern modifier in
+a function definition is handled by <cite>F</cite> extra flag.</p>
+<p>Basically the concept kind is for handling the kinds of language
+objects: functions, variables, macros, types, etc. The concept extra
+can handle the other aspects like scope (static or extern).</p>
+<p>However, a parser developer can take another approach instead of
+introducing parser specific extra; one can prepare <cite>staticFunction</cite> and
+<cite>exportedFunction</cite> as kinds of one’s parser.  The second idea is a
+just guide; the parser developer must decide suitable approach for the
+target language.</p>
+<p>Anyway, in the second idea, <code class="docutils literal notranslate"><span class="pre">--extras</span></code> is for controlling inclusion
+of tags. If what you want is not about inclusion, <code class="docutils literal notranslate"><span class="pre">--param-&lt;LANG&gt;</span></code>
+can be used as the last resort.</p>
+</section>
+</section>
+<section id="parser-specific-parameter">
+<h2>Parser specific parameter<a class="headerlink" href="#parser-specific-parameter" title="Permalink to this heading">¶</a></h2>
+<p>To control the detail of a parser, <code class="docutils literal notranslate"><span class="pre">--param-&lt;LANG&gt;</span></code> option is introduced.
+<code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">--fields-&lt;LANG&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">--extras-&lt;LANG&gt;</span></code>
+can be used for customizing the behavior of a parser specified with <code class="docutils literal notranslate"><span class="pre">&lt;LANG&gt;</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--param-&lt;LANG&gt;</span></code> should be used for aspects of the parser that
+the options(kinds, fields, extras) cannot handle well.</p>
+<p>A parser defines a set of parameters. Each parameter has name and
+takes an argument. A user can set a parameter with following notation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">param</span><span class="o">-&lt;</span><span class="n">LANG</span><span class="o">&gt;.</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span>
+</pre></div>
+</div>
+<p>An example of specifying a parameter</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">param</span><span class="o">-</span><span class="n">CPreProcessor</span><span class="o">.</span><span class="n">if0</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+<p>Here <cite>if0</cite> is a name of parameter of CPreProcessor parser and
+<cite>true</cite> is the value of it.</p>
+<p>All available parameters can be listed with <code class="docutils literal notranslate"><span class="pre">--list-params</span></code> option.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-params
+<span class="gp">#</span>PARSER<span class="w">         </span>NAME<span class="w">     </span>DESCRIPTION
+<span class="go">CPreProcessor   if0      examine code within &quot;#if 0&quot; branch (true or [false])</span>
+<span class="go">CPreProcessor   ignore   a token to be specially handled</span>
+</pre></div>
+</div>
+<p>(At this time only CPreProcessor parser has parameters.)</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Changes to the tags file format</a><ul>
+<li><a class="reference internal" href="#f-kind-usage"><code class="docutils literal notranslate"><span class="pre">F</span></code> kind usage</a></li>
+<li><a class="reference internal" href="#reference-tags">Reference tags</a></li>
+<li><a class="reference internal" href="#pseudo-tags">Pseudo-tags</a><ul>
+<li><a class="reference internal" href="#tag-kind-description"><code class="docutils literal notranslate"><span class="pre">TAG_KIND_DESCRIPTION</span></code></a></li>
+<li><a class="reference internal" href="#tag-kind-separator"><code class="docutils literal notranslate"><span class="pre">TAG_KIND_SEPARATOR</span></code></a></li>
+<li><a class="reference internal" href="#tag-output-filesep"><code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_FILESEP</span></code></a></li>
+<li><a class="reference internal" href="#tag-output-mode"><code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_MODE</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#truncating-the-pattern-for-long-input-lines">Truncating the pattern for long input lines</a></li>
+<li><a class="reference internal" href="#parser-specific-fields">Parser specific fields</a></li>
+<li><a class="reference internal" href="#parser-specific-extras">Parser specific extras</a><ul>
+<li><a class="reference internal" href="#discussion">Discussion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parser-specific-parameter">Parser specific parameter</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="output-format.html"
+                          title="previous chapter">Output formats</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="output-xref.html"
+                          title="next chapter">Xref output</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="output-xref.html" title="Xref output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="output-format.html" title="Output formats"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="output-format.html" >Output formats</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Changes to the tags file format</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

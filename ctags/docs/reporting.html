@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Request for extending a parser (or Reporting a bug of parser) &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributions" href="contributions.html" />
+    <link rel="prev" title="Testing readtags" href="testing-readtags.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="contributions.html" title="Contributions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="testing-readtags.html" title="Testing readtags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Request for extending a parser (or Reporting a bug of parser)</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="request-for-extending-a-parser-or-reporting-a-bug-of-parser">
+<h1>Request for extending a parser (or Reporting a bug of parser)<a class="headerlink" href="#request-for-extending-a-parser-or-reporting-a-bug-of-parser" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Maintainer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Masatake YAMATO &lt;<a class="reference external" href="mailto:yamato&#37;&#52;&#48;redhat&#46;com">yamato<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title"><cite>Table of contents</cite></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#before-reporting" id="id1">Before reporting</a></p></li>
+<li><p><a class="reference internal" href="#the-content-of-report" id="id2">The content of report</a></p></li>
+<li><p><a class="reference internal" href="#an-example-of-good-report" id="id3">An example of good report</a></p></li>
+</ul>
+</nav>
+<hr class="docutils" />
+<p>Sometimes you will find u-ctags doesn’t make a tag for a language
+object unexpectedly. Writing a patch for making the tag is
+appreciate. However, you may not have time to do so. In that case, you
+can open an issue on the GitHub page of u-ctags.</p>
+<p>This section tells you how to drive u-ctags developers effectively.</p>
+<section id="before-reporting">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Before reporting</a><a class="headerlink" href="#before-reporting" title="Permalink to this heading">¶</a></h2>
+<p>U-Ctags just captures the definitions of language objects.  U-ctags
+has an infrastructure for capturing references for language objects.
+However, we implement reference tagging limited area.  We will not
+work on writing new code for capturing references for your favorite
+language.  About requests for capturing reference tags, we will say
+“patches are welcome.”.</p>
+<p>What kind of language objects u-ctags captures is controlled by
+<cite>--kind-&lt;LANG&gt;</cite> option. Some kinds are disabled by default because we
+assume people don’t want too large <cite>tags</cite> file. When you cannot find a
+language object you want in a tags file, it is worth for checking the
+status of kinds. <cite>--list-kinds=&lt;LANG&gt;</cite> or (<cite>--list-kinds-full=&lt;LANG&gt;</cite>)
+option lists the status of the given language.</p>
+<p>Let’s see an example.</p>
+<p>Consider following input (foo.h):</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">point</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">point</span><span class="w"> </span><span class="o">*</span><span class="n">make_point</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">x0</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>tags output generated with <cite>u-ctags -o - /tmp/foo.h</cite> is as following.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>point    foo.h    /^struct point {$/;&quot;    s
+x    foo.h    /^  int x, y;$/;&quot;    m    struct:point    typeref:typename:int
+y    foo.h    /^  int x, y;$/;&quot;    m    struct:point    typeref:typename:int
+</pre></div>
+</div>
+<p>Though <cite>point</cite>, <cite>x</cite> and <cite>y</cite> are tagged, the declaration <cite>make_point</cite>
+is not tagged because <cite>prototype</cite> kind of C++ is disabled by default.
+You can know it from the output of <cite>ctags --list-kinds-full=C++</cite>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#LETTER NAME       ENABLED REFONLY NROLES MASTER DESCRIPTION</span>
+<span class="n">A</span>       <span class="n">alias</span>      <span class="n">no</span>      <span class="n">no</span>      <span class="mi">0</span>      <span class="n">NONE</span>   <span class="n">namespace</span> <span class="n">aliases</span>
+<span class="n">L</span>       <span class="n">label</span>      <span class="n">no</span>      <span class="n">no</span>      <span class="mi">0</span>      <span class="n">C</span>      <span class="n">goto</span> <span class="n">labels</span>
+<span class="n">N</span>       <span class="n">name</span>       <span class="n">no</span>      <span class="n">no</span>      <span class="mi">0</span>      <span class="n">NONE</span>   <span class="n">names</span> <span class="n">imported</span> <span class="n">via</span> <span class="n">using</span> <span class="n">scope</span><span class="p">::</span><span class="n">symbol</span>
+<span class="o">...</span>
+<span class="n">p</span>       <span class="n">prototype</span>  <span class="n">no</span>      <span class="n">no</span>      <span class="mi">0</span>      <span class="n">C</span>      <span class="n">function</span> <span class="n">prototypes</span>
+</pre></div>
+</div>
+<p>By turning on the kind with <cite>--kinds-C++=+p</cite>, u-ctags tags
+<cite>make_point</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>make_point    foo.h    /^struct point *make_point(int x0, int y0);$/;&quot;    p    typeref:struct:point *
+point    foo.h    /^struct point {$/;&quot;    s
+x    foo.h    /^  int x, y;$/;&quot;    m    struct:point    typeref:typename:int
+y    foo.h    /^  int x, y;$/;&quot;    m    struct:point    typeref:typename:int
+</pre></div>
+</div>
+<p>Wildcard <cite>*</cite> is for enabling all kinds of a language at once.
+<cite>--kinds-C++=*</cite> option enables all kinds of C++ parser. If you specify <cite>all</cite>
+as the name of <cite>&lt;LANG&gt;</cite>, you can enable all kinds of all languages at once.</p>
+</section>
+<section id="the-content-of-report">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">The content of report</a><a class="headerlink" href="#the-content-of-report" title="Permalink to this heading">¶</a></h2>
+<p>Don’t assume following three things.</p>
+<p>U-ctags developers know vi.</p>
+<blockquote>
+<div><p>If you explain the expectation about how tags related functions of vi
+and its plugins, U-ctags developers don’t understand it.
+The answer from them can be “it can be a bug of vi.”</p>
+</div></blockquote>
+<p>U-ctags developers know the programming language that you are talking.</p>
+<blockquote>
+<div><p>U-ctags developers need your help to understand the meaning of
+language object you asked tagging especially about kind.  A person
+extending a parser have to decide a kind of newly tagging language
+object: reusing an existing kind or introducing a new kind.
+U-ctags developers expect a report know the concept kind, field,
+and extra. ctags.1 man page of u-ctags explains them.</p>
+</div></blockquote>
+<p>English is the native language of the head maintainer.</p>
+<blockquote>
+<div><p>I don’t want to write this but I have to write this.
+Following are my private request for reporters.</p>
+<p>Instead of long explanation, showing code or output
+examples make me understand what you want.</p>
+<p>Don’t omit sentences. Please, write your sentence
+in full.</p>
+<p>Use pronounce fewer.</p>
+</div></blockquote>
+<p>U-ctags can generate something meaningful from a broken input.</p>
+<blockquote>
+<div><p>From garbage, u-ctags generates garbage.
+For a syntactically broken input source file, U-ctags
+does not work well. U-ctags developers will not work
+on improving u-ctags for handing such input.
+The exception is that macro related input. Well known
+one is C and C++.</p>
+</div></blockquote>
+<p>Following a tuple with three items helps us to understand what you want.</p>
+<ol class="arabic">
+<li><p>Input file</p>
+<blockquote>
+<div><p>A shorter input file is better. However, it must be syntactically
+valid.  Show the URL (or something) where you get the input
+file. It is needed to incorporate the input file to the u-ctags
+source tree as a test case.</p>
+</div></blockquote>
+</li>
+<li><p>Command line running u-ctags</p></li>
+<li><p>Expected output</p></li>
+</ol>
+<p>These three items should be rendered preformatted form on an issue
+page of GitHub. Use triple backquotes notation of GitHub’s
+markdown notation. I will close an issue with a bad notation
+like this <a class="reference external" href="https://github.com/universal-ctags/ctags/issues/1547">issue</a>.</p>
+</section>
+<section id="an-example-of-good-report">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">An example of good report</a><a class="headerlink" href="#an-example-of-good-report" title="Permalink to this heading">¶</a></h2>
+<p>For the following input file(input.f90), u-ctags reports incomplete pattern
+for function <cite>f</cite> at the line 23.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>! input.f90, taken from https://github.com/universal-ctags/ctags/issues/1616
+module example_mod
+
+ ! This module contains two interfaces:
+ !   1. f_interface, which is an interface to the local f function
+ !   2. g, which is implemented in the example_smod submodule
+
+    interface f_interface
+       ! The function `f` is defined below, within the `contains` statement
+        module function f(x) result(y)
+           integer :: x, y
+        end function f
+     end interface f_interface
+
+    interface
+       ! The function `g` is implemented in example_smod.f90
+        module function g(x) result(y)
+           integer :: x,y
+        end function g
+    end interface
+
+    contains
+     function f(x) result(y)
+        integer :: x, y
+
+        y = x * 2
+     end function f
+end module example_mod
+</pre></div>
+</div>
+<p>I run ctags with following command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">-</span><span class="n">ctags</span> <span class="o">--</span><span class="n">fields</span><span class="o">=+</span><span class="n">n</span> <span class="o">-</span><span class="n">o</span> <span class="o">-</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="nb">input</span><span class="o">.</span><span class="n">f90</span>
+</pre></div>
+</div>
+<p>What I got:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>example_mod     /tmp/input.f90  /^module example_mod$/;&quot;        m       line:2
+f       /tmp/input.f90  /^     fu/;&quot;    f       line:23
+f_interface     /tmp/input.f90  /^    interface f_interface$/;&quot; i       line:8  module:example_mod
+</pre></div>
+</div>
+<p>I think this should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>example_mod     /tmp/input.f90  /^module example_mod$/;&quot;        m       line:2
+f       /tmp/input.f90  /^     function f/;&quot;    f       line:23
+f_interface     /tmp/input.f90  /^    interface f_interface$/;&quot; i       line:8  module:example_mod
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>example_mod     /tmp/input.f90  /^module example_mod$/;&quot;        m       line:2
+f       /tmp/input.f90  /^     function f(x) result(y)/;&quot;       f       line:23
+f_interface     /tmp/input.f90  /^    interface f_interface$/;&quot; i       line:8  module:example_mod
+</pre></div>
+</div>
+<p>Either way, <cite>/^     fu/</cite> is too short as a pattern.</p>
+<p>The version of u-ctags is <cite>83b0d1f6</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ u-ctags --version
+Universal Ctags 0.0.0(83b0d1f6), Copyright (C) 2015 Universal Ctags Team
+Universal Ctags is derived from Exuberant Ctags.
+Exuberant Ctags 5.8, Copyright (C) 1996-2009 Darren Hiebert
+  Compiled: Dec 15 2017, 08:07:36
+  URL: https://ctags.io/
+  Optional compiled features: +wildcards, +regex, +multibyte, +debug, +option-directory, +xpath, +json, +interactive, +sandbox, +yaml
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Request for extending a parser (or Reporting a bug of parser)</a><ul>
+<li><a class="reference internal" href="#before-reporting">Before reporting</a></li>
+<li><a class="reference internal" href="#the-content-of-report">The content of report</a></li>
+<li><a class="reference internal" href="#an-example-of-good-report">An example of good report</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="testing-readtags.html"
+                          title="previous chapter">Testing readtags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="contributions.html"
+                          title="next chapter">Contributions</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="contributions.html" title="Contributions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="testing-readtags.html" title="Testing readtags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Request for extending a parser (or Reporting a bug of parser)</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

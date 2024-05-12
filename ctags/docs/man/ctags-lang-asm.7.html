@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-asm &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-autoit" href="ctags-lang-autoit.7.html" />
+    <link rel="prev" title="ctags-faq" href="ctags-faq.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-autoit.7.html" title="ctags-lang-autoit"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-faq.7.html" title="ctags-faq"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-asm</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-asm">
+<span id="ctags-lang-asm-7"></span><h1>ctags-lang-asm<a class="headerlink" href="#ctags-lang-asm" title="Permalink to this heading">¶</a></h1>
+<p>Random notes about tagging Assembly language source code with Universal Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … --languages=+Asm …</div>
+<div class="line"><strong>ctags</strong> … --language-force=Asm …</div>
+<div class="line"><strong>ctags</strong> … --map-Asm=+.asm …</div>
+<div class="line"><strong>ctags</strong> … --map-Asm=+.ASM …</div>
+<div class="line"><strong>ctags</strong> … --map-Asm=+.s …</div>
+<div class="line"><strong>ctags</strong> … --map-Asm=+.S …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>This man page gathers random notes about tagging assembly language
+source code.</p>
+<p>The parser of Universal Ctags has been extended to support the source
+code to be processed with <em>GNU assembler</em> (<em>Gas</em>).</p>
+</section>
+<section id="parameters">
+<h2>PARAMETERS<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<p>The Asm parser has some parameters for adapting it to different
+assembler implementations.</p>
+<p>Writing a parser for assembly language source code is not easy because
+the syntax for the language differ depending on the implementations of
+assemblers and target CPU architectures. For example, in <em>NASM</em>, <cite>;</cite>
+is a starter of a line comment. On the other hand, in Gas for i386,
+<cite>;</cite> is a line separator. The parameters explained this man page are
+for mitigating the gaps of syntax.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--param-Asm.{parameter}={value}</span></code> option for adjusting the value
+for a parameter. For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>--param-Asm.runCPreProcessor<span class="o">=</span><span class="nb">false</span><span class="w"> </span>...
+</pre></div>
+</div>
+<p>This command line sets <code class="docutils literal notranslate"><span class="pre">false</span></code> to <code class="docutils literal notranslate"><span class="pre">runCPreProcessor</span></code> parameter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--list-params=Asm</span></code> lists available parameters available in the
+Asm parser.</p>
+<section id="runcpreprocessor-running-c-preprocessor">
+<h3><code class="docutils literal notranslate"><span class="pre">runCPreProcessor</span></code>: running C preprocessor<a class="headerlink" href="#runcpreprocessor-running-c-preprocessor" title="Permalink to this heading">¶</a></h3>
+<p>By default, the CPreProcessor parser processes the assembly language
+source code before the Asm parser does.</p>
+<p>The main effects of running the CPreProcessor parser;</p>
+<ul class="simple">
+<li><p>lines started from <cite>//</cite> are stripped as comments,</p></li>
+<li><p>areas surrounded by the pair of <cite>/*</cite> and <cite>*/</cite> are
+stripped as comments, and</p></li>
+<li><p>macros defined with <cite>#define</cite> are extracted as tags.</p></li>
+</ul>
+<p>Set <code class="docutils literal notranslate"><span class="pre">runCPreProcessor</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code> for disabling the CPreProcessor
+parser running before the Asm parser.</p>
+</section>
+<section id="commentcharsatbol-adjusting-line-comment-starter-at-the-beginning-of-line">
+<h3><code class="docutils literal notranslate"><span class="pre">commentCharsAtBOL</span></code>: adjusting line comment starter at the beginning of line<a class="headerlink" href="#commentcharsatbol-adjusting-line-comment-starter-at-the-beginning-of-line" title="Permalink to this heading">¶</a></h3>
+<p>By default, the Asm parser ignores lines starting from <cite>;</cite>, <cite>*</cite>, or
+<cite>&#64;</cite> as comments. <cite>//</cite> is also ignored if <cite>runCPreProcessor</cite> is <cite>true</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">commentCharsAtBOL</span></code> is for changing the characters for line comments.
+<cite>BOL</cite> is acronym standing for “the beginning of line.” The characters
+act as comment starters only if they are at the beginning
+of lines.</p>
+<p>The next example if for assembler input using <cite>!</cite> and <cite>&gt;</cite> as the comment starter:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>--param-Asm.commentCharsAtBOL<span class="o">=</span><span class="s1">&#39;!&gt;&#39;</span><span class="w"> </span>...
+</pre></div>
+</div>
+</section>
+<section id="commentcharsinmol-adjusting-line-comment-starter-in-the-middle-of-line">
+<h3><code class="docutils literal notranslate"><span class="pre">commentCharsInMOL</span></code>: adjusting line comment starter in the middle of line<a class="headerlink" href="#commentcharsinmol-adjusting-line-comment-starter-in-the-middle-of-line" title="Permalink to this heading">¶</a></h3>
+<p>Some dialects of assemblers support comments starting from the middle of line.
+A <cite>;</cite> character starts a comment anywhere on the line in Gas for CRIS for example.</p>
+<p><code class="docutils literal notranslate"><span class="pre">commentCharsInMOL</span></code> is for specifying the character for line comments.
+<cite>MOL</cite> is acronym standing for “the middle of line.” Unlike characters
+specified with <code class="docutils literal notranslate"><span class="pre">commentCharsAtBOL</span></code>, the characters specified with
+<code class="docutils literal notranslate"><span class="pre">commentCharsInMOL</span></code> act as comment starts even if they are in the
+middle of lines.</p>
+<p>By default, the Asm parser has no <code class="docutils literal notranslate"><span class="pre">commentCharsInMOL</span></code> characters.</p>
+</section>
+<section id="extralinesepchars-adding-line-separators">
+<h3><code class="docutils literal notranslate"><span class="pre">extraLinesepChars</span></code>: adding line separators<a class="headerlink" href="#extralinesepchars-adding-line-separators" title="Permalink to this heading">¶</a></h3>
+<p>The Asm parser processes its input line-oriented way.  By default, the
+parser recognizes <cite>n</cite> as a line separator.  <code class="docutils literal notranslate"><span class="pre">extraLinesepChars</span></code> is
+for adding more line separators.</p>
+<p>In Gas for AArch64, the <cite>;</cite> character can be used as line separators.
+The next example for adjusting the Asm parser to the extra line
+separator:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>...<span class="w"> </span>--param-Asm.extraLinesepChars<span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="w"> </span>...
+</pre></div>
+</div>
+</section>
+</section>
+<section id="expanding-c-preprocessor-macros">
+<h2>EXPANDING C PREPROCESSOR MACROS<a class="headerlink" href="#expanding-c-preprocessor-macros" title="Permalink to this heading">¶</a></h2>
+<p>The Asm parser has the ability to expand <strong>C preprocessor macros</strong>
+before parsing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t confuse C preprocessor macros and assembler implementation
+specific macros. The Asm parser expands only C preprocessor macros.</p>
+</div>
+<p>Specifying following options are must for expansion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">param</span><span class="o">-</span><span class="n">Asm</span><span class="o">.</span><span class="n">runCPreProcessor</span><span class="o">=</span><span class="n">true</span>
+<span class="o">--</span><span class="n">fields</span><span class="o">=+</span><span class="p">{</span><span class="n">signature</span><span class="p">}</span>
+<span class="o">--</span><span class="n">fields</span><span class="o">-</span><span class="n">CPreProcessor</span><span class="o">=+</span><span class="p">{</span><span class="n">macrodef</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>With the above options, the parser expands macros defined in command
+line with <code class="docutils literal notranslate"><span class="pre">-D</span></code> option. See <a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a> about the way to define a macro
+with the <code class="docutils literal notranslate"><span class="pre">-D</span></code> option.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">--param-CPreProcessor._expand=1</span></code> option, the parser expands
+macros defined in the current input file in addition to macros defined
+with the <code class="docutils literal notranslate"><span class="pre">-D</span></code> option.</p>
+<p>Though the parser expands macros, the parser doesn’t extract language
+objects like labels as you expect. You must adjust the parser specific
+parameters to utilize the macro expansion feature effectively. See</p>
+<section id="an-example-of-macro-expansion">
+<h3>An example of macro expansion<a class="headerlink" href="#an-example-of-macro-expansion" title="Permalink to this heading">¶</a></h3>
+<p>“input.S”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#define ENTRY(LABEL) .global LABEL      ;\</span>
+<span class="n">LABEL</span>
+
+<span class="n">ENTRY</span><span class="p">(</span><span class="n">main</span><span class="p">):</span>
+        <span class="n">nop</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --param-Asm.useCPreProcessor=1 --param-CPreProcessor._expand=1 --fields=+{signature} --fields-CPreProcessor=+{macrodef} --param-Asm.extraLinesepChars=; --fields-CPreProcessor=+{macrodef} input.S”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>ENTRY   input.S /^#define ENTRY(/;&quot;     d       file:   signature:(LABEL)       macrodef:.global LABEL ;LABEL
+main    input.S /^ENTRY(main):$/;&quot;      l
+</pre></div>
+</div>
+<p>The definition of <cite>ENTRY</cite> assumes <cite>;</cite> is a line separator in the host assembly language.
+<code class="docutils literal notranslate"><span class="pre">--param-Asm.extraLinesepChars=;</span></code> is for satisfying the assumption in ctags side.</p>
+</section>
+<section id="known-limitations">
+<h3>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this heading">¶</a></h3>
+<p>The parser has no ability to expand the macros defined outside of the
+current input file. The parser doesn’t consider <cite>#undef</cite> when
+expanding.</p>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, Info entries for GNU assembler</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-asm</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#parameters">PARAMETERS</a><ul>
+<li><a class="reference internal" href="#runcpreprocessor-running-c-preprocessor"><code class="docutils literal notranslate"><span class="pre">runCPreProcessor</span></code>: running C preprocessor</a></li>
+<li><a class="reference internal" href="#commentcharsatbol-adjusting-line-comment-starter-at-the-beginning-of-line"><code class="docutils literal notranslate"><span class="pre">commentCharsAtBOL</span></code>: adjusting line comment starter at the beginning of line</a></li>
+<li><a class="reference internal" href="#commentcharsinmol-adjusting-line-comment-starter-in-the-middle-of-line"><code class="docutils literal notranslate"><span class="pre">commentCharsInMOL</span></code>: adjusting line comment starter in the middle of line</a></li>
+<li><a class="reference internal" href="#extralinesepchars-adding-line-separators"><code class="docutils literal notranslate"><span class="pre">extraLinesepChars</span></code>: adding line separators</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#expanding-c-preprocessor-macros">EXPANDING C PREPROCESSOR MACROS</a><ul>
+<li><a class="reference internal" href="#an-example-of-macro-expansion">An example of macro expansion</a></li>
+<li><a class="reference internal" href="#known-limitations">Known limitations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-faq.7.html"
+                          title="previous chapter">ctags-faq</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-autoit.7.html"
+                          title="next chapter">ctags-lang-autoit</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-autoit.7.html" title="ctags-lang-autoit"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-faq.7.html" title="ctags-faq"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-asm</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

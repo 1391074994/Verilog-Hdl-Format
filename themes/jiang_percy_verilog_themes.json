@@ -334,13 +334,13 @@
             "foreground": "#61AFEF"
         }
     },
-    {
-        "name": "Entity Name Function",
-        "scope": ["entity.name.function"],
-        "settings": {
-            "foreground": "#61AFEF"
-        }
-    },
+    // {
+    //     "name": "Entity Name Function",
+    //     "scope": ["entity.name.function"],
+    //     "settings": {
+    //         "foreground": "#61AFEF"
+    //     }
+    // },
     {
         "name": "Entity Name Class,entity Name Type Class",
         "scope": ["entity.name.class", "entity.name.type.class"],

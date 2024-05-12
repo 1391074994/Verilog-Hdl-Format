@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Interactive mode &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Other changes" href="news.html" />
+    <link rel="prev" title="Running multiple parsers on an input file" href="running-multi-parsers.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="news.html" title="Other changes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="running-multi-parsers.html" title="Running multiple parsers on an input file"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Interactive mode</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="interactive-mode">
+<span id="id1"></span><h1>Interactive mode<a class="headerlink" href="#interactive-mode" title="Permalink to this heading">¶</a></h1>
+<p>Universal Ctags can be run with <code class="docutils literal notranslate"><span class="pre">--_interactive</span></code>, which enters a REPL that
+can be used programmatically to control ctags generation. In this mode, json
+commands are received over stdin, and corresponding responses are emitted over
+stdout.</p>
+<p>This feature needs ctags to be built with json support and this requires libjansson to be installed
+at build-time. If it’s supported it will be listed in the output of <code class="docutils literal notranslate"><span class="pre">--list-features</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-features<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>json
+<span class="go">json</span>
+</pre></div>
+</div>
+<p>Communication with Universal Ctags over stdio uses the <a class="reference external" href="http://jsonlines.org/">json lines</a> format, where each
+json object appears on a single line and is terminated with a newline.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--_interactive</span></code> is invoked, it will emit a single json object to stdout announcing
+its name and version. This signals the start of the interactive loop, and the user can begin sending
+commands over stdin.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--_interactive
+<span class="go">{&quot;_type&quot;: &quot;program&quot;, &quot;name&quot;: &quot;Universal Ctags&quot;, &quot;version&quot;: &quot;0.0.0&quot;}</span>
+</pre></div>
+</div>
+<p>The following commands are currently supported in interactive mode:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#generate-tags">generate-tags</a></p></li>
+</ul>
+<section id="generate-tags">
+<h2>generate-tags<a class="headerlink" href="#generate-tags" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">generate-tags</span></code> command takes two arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">filename</span></code>: name of the file to generate tags for (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: size in bytes of the file, if the contents will be received over stdin (optional)</p></li>
+</ul>
+<p>The simplest way to generate tags for a file is by passing its path on filesystem(<code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">request</span></code>). The response will include
+one json object per line representing each tag, followed by a single json object with the <code class="docutils literal notranslate"><span class="pre">completed</span></code>
+field emitted once the file has been fully processed.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{&quot;command&quot;:&quot;generate-tags&quot;, &quot;filename&quot;:&quot;test.rb&quot;}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>ctags<span class="w"> </span>--_interactive
+<span class="go">{&quot;_type&quot;: &quot;program&quot;, &quot;name&quot;: &quot;Universal Ctags&quot;, &quot;version&quot;: &quot;0.0.0&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;tag&quot;, &quot;name&quot;: &quot;foobar&quot;, &quot;path&quot;: &quot;test.rb&quot;, &quot;pattern&quot;: &quot;/^  def foobar$/&quot;, &quot;kind&quot;: &quot;method&quot;, &quot;scope&quot;: &quot;Test&quot;, &quot;scopeKind&quot;: &quot;class&quot;}</span>
+<span class="go">{&quot;_type&quot;:&quot;completed&quot;, &quot;command&quot;: &quot;generate-tags&quot;}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">generate-tags</span></code> command can also be used to generate tags for code which is not present on filesystem(<code class="docutils literal notranslate"><span class="pre">inline</span> <span class="pre">request</span></code>). For example,
+an IDE might want to generate ctags for an unsaved buffer while the user is editing code. When <code class="docutils literal notranslate"><span class="pre">size</span></code> is specified,
+the corresponding number of bytes are read over stdin after the json object and newline.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="o">(</span>
+<span class="go">  echo &#39;{&quot;command&quot;:&quot;generate-tags&quot;, &quot;filename&quot;:&quot;test.rb&quot;, &quot;size&quot;: 17}&#39;</span>
+<span class="go">  echo &#39;def foobaz() end&#39;</span>
+<span class="go">) | ctags --_interactive</span>
+<span class="go">{&quot;_type&quot;: &quot;program&quot;, &quot;name&quot;: &quot;Universal Ctags&quot;, &quot;version&quot;: &quot;0.0.0&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;tag&quot;, &quot;name&quot;: &quot;foobaz&quot;, &quot;path&quot;: &quot;test.rb&quot;, &quot;pattern&quot;: &quot;/^def foobaz() end$/&quot;, &quot;kind&quot;: &quot;method&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;completed&quot;, &quot;command&quot;: &quot;generate-tags&quot;}</span>
+</pre></div>
+</div>
+</section>
+<section id="sandbox-submode">
+<span id="id2"></span><h2>sandbox submode<a class="headerlink" href="#sandbox-submode" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sandbox</span></code> submode can be used with <code class="docutils literal notranslate"><span class="pre">--_interactive=sandbox</span></code>.  This
+submode will activate a sandbox, to this limits the damage that the
+can be achieved when exploiting a buffer overflow in Universal Ctags.</p>
+<p>In the sandbox submode ctags can generate tags only for inline
+requests because ctags has to use open system call to handle file
+requests. The open system call is not allowed in the sandbox.</p>
+<p>This feature uses <a class="reference external" href="https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html">Seccomp BPF (SECure COMPuting with filters)</a>,
+and is only supported on Linux. To use the sandbox submode <a class="reference external" href="https://github.com/seccomp/libseccomp">libseccomp</a> is needed at build-time. If ctags was
+built with seccomp support, <code class="docutils literal notranslate"><span class="pre">sandbox</span></code> is listed in the output of
+<code class="docutils literal notranslate"><span class="pre">--list-features</span></code> option.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--list-features<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>sandbox
+<span class="go">sandbox</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="o">(</span>
+<span class="go">  echo &#39;{&quot;command&quot;:&quot;generate-tags&quot;, &quot;filename&quot;:&quot;test.rb&quot;, &quot;size&quot;: 17}&#39;</span>
+<span class="go">  echo &#39;def foobaz() end&#39;</span>
+<span class="go">) | ctags --_interactive=sandbox</span>
+<span class="go">{&quot;_type&quot;: &quot;program&quot;, &quot;name&quot;: &quot;Universal Ctags&quot;, &quot;version&quot;: &quot;0.0.0&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;tag&quot;, &quot;name&quot;: &quot;foobaz&quot;, &quot;path&quot;: &quot;test.rb&quot;, &quot;pattern&quot;: &quot;/^def foobaz() end$/&quot;, &quot;kind&quot;: &quot;method&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;completed&quot;, &quot;command&quot;: &quot;generate-tags&quot;}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Interactive mode</a><ul>
+<li><a class="reference internal" href="#generate-tags">generate-tags</a></li>
+<li><a class="reference internal" href="#sandbox-submode">sandbox submode</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="running-multi-parsers.html"
+                          title="previous chapter">Running multiple parsers on an input file</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="news.html"
+                          title="next chapter">Other changes</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="news.html" title="Other changes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="running-multi-parsers.html" title="Running multiple parsers on an input file"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Interactive mode</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

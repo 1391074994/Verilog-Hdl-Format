@@ -1,0 +1,293 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-gdscript &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-iPythonCell" href="ctags-lang-iPythonCell.7.html" />
+    <link rel="prev" title="ctags-lang-fortran" href="ctags-lang-fortran.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-iPythonCell.7.html" title="ctags-lang-iPythonCell"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-fortran.7.html" title="ctags-lang-fortran"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-gdscript</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-gdscript">
+<span id="ctags-lang-gdscript-7"></span><h1>ctags-lang-gdscript<a class="headerlink" href="#ctags-lang-gdscript" title="Permalink to this heading">¶</a></h1>
+<p>Random notes about tagging GDScript source code with Universal Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … --languages=+GDScript …</div>
+<div class="line"><strong>ctags</strong> … --language-force=GDScript …</div>
+<div class="line"><strong>ctags</strong> … --map-GDScript=+.gd …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>This man page gathers random notes about tagging GDScript source code
+with Universal Ctags.</p>
+</section>
+<section id="storing-annotations">
+<h2>Storing Annotations<a class="headerlink" href="#storing-annotations" title="Permalink to this heading">¶</a></h2>
+<p>Like the Python parser storing decorations to <code class="docutils literal notranslate"><span class="pre">decorations</span></code> field,
+the GDScript parser stores annotations
+starting from <cite>&#64;</cite> to the language specific field, <code class="docutils literal notranslate"><span class="pre">annotations</span></code>.
+Though the field is enabled explicitly in following examples, the
+field is enabled by default.</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span>@export
+var s = &quot;Hello&quot;
+
+@master
+func f(msg):
+        print(msg)
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --sort=no --fields-GDScript=+{annotations} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>s       input.gd        /^var s = &quot;Hello&quot;$/;&quot;   v       annotations:export
+f       input.gd        /^func f(msg):$/;&quot;      m       annotations:master
+</pre></div>
+</div>
+</section>
+<section id="extracting-func">
+<h2>Extracting <cite>func</cite><a class="headerlink" href="#extracting-func" title="Permalink to this heading">¶</a></h2>
+<p>A language object defined with <cite>func</cite> keyword is tagged with <code class="docutils literal notranslate"><span class="pre">method</span></code> kind.
+Like annotations, the parser stores keywords modifying <cite>func</cite> like <cite>static</cite> to
+the <code class="docutils literal notranslate"><span class="pre">annotations</span></code> field.</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">func</span><span class="w"> </span><span class="n">f_s</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="n">reutrn</span><span class="w"> </span><span class="n">x</span>
+
+<span class="k">remote</span><span class="w"> </span><span class="k">func</span><span class="w"> </span><span class="n">f_r</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --sort=no --fields=+K --fields-GDScript=+{annotations} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>f       input.gd        /^func f(x):$/;&quot;        method
+f_s     input.gd        /^static func f_s(x):$/;&quot;       method  annotations:static
+f_r     input.gd        /^remote func f_r(x):$/;&quot;       method  annotations:remote
+</pre></div>
+</div>
+</section>
+<section id="tagging-implicitly-defined-classes">
+<h2>Tagging implicitly defined classes<a class="headerlink" href="#tagging-implicitly-defined-classes" title="Permalink to this heading">¶</a></h2>
+<p>“A file is a class!” in GDScript.  A class is implicitly
+defined. Functions, variables, constants, and signals are parts of the
+class though the class is unnamed by default.</p>
+<p>If the language specific extra, <code class="docutils literal notranslate"><span class="pre">implicitClass</span></code>, is enabled, the
+parser makes a anonymous tag for the class. The parser fills the scope
+fields of the tags for all language objects defined in the file with
+the anonymous tag.</p>
+<p>Let’s see an example demonstrating the effect of the extra.</p>
+<p>Turning off the extra:</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+KZ --extras-GDScript=-{implicitClass} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>f       input.gd        /^func f(x):$/;&quot;        method
+</pre></div>
+</div>
+<p>Turning on the extra:</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">func</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+KZ --extras-GDScript=+{implicitClass} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>anon_class_84011bee0100 input.gd        /^func g(x):$/;&quot;        class
+g       input.gd        /^func g(x):$/;&quot;        method  scope:class:anon_class_84011bee0100
+</pre></div>
+</div>
+</section>
+<section id="tagging-the-name-specified-with-class-name">
+<h2>Tagging the name specified with <cite>class_name</cite><a class="headerlink" href="#tagging-the-name-specified-with-class-name" title="Permalink to this heading">¶</a></h2>
+<p><cite>class_name</cite> is a keyword for giving a name to the implicitly defined
+class.  If <code class="docutils literal notranslate"><span class="pre">implicitClass</span></code> is turned off, the parser just extract
+the name coming after the keyword with <code class="docutils literal notranslate"><span class="pre">class</span></code> kind. If
+<code class="docutils literal notranslate"><span class="pre">implicitClass</span></code> is turned on, the parser converts the anonymous tag
+to a non-anonymous tag with the specified name.  When converting,
+the parser also updates scope fields of the other tags in the file.</p>
+<p>Turning off the extra:</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="n">c</span>
+
+<span class="k">func</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+KZ --extras-GDScript=-{implicitClass} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>c       input.gd        /^class_name c$/;&quot;      class
+f       input.gd        /^func f(x):$/;&quot;        method
+</pre></div>
+</div>
+<p>Turning on the extra:</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">class_name</span><span class="w"> </span><span class="n">C</span>
+<span class="k">func</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+KZ --extras-GDScript=+{implicitClass} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>C       input.gd        /^class_name C$/;&quot;      class
+g       input.gd        /^func g(x):$/;&quot;        method  scope:class:C
+</pre></div>
+</div>
+</section>
+<section id="filling-inherits-field">
+<h2>Filling <code class="docutils literal notranslate"><span class="pre">inherits</span></code> field<a class="headerlink" href="#filling-inherits-field" title="Permalink to this heading">¶</a></h2>
+<p><cite>extends</cite> keyword specifies the super class for the implicitly defined class.
+If <cite>implicitClass</cite> extra is turned on, the parser fills <code class="docutils literal notranslate"><span class="pre">inherits</span></code> field
+of the tag for the implicitly defined class with the name of super class.</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="n">B</span>
+<span class="k">class_name</span><span class="w"> </span><span class="n">C</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+Ki --extras-GDScript=+{implicitClass} -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>C       input.gd        /^class_name C$/;&quot;      class   inherits:B
+</pre></div>
+</div>
+<p>When <cite>--extras=+r</cite> is given, the parser extracts the class specified with the
+<cite>extends</cite> keyword as a referece tag of <code class="docutils literal notranslate"><span class="pre">class</span></code> kind with <code class="docutils literal notranslate"><span class="pre">extended</span></code> role.</p>
+<p>“input.gd”</p>
+<div class="highlight-GDScript notranslate"><div class="highlight"><pre><span></span><span class="k">extends</span><span class="w"> </span><span class="n">B</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE --fields=+rEK --extras=+r -o - input.gd”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>B       input.gd        /^extends B$/;&quot; class   roles:extended  extras:reference
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-gdscript</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#storing-annotations">Storing Annotations</a></li>
+<li><a class="reference internal" href="#extracting-func">Extracting <cite>func</cite></a></li>
+<li><a class="reference internal" href="#tagging-implicitly-defined-classes">Tagging implicitly defined classes</a></li>
+<li><a class="reference internal" href="#tagging-the-name-specified-with-class-name">Tagging the name specified with <cite>class_name</cite></a></li>
+<li><a class="reference internal" href="#filling-inherits-field">Filling <code class="docutils literal notranslate"><span class="pre">inherits</span></code> field</a></li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-lang-fortran.7.html"
+                          title="previous chapter">ctags-lang-fortran</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-iPythonCell.7.html"
+                          title="next chapter">ctags-lang-iPythonCell</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-iPythonCell.7.html" title="ctags-lang-iPythonCell"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-fortran.7.html" title="ctags-lang-fortran"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-gdscript</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

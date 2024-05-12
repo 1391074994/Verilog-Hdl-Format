@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-json-output &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tags" href="tags.5.html" />
+    <link rel="prev" title="ctags" href="ctags.1.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tags.5.html" title="tags"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags.1.html" title="ctags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-json-output</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-json-output">
+<span id="ctags-json-output-5"></span><h1>ctags-json-output<a class="headerlink" href="#ctags-json-output" title="Permalink to this heading">¶</a></h1>
+<p>JSON based ctags output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>5</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> --output-format=json …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>Universal Ctags supports <a class="reference external" href="https://www.json.org/">JSON</a> (strictly
+speaking <a class="reference external" href="https://jsonlines.org/">JSON Lines</a>) output format if the
+ctags executable is built with <code class="docutils literal notranslate"><span class="pre">libjansson</span></code>.  JSON output goes to
+standard output by default.</p>
+</section>
+<section id="format">
+<h2>FORMAT<a class="headerlink" href="#format" title="Permalink to this heading">¶</a></h2>
+<p>Each JSON line represents a tag.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--extras<span class="o">=</span>+p<span class="w"> </span>--output-format<span class="o">=</span>json<span class="w"> </span>--fields<span class="o">=</span>-s<span class="w"> </span>input.py
+<span class="go">{&quot;_type&quot;: &quot;ptag&quot;, &quot;name&quot;: &quot;JSON_OUTPUT_VERSION&quot;, &quot;path&quot;: &quot;1.0&quot;, &quot;pattern&quot;: &quot;in development&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;ptag&quot;, &quot;name&quot;: &quot;TAG_FILE_SORTED&quot;, &quot;path&quot;: &quot;1&quot;, &quot;pattern&quot;: &quot;0=unsorted, 1=sorted, 2=foldcase&quot;}</span>
+<span class="go">...</span>
+<span class="go">{&quot;_type&quot;: &quot;tag&quot;, &quot;name&quot;: &quot;Klass&quot;, &quot;path&quot;: &quot;/tmp/input.py&quot;, &quot;pattern&quot;: &quot;/^class Klass:$/&quot;, &quot;language&quot;: &quot;Python&quot;, &quot;kind&quot;: &quot;class&quot;}</span>
+<span class="go">{&quot;_type&quot;: &quot;tag&quot;, &quot;name&quot;: &quot;method&quot;, &quot;path&quot;: &quot;/tmp/input.py&quot;, &quot;pattern&quot;: &quot;/^    def method(self):$/&quot;, &quot;language&quot;: &quot;Python&quot;, &quot;kind&quot;: &quot;member&quot;, &quot;scope&quot;: &quot;Klass&quot;, &quot;scopeKind&quot;: &quot;class&quot;}</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p>A key not starting with <code class="docutils literal notranslate"><span class="pre">_</span></code> is mapped to a field of ctags.
+“<code class="docutils literal notranslate"><span class="pre">--output-format=json</span> <span class="pre">--list-fields</span></code>” options list the fields.</p>
+<p>A key starting with <code class="docutils literal notranslate"><span class="pre">_</span></code> represents meta information of the JSON
+line.  Currently only <code class="docutils literal notranslate"><span class="pre">_type</span></code> key is used. If the value for the key
+is <code class="docutils literal notranslate"><span class="pre">tag</span></code>, the JSON line represents a regular tag. If the value is
+<code class="docutils literal notranslate"><span class="pre">ptag</span></code>, the line represents a pseudo-tag.</p>
+<p>The output format can be changed in the
+future. <code class="docutils literal notranslate"><span class="pre">JSON_OUTPUT_VERSION</span></code> pseudo-tag provides a change
+client-tools to handle the changes.  Current version is “1.0”. A
+client-tool can extract the version with <code class="docutils literal notranslate"><span class="pre">path</span></code> key from the
+pseudo-tag.</p>
+<p>The JSON output format is newly designed and has no limitation found
+in the default tags file format.</p>
+<ul class="simple">
+<li><p>The values for <code class="docutils literal notranslate"><span class="pre">kind</span></code> key are represented in long-name flags.
+No one-letter is here.</p></li>
+<li><p>Scope names and scope kinds have distinguished keys: <code class="docutils literal notranslate"><span class="pre">scope</span></code> and <code class="docutils literal notranslate"><span class="pre">scopeKind</span></code>.
+They are combined in the default tags file format.</p></li>
+</ul>
+</section>
+<section id="data-type-used-in-a-field">
+<h2>DATA TYPE USED IN A FIELD<a class="headerlink" href="#data-type-used-in-a-field" title="Permalink to this heading">¶</a></h2>
+<p>Values for the most of all keys are represented in JSON string type.
+However, some of them are represented in string, integer, and/or boolean type.</p>
+<p>“<code class="docutils literal notranslate"><span class="pre">--output-format=json</span> <span class="pre">--list-fields</span></code>” options show What kind of data type
+used in a field of JSON.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--output-format<span class="o">=</span>json<span class="w"> </span>--list-fields
+<span class="gp">#</span>LETTER<span class="w"> </span>NAME<span class="w">           </span>ENABLED<span class="w"> </span>LANGUAGE<span class="w">         </span>JSTYPE<span class="w"> </span>FIXED<span class="w"> </span>DESCRIPTION
+<span class="go">F       input          yes     NONE             s--    no    input file</span>
+<span class="go">...</span>
+<span class="go">P       pattern        yes     NONE             s-b    no    pattern</span>
+<span class="go">...</span>
+<span class="go">f       file           yes     NONE             --b    no    File-restricted scoping</span>
+<span class="go">...</span>
+<span class="go">e       end            no      NONE             -i-    no    end lines of various items</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">JSTYPE</span></code> column shows the data types.</p>
+<dl class="simple">
+<dt>‘<code class="docutils literal notranslate"><span class="pre">s</span></code>’</dt><dd><p>string</p>
+</dd>
+<dt>‘<code class="docutils literal notranslate"><span class="pre">i</span></code>’</dt><dd><p>integer</p>
+</dd>
+<dt>‘<code class="docutils literal notranslate"><span class="pre">b</span></code>’</dt><dd><p>boolean (true or false)</p>
+</dd>
+</dl>
+<p>For an example, the value for <code class="docutils literal notranslate"><span class="pre">pattern</span></code> field of ctags takes a string or a boolean value.</p>
+</section>
+<section id="versions">
+<h2>VERSIONS<a class="headerlink" href="#versions" title="Permalink to this heading">¶</a></h2>
+<section id="change-since-0-0">
+<h3>Change since “0.0”<a class="headerlink" href="#change-since-0-0" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>New key <code class="docutils literal notranslate"><span class="pre">kindName</span></code> for <code class="docutils literal notranslate"><span class="pre">TAG_ROLE_DESCRIPTION</span></code> pseudo tag</p>
+<p><code class="docutils literal notranslate"><span class="pre">kindName</span></code> is added to store the name of the kind in <code class="docutils literal notranslate"><span class="pre">TAG_ROLE_DESCRIPTION</span></code>
+pseudo tags.</p>
+<p>In 0.0, a “TAG_ROLE_DESCRIPTION” pseudo tag was printed like:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ptag&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TAG_ROLE_DESCRIPTION&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;parserName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LANG!KIND&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<p>In 1.0, it is printed like:</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ptag&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TAG_ROLE_DESCRIPTION&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;parserName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LANG&quot;</span><span class="p">,</span>
+<span class="w">                  </span><span class="nt">&quot;kindName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;KIND&quot;</span><span class="p">,</span><span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-json-output</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#format">FORMAT</a></li>
+<li><a class="reference internal" href="#data-type-used-in-a-field">DATA TYPE USED IN A FIELD</a></li>
+<li><a class="reference internal" href="#versions">VERSIONS</a><ul>
+<li><a class="reference internal" href="#change-since-0-0">Change since “0.0”</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags.1.html"
+                          title="previous chapter">ctags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tags.5.html"
+                          title="next chapter">tags</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tags.5.html" title="tags"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags.1.html" title="ctags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-json-output</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

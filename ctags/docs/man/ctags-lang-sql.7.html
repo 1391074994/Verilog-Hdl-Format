@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags-lang-sql &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-lang-systemtap" href="ctags-lang-systemtap.7.html" />
+    <link rel="prev" title="ctags-lang-rmarkdown" href="ctags-lang-rmarkdown.7.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-systemtap.7.html" title="ctags-lang-systemtap"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-rmarkdown.7.html" title="ctags-lang-rmarkdown"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-sql</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags-lang-sql">
+<span id="ctags-lang-sql-7"></span><h1>ctags-lang-sql<a class="headerlink" href="#ctags-lang-sql" title="Permalink to this heading">¶</a></h1>
+<p>The man page of the SQL parser for Universal Ctags</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> … [--extras={guest}] --languages=+SQL …</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>The SQL parser supports various SQL dialects. PostgreSQL is one of them.</p>
+<p>PostgreSQL allows user-defined functions to be written in other
+languages (<em>procedural languages</em>) besides SQL and C <a class="reference internal" href="#pl" id="id1"><span>[PL]</span></a>.</p>
+<p>The SQL parser makes tags for language objects in the user-defined
+functions written in the procedural languages if the <code class="docutils literal notranslate"><span class="pre">guest</span></code> extra
+is enabled.</p>
+<p>The SQL parser looks for a token coming after <code class="docutils literal notranslate"><span class="pre">LANGUAGE</span></code> keyword in
+the source code to choose a proper guest parser.</p>
+<div class="highlight-psql notranslate"><div class="highlight"><pre><span></span><span class="mf">...</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plpythonu</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s1">&#39;... user-defined function &#39;</span><span class="w"> </span><span class="mf">...</span>
+<span class="mf">...</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">$$ user-defined function $$</span><span class="w"> </span><span class="k">LANGUAGE</span><span class="w"> </span><span class="n">plv8</span><span class="w"> </span><span class="mf">...</span>
+</pre></div>
+</div>
+<p>In the above examples, <code class="docutils literal notranslate"><span class="pre">plpythonu</span></code> and <code class="docutils literal notranslate"><span class="pre">plv8</span></code> are the names of
+procedural languages. The SQL parser trims <cite>pl</cite> at the start and <cite>u</cite>
+at the end of the name before finding a ctags parser.  For
+<code class="docutils literal notranslate"><span class="pre">plpythonu</span></code> and <code class="docutils literal notranslate"><span class="pre">plv8</span></code>, the SQL parser extracts <code class="docutils literal notranslate"><span class="pre">python</span></code> and
+<code class="docutils literal notranslate"><span class="pre">v8</span></code> as the candidates of guest parsers.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">plpythonu</span></code>, ctags can run its Python parser.  ctags doesn’t
+have a parser named <code class="docutils literal notranslate"><span class="pre">v8</span></code>. However, the JavaScript parser in ctags has
+<code class="docutils literal notranslate"><span class="pre">v8</span></code> as an alias. So ctags can run the JavaScript parser as the
+guest parser for <code class="docutils literal notranslate"><span class="pre">plv8</span></code>.</p>
+</section>
+<section id="examples">
+<h2>EXAMPLES<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<p>tagging code including a user-defined function in a string literal <a class="reference internal" href="#gh3006" id="id2"><span>[GH3006]</span></a>:</p>
+<p>“input.sql”</p>
+<div class="highlight-psql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">fun1</span><span class="p">()</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s1">&#39;</span>
+<span class="s1">DECLARE</span>
+<span class="s1">        test1_var1 VARCHAR(64) := $$ABC$$;</span>
+<span class="go">        test1_var2 VARCHAR(64) := $xyz$XYZ$xyz$;</span>
+<span class="go">        test1_var3     INTEGER := 1;</span>
+<span class="go">BEGIN</span>
+<span class="go">        RETURN  TO_CHAR(test_var3, &#39;&#39;000&#39;&#39;) || test1_var1 || test1_var2;</span>
+<span class="go">END;</span>
+<span class="go">&#39; LANGUAGE plpgsql;</span>
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+{guest} input.sql”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>fun1    input.sql       /^CREATE OR REPLACE FUNCTION fun1() RETURNS VARCHAR AS &#39;$/;&quot;    f
+test1_var1      input.sql       /^      test1_var1 VARCHAR(64) := $$ABC$$;$/;&quot;  v
+test1_var2      input.sql       /^      test1_var2 VARCHAR(64) := $xyz$XYZ$xyz$;$/;&quot;    v
+test1_var3      input.sql       /^      test1_var3     INTEGER := 1;$/;&quot;        v
+</pre></div>
+</div>
+<p>tagging code including a user-defined function in a dollar quote <a class="reference internal" href="#gh3006" id="id3"><span>[GH3006]</span></a>:</p>
+<p>“input.sql”</p>
+<div class="highlight-psql notranslate"><div class="highlight"><pre><span></span>CREATE OR REPLACE FUNCTION fun2() RETURNS VARCHAR LANGUAGE plpgsql AS $$
+DECLARE
+        test2_var1 VARCHAR(64) := &#39;ABC2&#39;;
+        test2_var2 VARCHAR(64) := &#39;XYZ2&#39;;
+        test2_var3        INTEGER := 2;
+BEGIN
+        RETURN  TO_CHAR(test2_var3, &#39;000&#39;) || test2_var1 || test2_var2;
+END;
+$$;
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+{guest} input.sql”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>fun2    input.sql       /^CREATE OR REPLACE FUNCTION fun2() RETURNS VARCHAR LANGUAGE plpgsql AS $\$$/;&quot; f
+test2_var1      input.sql       /^      test2_var1 VARCHAR(64) := &#39;ABC2&#39;;$/;&quot;   v
+test2_var2      input.sql       /^      test2_var2 VARCHAR(64) := &#39;XYZ2&#39;;$/;&quot;   v
+test2_var3      input.sql       /^      test2_var3        INTEGER := 2;$/;&quot;     v
+</pre></div>
+</div>
+<p>tagging code including a user-defined written in JavaScript:</p>
+<div class="highlight-psql notranslate"><div class="highlight"><pre><span></span>-- Derived from https://github.com/plv8/plv8/blob/r3.0alpha/sql/plv8.sql
+CREATE FUNCTION test(keys text[], vals text[]) RETURNS text AS
+$$
+        var o = {};
+        for (var i = 0; i &lt; keys.length; i++)
+                o[keys[i]] = vals[i];
+        return JSON.stringify(o);
+$$
+LANGUAGE plv8 IMMUTABLE STRICT;
+</pre></div>
+</div>
+<p>“output.tags”
+with “--options=NONE -o - --sort=no --extras=+{guest} input.sql”</p>
+<div class="highlight-tags notranslate"><div class="highlight"><pre><span></span>test    input.sql       /^CREATE FUNCTION test(keys text[], vals text[]) RETURNS text AS$/;&quot;    f
+o       input.sql       /^      var o = {};$/;&quot; v
+</pre></div>
+</div>
+</section>
+<section id="known-bugs">
+<h2>KNOWN BUGS<a class="headerlink" href="#known-bugs" title="Permalink to this heading">¶</a></h2>
+<p>Escape sequences (<cite>‘’</cite>) in a string literal may make a guest parser confused.</p>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a></p>
+</section>
+<section id="references">
+<h2>REFERENCES<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="pl" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">PL</a><span class="fn-bracket">]</span></span>
+<p>PostgreSQL 9.5.25 Documentation, “Chapter 39. Procedural Languages”, <a class="reference external" href="https://www.postgresql.org/docs/9.5/xplang.html">https://www.postgresql.org/docs/9.5/xplang.html</a></p>
+</div>
+<div class="citation" id="gh3006" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>GH3006<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<p>&#64;bagl’s comment submitted to <a class="reference external" href="https://github.com/universal-ctags/ctags/issues/3006">https://github.com/universal-ctags/ctags/issues/3006</a></p>
+</div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags-lang-sql</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#examples">EXAMPLES</a></li>
+<li><a class="reference internal" href="#known-bugs">KNOWN BUGS</a></li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+<li><a class="reference internal" href="#references">REFERENCES</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="ctags-lang-rmarkdown.7.html"
+                          title="previous chapter">ctags-lang-rmarkdown</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-lang-systemtap.7.html"
+                          title="next chapter">ctags-lang-systemtap</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-lang-systemtap.7.html" title="ctags-lang-systemtap"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="ctags-lang-rmarkdown.7.html" title="ctags-lang-rmarkdown"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags-lang-sql</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

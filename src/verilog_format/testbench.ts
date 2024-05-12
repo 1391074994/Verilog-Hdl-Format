@@ -4,6 +4,9 @@
 
 
 import * as vscode from 'vscode';
+import  {convertRegWIRE}  from './instance';
+import  {converModuleRoutine}  from './instance';
+import  {extractModuleContent}  from './instance';
 
 /**
  * 获取当前日期时间
@@ -27,74 +30,9 @@ function getCurrentDateTime(): string {
  * @returns {string} 转换后的代码
  */
 function convertCode(code: string): string {
-  // 识别模块名称
+ // 识别模块名称
   const moduleNameMatch = code.match(/module\s+\s*(\w+)/);
   const moduleName = moduleNameMatch ? moduleNameMatch[1] : '';
-
-  // 预处理，将注释内容替换为空格或空字符串
-  const preprocessedCode = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
-
-  // 识别每一行的变量名
-  const variableMatches = preprocessedCode.matchAll(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)\s*(\w+)/g);
-  const variableNames = Array.from(variableMatches, match => match[5]);
-
-  // 识别到模块名称后的参数
-  // const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\w+)\s*=\s*([\w+\-()]+)/g);
-  // const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\w+)\s*=\s*(\w+),?/g);
-  const parameterMatches = preprocessedCode.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g);
-  const parameterPairs = Array.from(parameterMatches, match => ({param1: match[1], param2: match[2]}));
-
-  // 构建参数字符串
-  let parametersStr = '';
-  if (parameterPairs.length > 0) {
-    parametersStr += "#(\n";
-    for (const pair of parameterPairs) {
-      parametersStr += `   .${pair.param1.padEnd(15)}(${pair.param2.padEnd(15)}),\n`;
-    }
-    // 去掉最后一行的","
-    parametersStr = parametersStr.replace(/,\n$/, '\n');
-    parametersStr += ")\n";
-  }
-
-  // 转换成目标格式
-  let convertedCodeModule = `${moduleName}${parametersStr} u_${moduleName}(\n`;
-  for (const variableName of variableNames) {
-    convertedCodeModule += `    .${variableName.padEnd(35)}(${variableName.padEnd(26)}),\n`;
-  } 
-  convertedCodeModule = convertedCodeModule.replace(/,\n$/, '\n');
-  convertedCodeModule += ');';
-
-  const preprocessedCodeModule = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
-  const variableMatchesModule = preprocessedCodeModule.matchAll(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed|)?\s*((?:\[[^\]]+\])?)?\s*(\w+)/g);
-  const convertedCodePort = Array.from(variableMatchesModule, match => {
-    // let type = '';
-    // let size = '';
-    // if (match[1] === 'output'|| match[1] === 'inout' ) {
-    //   type = 'wire';
-    //   size = match[4] !== undefined ? match[4] : '';
-    // } else if (match[1] === 'input') {
-    //   type = 'reg';
-    //   size = match[4] !== undefined ? match[4] : '';
-    // }
-    // return `${''.padEnd(4)}${type.padEnd(19)}${size.padEnd(17)}${match[5].padEnd(27)};`;
-
-    let type = '';
-    let size = '';
-    let m_signed = '';
-    if (match[1] === 'output' || match[1] === 'inout') {
-      type = 'wire';
-      size = match[4] !== undefined ? match[4] : '';
-    } else if (match[1] === 'input') {
-      type = 'reg';
-      size = match[4] !== undefined ? match[4] : '';
-    }
-    if (match[3] === 'signed') {
-      m_signed = 'signed ';
-    }
-    // return `${''.padEnd(4)}${type.padEnd(19)}${size.padEnd(17)}${match[5].padEnd(27)};`;
-    return `${''.padEnd(4)}${type.padEnd(19)}${m_signed.padEnd(7)}${size.padEnd(17)}${match[5].padEnd(27)};`;
-    
-  }).join('\n');
 
   const finalCode = 
     "`timescale 1ns / 1ps\n" +
@@ -121,7 +59,7 @@ function convertCode(code: string): string {
     "//****************************************************************************************//\n\n" +
     "module    " + moduleName+ "_tb();" + "\n" + 
     
-    convertedCodePort + "\n\n" +
+    convertRegWIRE(code) + "\n\n" +
 
     "    initial"      + "\n" +                                             
     "        begin"    + "\n" +                                             
@@ -135,16 +73,15 @@ function convertCode(code: string): string {
     "    parameter   CLK_FREQ = 100;//Mhz                       " + "\n" +
     "    always # ( 1000/CLK_FREQ/2 ) clk = ~clk ;              " + "\n" +
     "                                                           " + "\n" +
-    "                                                           " + "\n" +
-    convertedCodeModule + "\n\n\n\n" +                                       
+    "                                                           " + "\n" +                                  
+    converModuleRoutine(code) + "\n\n\n\n" +                                       
     "endmodule                                                  ";
     
   return finalCode;
 }
 // 在你的脚本中获取用户自定义配置
-// const vscode = require('vscode');
+
 const userName = vscode.workspace.getConfiguration().get('extension.userName') as string[];
-// let userName = vscode.workspace.getConfiguration('extension').get('userName');
 let companyName = vscode.workspace.getConfiguration('extension').get('companyName');
 let extension = vscode.extensions.getExtension('Jiang-Percy.Verilog-Hdl-Format');
 let version = extension ? extension.packageJSON.version : 'unknown';
@@ -160,8 +97,13 @@ export function testbench() {
     const document = activeEditor.document;
     const code = document.getText();
 
+
+    // 新增逻辑：提取module内的代码部分
+    const moduleContent = extractModuleContent(code);
+    console.log(moduleContent);
+
     // 调用转换函数进行代码转换
-    const convertedCode = convertCode(code);
+    const convertedCode = convertCode(moduleContent);
 
     // 将转换后的代码写入剪贴板
     const finalCode = convertedCode;
@@ -171,5 +113,3 @@ export function testbench() {
     });
   }
 }
-
-export function deactivate() {}

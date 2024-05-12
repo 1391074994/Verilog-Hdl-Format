@@ -2,6 +2,7 @@ import * as child_process from 'child_process';
 import { ExecException } from 'child_process';
 import * as vscode from 'vscode';
 import { Logger } from '../logger';
+import path = require('path');
 
 export class Symbol {
   name: string;
@@ -194,15 +195,22 @@ export class CtagsParser {
     this.isDirty = true;
     this.logger = logger;
     this.doc = document;
+    const ctagsChoose =   vscode.workspace.getConfiguration().get('FPGA_verilog.ctags.choose') as string;
 
-    let binPath: string = <string>(
-      vscode.workspace.getConfiguration().get('verilog.ctags.path', 'ctags')
-    );
-    if (binPath === 'none') {
-      binPath = 'ctags';
+    // Assign binPath based on user's selection
+    if (ctagsChoose === 'external') {
+      // Fetch external ctags path from settings
+      this.binPath = vscode.workspace.getConfiguration().get('FPGA_verilog.ctags.path', 'ctags') as string;
+      if (this.binPath === 'none') {
+        this.binPath = 'ctags';
+      }
+    } else {
+      // Use internal ctags path
+      this.binPath = path.resolve(__dirname, '../ctags/ctags.exe');
     }
-    this.binPath = binPath;
-  }
+      console.log("this.binPath", this.binPath);
+    }
+
 
   clearSymbols() {
     this.isDirty = true;

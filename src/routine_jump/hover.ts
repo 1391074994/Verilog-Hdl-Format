@@ -183,7 +183,8 @@ export function registerHoverProvider(context: vscode.ExtensionContext) {
             const wordRange = document.getWordRangeAtPosition(position);
             if (wordRange) {
                 const variableName = document.getText(wordRange);
-                const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s+([^;]+)\\s*\\b${variableName}\\b`, 'i');
+                // const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s+([^;]+)\\s*\\b${variableName}\\b`, 'i');
+                const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s*([^;]+)\\s*\\b${variableName}\\b`, 'i');
                 let hoverText = '';
                 let isInsideMultilineComment = false;
                 const linesWithVariable = new Set<number>();
@@ -244,8 +245,8 @@ export function registerGotoDefinition(context: vscode.ExtensionContext) {
             return; // 未选择任何文本
         }
 
-        const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s+([^;]+)\\s*\\b${variableName}\\b`, 'i');
-
+        // const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s+([^;]+)\\s*\\b${variableName}\\b`, 'i');
+        const variableDeclarationRegex = new RegExp(`\\b(?:assign|wire|reg|localparam|parameter|input|output|inout|integer|real|time|genvar|defparam|ref)\\s*([^;]+)\\s*\\b${variableName}\\b`, 'i');
         for (let lineIndex = 0; lineIndex < document.lineCount; lineIndex++) {
             const lineText = document.lineAt(lineIndex).text;
             const matches = lineText.match(variableDeclarationRegex);

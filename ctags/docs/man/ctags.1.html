@@ -1,0 +1,2066 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>ctags &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ctags-json-output" href="ctags-json-output.5.html" />
+    <link rel="prev" title="Man pages" href="../man-pages.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="ctags-json-output.5.html" title="ctags-json-output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../man-pages.html" title="Man pages"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" accesskey="U">Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ctags">
+<span id="ctags-1"></span><h1>ctags<a class="headerlink" href="#ctags" title="Permalink to this heading">¶</a></h1>
+<p>Generate tag files for source code</p>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>6.0.0</p>
+</dd>
+<dt class="field-even">Manual group<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags</p>
+</dd>
+<dt class="field-odd">Manual section<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+<section id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>ctags</strong> [&lt;options&gt;] [&lt;source_file(s)&gt;]</div>
+<div class="line"><strong>etags</strong> [&lt;options&gt;] [&lt;source_file(s)&gt;]</div>
+</div>
+</section>
+<section id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p>The <em>ctags</em> and <em>etags</em> (see <code class="docutils literal notranslate"><span class="pre">-e</span></code> option) programs
+(hereinafter collectively referred to as ctags,
+except where distinguished) generate an index (or “tag”) file for a
+variety of <em>language objects</em> found in <em>source file(s)</em>. This tag file allows
+these items to be quickly and easily located by a text editor or other
+utilities (<em>client tools</em>). A <em>tag</em> signifies a language object for which an index entry is
+available (or, alternatively, the index entry created for that object).</p>
+<p>Alternatively, ctags can generate a cross reference
+file which lists, in human readable form, information about the various
+language objects found in a set of source files.</p>
+<p>Tag index files are supported by numerous editors, which allow the user to
+locate the object associated with a name appearing in a source file and
+jump to the file and line which defines the name. See the manual of your
+favorite editor about utilizing ctags command and
+the tag index files in the editor.</p>
+<p>ctags is capable of generating different <em>kinds</em> of tags
+for each of many different <em>languages</em>. For a complete list of supported
+languages, the names by which they are recognized, and the kinds of tags
+which are generated for each, see the <code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> and <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>
+options.</p>
+<p>This man page describes <em>Universal Ctags</em>, an implementation of ctags
+derived from <em>Exuberant Ctags</em>. The major incompatible changes between
+Universal Ctags and Exuberant Ctags are enumerated in
+<a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a>.</p>
+<p>One of the advantages of Exuberant Ctags is that it allows a user to
+define a new parser from the command line. Extending this capability is one
+of the major features of Universal Ctags. <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>
+describes how the capability is extended.</p>
+<p>Newly introduced experimental features are not explained here. If you
+are interested in such features and ctags internals,
+visit <a class="reference external" href="https://docs.ctags.io/">https://docs.ctags.io/</a>.</p>
+</section>
+<section id="command-line-interface">
+<h2>COMMAND LINE INTERFACE<a class="headerlink" href="#command-line-interface" title="Permalink to this heading">¶</a></h2>
+<p>Despite the wealth of available options, defaults are set so that
+ctags is most commonly executed without any options (e.g.
+“<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">*</span></code>”, or “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-R</span></code>”), which will
+create a tag file in the current directory for all recognized source
+files. The options described below are provided merely to allow custom
+tailoring to meet special needs.</p>
+<p>Note that spaces separating the single-letter options from their parameters
+are optional.</p>
+<p>Note also that the boolean parameters to the long form options (those
+beginning with <code class="docutils literal notranslate"><span class="pre">--</span></code> and that take a <code class="docutils literal notranslate"><span class="pre">[=(yes|no)]</span></code> parameter) may be omitted,
+in which case <code class="docutils literal notranslate"><span class="pre">=yes</span></code> is implied. (e.g. <code class="docutils literal notranslate"><span class="pre">--sort</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">--sort=yes</span></code>).
+Note further that <code class="docutils literal notranslate"><span class="pre">=1</span></code>, <code class="docutils literal notranslate"><span class="pre">=on</span></code>, and <code class="docutils literal notranslate"><span class="pre">=true</span></code> are considered synonyms for <code class="docutils literal notranslate"><span class="pre">=yes</span></code>,
+and that <code class="docutils literal notranslate"><span class="pre">=0</span></code>, <code class="docutils literal notranslate"><span class="pre">=off</span></code>, and <code class="docutils literal notranslate"><span class="pre">=false</span></code> are considered synonyms for <code class="docutils literal notranslate"><span class="pre">=no</span></code>.</p>
+<p>Some options are either ignored or useful only when used while running in
+etags mode (see <code class="docutils literal notranslate"><span class="pre">-e</span></code> option). Such options will be noted.</p>
+<p><em>&lt;options&gt;</em> must precede the <em>&lt;source_file(s)&gt;</em> following the standard POSIX
+convention.</p>
+<p>Options taking language names will accept those names in either upper or
+lower case. See the <code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> option for a complete list of the
+built-in language names.</p>
+<section id="letters-and-names">
+<h3>Letters and names<a class="headerlink" href="#letters-and-names" title="Permalink to this heading">¶</a></h3>
+<p>Some options take one-letter flags as parameters (e.g. <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> option).
+Specifying just letters help a user create a complicated command line
+quickly.  However, a command line including sequences of one-letter flags
+becomes difficult to understand.</p>
+<p>Universal Ctags accepts long-name flags in
+addition to such one-letter flags. The long-name and one-letter flags can be mixed in an
+option parameter by surrounding each long-name by braces. Thus, for an
+example, the following three notations for <code class="docutils literal notranslate"><span class="pre">--kinds-C</span></code> option have
+the same meaning:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">kinds</span><span class="o">-</span><span class="n">C</span><span class="o">=+</span><span class="n">pLl</span>
+<span class="o">--</span><span class="n">kinds</span><span class="o">-</span><span class="n">C</span><span class="o">=+</span><span class="p">{</span><span class="n">prototype</span><span class="p">}{</span><span class="n">label</span><span class="p">}{</span><span class="n">local</span><span class="p">}</span>
+<span class="o">--</span><span class="n">kinds</span><span class="o">-</span><span class="n">C</span><span class="o">=+</span><span class="p">{</span><span class="n">prototype</span><span class="p">}</span><span class="n">L</span><span class="p">{</span><span class="n">local</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that braces may be meta characters in your shell. Put
+single quotes in such case.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--list-...</span></code> options shows one-letter flags and associated long-name flags.</p>
+</section>
+<section id="list-options">
+<h3>List options<a class="headerlink" href="#list-options" title="Permalink to this heading">¶</a></h3>
+<p>Universal Ctags introduces many <code class="docutils literal notranslate"><span class="pre">--list-...</span></code> options that provide
+the internal data of Universal Ctags (See “<a class="reference internal" href="#listing-options">Listing Options</a>”). Both users and client tools may
+use the data. <code class="docutils literal notranslate"><span class="pre">--with-list-header</span></code> and <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> options
+adjust the output of the most of <code class="docutils literal notranslate"><span class="pre">--list-...</span></code> options.</p>
+<p>The default setting (<code class="docutils literal notranslate"><span class="pre">--with-list-header=yes</span></code> and <code class="docutils literal notranslate"><span class="pre">--machinable=no</span></code>)
+is for using interactively from a terminal. The header that explains
+the meaning of columns is simply added to the output, and each column is
+aligned in all lines. The header line starts with a hash (’<code class="docutils literal notranslate"><span class="pre">#</span></code>’) character.</p>
+<p>For scripting in a client tool, <code class="docutils literal notranslate"><span class="pre">--with-list-header=no</span></code> and
+<code class="docutils literal notranslate"><span class="pre">--machinable=yes</span></code> may be useful. The header is not added to the
+output, and each column is separated by tab characters.</p>
+<p>Note the order of columns will change in the future release.
+However, labels in the header will not change. So by scanning
+the header, a client tool can find the index for the target
+column.</p>
+</section>
+</section>
+<section id="options">
+<h2>OPTIONS<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<p>ctags has more options than listed here.
+Options starting with an underscore character, such as <code class="docutils literal notranslate"><span class="pre">--_echo=&lt;msg&gt;</span></code>,
+are not listed here. They are experimental or for debugging purpose.</p>
+<p>Notation: <code class="docutils literal notranslate"><span class="pre">&lt;foo&gt;</span></code> is for a variable string <code class="docutils literal notranslate"><span class="pre">foo</span></code>, <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">...</span> <span class="pre">]</span></code> for optional,
+<code class="docutils literal notranslate"><span class="pre">|</span></code> for selection, and <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">...</span> <span class="pre">)</span></code> for grouping.  For example
+<code class="docutils literal notranslate"><span class="pre">--foo[=(yes|no)]''</span> <span class="pre">means</span> <span class="pre">``--foo</span></code>, <code class="docutils literal notranslate"><span class="pre">-foo=yes</span></code>, or <code class="docutils literal notranslate"><span class="pre">-foo=no</span></code>.</p>
+<section id="input-output-file-options">
+<span id="option-input-output-file"></span><h3>Input/Output File Options<a class="headerlink" href="#input-output-file-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--exclude=&lt;pattern&gt;</span></code></dt><dd><p>Add <em>&lt;pattern&gt;</em> to a list of excluded files and directories. This option may
+be specified as many times as desired. For each file name considered
+by ctags, each pattern specified using this option
+will be compared against both the complete path (e.g.
+<code class="docutils literal notranslate"><span class="pre">some/path/base.ext</span></code>) and the base name (e.g. <code class="docutils literal notranslate"><span class="pre">base.ext</span></code>) of the file, thus
+allowing patterns which match a given file name irrespective of its
+path, or match only a specific path.</p>
+<p>If appropriate support is available
+from the runtime library of your C compiler, then pattern may
+contain the usual shell wildcards (not regular expressions) common on
+Unix (be sure to quote the option parameter to protect the wildcards from
+being expanded by the shell before being passed to ctags;
+also be aware that wildcards can match the slash character, ‘<code class="docutils literal notranslate"><span class="pre">/</span></code>’).
+You can determine if shell wildcards are available on your platform by
+examining the output of the <code class="docutils literal notranslate"><span class="pre">--list-features</span></code> option, which will include
+<code class="docutils literal notranslate"><span class="pre">wildcards</span></code> in the compiled feature list; otherwise, pattern is matched
+against file names using a simple textual comparison.</p>
+<p>If <em>&lt;pattern&gt;</em> begins with the character ‘<code class="docutils literal notranslate"><span class="pre">&#64;</span></code>’, then the rest of the string
+is interpreted as a file name from which to read exclusion patterns,
+one per line. If pattern is empty, the list of excluded patterns is
+cleared.</p>
+<p>Note that at program startup, the default exclude list contains names of
+common hidden and system files, patterns for binary files, and directories
+for which it is generally not desirable to descend while processing the
+<code class="docutils literal notranslate"><span class="pre">--recurse</span></code> option. To see the list of built-in exclude patterns, use
+<code class="docutils literal notranslate"><span class="pre">--list-excludes</span></code>.</p>
+<p>See also the description for <code class="docutils literal notranslate"><span class="pre">--exclude-exception=</span></code> option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--exclude-exception=&lt;pattern&gt;</span></code></dt><dd><p>Add <em>&lt;pattern&gt;</em> to a list of included files and directories. The pattern
+affects the files and directories that are excluded by the pattern
+specified with <code class="docutils literal notranslate"><span class="pre">--exclude=</span></code> option.</p>
+<p>For an example, you want ctags to ignore all files
+under <code class="docutils literal notranslate"><span class="pre">foo</span></code> directory except <code class="docutils literal notranslate"><span class="pre">foo/main.c</span></code>, use the following command
+line: <code class="docutils literal notranslate"><span class="pre">--exclude=foo/*</span> <span class="pre">--exclude-exception=foo/main.c</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--filter[=(yes|no)]</span></code></dt><dd><p>Makes ctags behave as a filter, reading source
+file names from standard input and printing their tags to standard
+output on a file-by-file basis. If <code class="docutils literal notranslate"><span class="pre">--sort</span></code> is enabled, tags are sorted
+only within the source file in which they are defined. File names are
+read from standard input in line-oriented input mode (see note for <code class="docutils literal notranslate"><span class="pre">-L</span></code>
+option) and only after file names listed on the command line or from
+any file supplied using the <code class="docutils literal notranslate"><span class="pre">-L</span></code> option. When this option is enabled,
+the options <code class="docutils literal notranslate"><span class="pre">-f</span></code>, <code class="docutils literal notranslate"><span class="pre">-o</span></code>, and <code class="docutils literal notranslate"><span class="pre">--totals</span></code> are ignored. This option is quite
+esoteric and is disabled by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--filter-terminator=&lt;string&gt;</span></code></dt><dd><p>Specifies a <em>&lt;string&gt;</em> to print to standard output following the tags for
+each file name parsed when the <code class="docutils literal notranslate"><span class="pre">--filter</span></code> option is enabled. This may
+permit an application reading the output of ctags
+to determine when the output for each file is finished.</p>
+<p>Note that if the
+file name read is a directory and <code class="docutils literal notranslate"><span class="pre">--recurse</span></code> is enabled, this string will
+be printed only once at the end of all tags found for by descending
+the directory. This string will always be separated from the last tag
+line for the file by its terminating newline.</p>
+<p>This option is quite esoteric and is empty by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--links[=(yes|no)]</span></code></dt><dd><p>Indicates whether symbolic links (if supported) should be followed.
+When disabled, symbolic links are ignored. This option is on by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--maxdepth=&lt;N&gt;</span></code></dt><dd><p>Limits the depth of directory recursion enabled with the <code class="docutils literal notranslate"><span class="pre">--recurse</span></code>
+(<code class="docutils literal notranslate"><span class="pre">-R</span></code>) option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--recurse[=(yes|no)]</span></code></dt><dd><p>Recurse into directories encountered in the list of supplied files.</p>
+<p>If the list of supplied files is empty and no file list is specified with
+the <code class="docutils literal notranslate"><span class="pre">-L</span></code> option, then the current directory (i.e. ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’) is assumed.
+Symbolic links are followed by default (See <code class="docutils literal notranslate"><span class="pre">--links</span></code> option). If you don’t like these behaviors, either
+explicitly specify the files or pipe the output of <code class="docutils literal notranslate"><span class="pre">find(1)</span></code> into
+“<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-L</span> <span class="pre">-</span></code>” instead. See, also, the <code class="docutils literal notranslate"><span class="pre">--exclude</span></code> and
+<code class="docutils literal notranslate"><span class="pre">--maxdepth</span></code> to limit recursion.</p>
+<p>Note: This option is not supported on
+all platforms at present. It is available if the output of the <code class="docutils literal notranslate"><span class="pre">--help</span></code>
+option includes this option.</p>
+</dd>
+</dl>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">-R</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--recurse</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-L</span> <span class="pre">&lt;file&gt;</span></code></dt><dd><p>Read from <em>&lt;file&gt;</em> a list of file names for which tags should be generated.</p>
+<p>If file is specified as ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’, then file names are read from standard
+input. File names read using this option are processed following file
+names appearing on the command line. Options are also accepted in this
+input. If this option is specified more than once, only the last will
+apply.</p>
+<p>Note: file is read in line-oriented mode, where a new line is
+the only delimiter and non-trailing white space is considered significant,
+in order that file names containing spaces may be supplied
+(however, trailing white space is stripped from lines); this can affect
+how options are parsed if included in the input.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--append[=(yes|no)]</span></code></dt><dd><p>Indicates whether tags generated from the specified files should be
+appended to those already present in the tag file or should replace them.
+This option is <code class="docutils literal notranslate"><span class="pre">no</span></code> by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-a</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--append</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">&lt;tagfile&gt;</span></code></dt><dd><p>Use the name specified by <em>&lt;tagfile&gt;</em> for the tag file (default is “<code class="docutils literal notranslate"><span class="pre">tags</span></code>”,
+or “<code class="docutils literal notranslate"><span class="pre">TAGS</span></code>” when running in etags mode). If <em>&lt;tagfile&gt;</em> is specified as ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>‘,
+then the tags are written to standard output instead.</p>
+<p>ctags
+will stubbornly refuse to take orders if tagfile exists and
+its first line contains something other than a valid tags line. This
+will save your neck if you mistakenly type “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-f</span>
+<span class="pre">*.c</span></code>”, which would otherwise overwrite your first C file with the tags
+generated by the rest! It will also refuse to accept a multi-character
+file name which begins with a ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ (dash) character, since this most
+likely means that you left out the tag file name and this option tried to
+grab the next option as the file name. If you really want to name your
+output tag file <code class="docutils literal notranslate"><span class="pre">-ugly</span></code>, specify it as “<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">./-ugly</span></code>”.</p>
+<p>This option must
+appear before the first file name. If this option is specified more
+than once, only the last will apply.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">&lt;tagfile&gt;</span></code></dt><dd><p>Equivalent to “<code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">tagfile</span></code>”.</p>
+</dd>
+</dl>
+</section>
+<section id="output-format-options">
+<span id="option-output-format"></span><h3>Output Format Options<a class="headerlink" href="#output-format-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--format=(1|2)</span></code></dt><dd><p>Change the format of the output tag file. Currently the only valid
+values for level are 1 or 2. Level 1 specifies the original tag file
+format and level 2 specifies a new extended format containing extension
+fields (but in a manner which retains backward-compatibility with
+original <code class="docutils literal notranslate"><span class="pre">vi(1)</span></code> implementations). The default level is 2.
+[Ignored in etags mode]</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output-format=(u-ctags|e-ctags|etags|xref|json)</span></code></dt><dd><p>Specify the output format. The default is <code class="docutils literal notranslate"><span class="pre">u-ctags</span></code>.
+See <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a> for <code class="docutils literal notranslate"><span class="pre">u-ctags</span></code> and <code class="docutils literal notranslate"><span class="pre">e-ctags</span></code>.
+<code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_MODE</span></code> pseudo tag indicates the choice,
+<code class="docutils literal notranslate"><span class="pre">u-ctags</span></code> or <code class="docutils literal notranslate"><span class="pre">e-ctags</span></code>. See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>
+for more about the pseudo tag.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">-e</span></code> for <code class="docutils literal notranslate"><span class="pre">etags</span></code>, and <code class="docutils literal notranslate"><span class="pre">-x</span></code> for <code class="docutils literal notranslate"><span class="pre">xref</span></code>.
+<code class="docutils literal notranslate"><span class="pre">json</span></code> format is available only if
+the ctags executable is built with <code class="docutils literal notranslate"><span class="pre">libjansson</span></code>.
+See <a class="reference internal" href="ctags-json-output.5.html#ctags-json-output-5"><span class="std std-ref">ctags-json-output(5)</span></a> for more about <code class="docutils literal notranslate"><span class="pre">json</span></code> format.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-e</span></code></dt><dd><p>Same as <code class="docutils literal notranslate"><span class="pre">--output-format=etags</span></code>.
+Enable etags mode, which will create a tag file for use with the Emacs
+editor. Alternatively, if ctags is invoked by a
+name containing the string “etags” (either by renaming,
+or creating a link to, the executable), etags mode will be enabled.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-x</span></code></dt><dd><p>Same as <code class="docutils literal notranslate"><span class="pre">--output-format=xref</span></code>.
+Print a tabular, human-readable cross reference (xref) file to standard
+output instead of generating a tag file. The information contained in
+the output includes: the tag name; the kind of tag; the line number,
+file name, and source line (with extra white space condensed) of the
+file which defines the tag. No tag file is written and all options
+affecting tag file output will be ignored.</p>
+<p>Example applications for this
+feature are generating a listing of all functions located in a source
+file (e.g. “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-x</span> <span class="pre">--kinds-c=f</span> <span class="pre">file</span></code>”), or generating
+a list of all externally visible global variables located in a source
+file (e.g. “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-x</span> <span class="pre">--kinds-c=v</span> <span class="pre">--extras=-F</span> <span class="pre">file</span></code>”).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--sort=(yes|no|foldcase)</span></code></dt><dd><p>Indicates whether the tag file should be sorted on the tag name
+(default is <code class="docutils literal notranslate"><span class="pre">yes</span></code>). Note that the original <code class="docutils literal notranslate"><span class="pre">vi(1)</span></code> required sorted tags.
+The <code class="docutils literal notranslate"><span class="pre">foldcase</span></code> value specifies case insensitive (or case-folded) sorting.
+Fast binary searches of tag files sorted with case-folding will require
+special support from tools using tag files, such as that found in the
+ctags readtags library, or Vim version 6.2 or higher
+(using “<code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">ignorecase</span></code>”).
+[Ignored in etags mode]</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-u</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--sort=no</span></code> (i.e. “unsorted”).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--etags-include=&lt;file&gt;</span></code></dt><dd><p>Include a reference to <em>&lt;file&gt;</em> in the tag file. This option may be specified
+as many times as desired. This supports Emacs’ capability to use a
+tag file which <em>includes</em> other tag files. [Available only in etags mode]</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--input-encoding=&lt;encoding&gt;</span></code></dt><dd><p>Specifies the <em>&lt;encoding&gt;</em> of the input files.
+If this option is specified, Universal Ctags converts the input from this
+encoding to the encoding specified by <code class="docutils literal notranslate"><span class="pre">--output-encoding=encoding</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--input-encoding-&lt;LANG&gt;=&lt;encoding&gt;</span></code></dt><dd><p>Specifies a specific input <em>&lt;encoding&gt;</em> for <em>&lt;LANG&gt;</em>. It overrides the global
+default value given with <code class="docutils literal notranslate"><span class="pre">--input-encoding</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output-encoding=&lt;encoding&gt;</span></code></dt><dd><p>Specifies the <em>&lt;encoding&gt;</em> of the tags file.
+Universal Ctags converts the encoding of input files from the encoding
+specified by <code class="docutils literal notranslate"><span class="pre">--input-encoding=&lt;encoding&gt;</span></code> to this encoding.</p>
+<p>In addition <em>&lt;encoding&gt;</em> is specified at the top the tags file as the
+value for the <code class="docutils literal notranslate"><span class="pre">TAG_FILE_ENCODING</span></code> pseudo-tag. The default value of
+<em>&lt;encoding&gt;</em> is <code class="docutils literal notranslate"><span class="pre">UTF-8</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="language-selection-and-mapping-options">
+<span id="option-lang-mapping"></span><h3>Language Selection and Mapping Options<a class="headerlink" href="#language-selection-and-mapping-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--language-force=(&lt;language&gt;|auto)</span></code></dt><dd><p>By default, ctags automatically selects the language
+of a source file, ignoring those files whose language cannot be
+determined (see “<a class="reference internal" href="#determining-file-language">Determining file language</a>”). This option forces the specified
+<em>language</em> (case-insensitive; either built-in or user-defined) to be used
+for every supplied file instead of automatically selecting the language
+based upon its extension.</p>
+<p>In addition, the special value <code class="docutils literal notranslate"><span class="pre">auto</span></code> indicates
+that the language should be automatically selected (which effectively
+disables this option).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--languages=[+|-](&lt;list&gt;|all)</span></code></dt><dd><p>Specifies the languages for which tag generation is enabled, with <em>&lt;list&gt;</em>
+containing a comma-separated list of language names (case-insensitive;
+either built-in or user-defined).</p>
+<p>If the first language of <em>&lt;list&gt;</em> is not
+preceded by either a ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’, the current list (the current settings
+of enabled/disabled languages managed in ctags internally)
+will be cleared before adding or removing the languages in <em>&lt;list&gt;</em>. Until a ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ is
+encountered, each language in the <em>&lt;list&gt;</em> will be added to the current list.</p>
+<p>As either the ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ is encountered in the <em>&lt;list&gt;</em>, the languages
+following it are added or removed from the current list, respectively.
+Thus, it becomes simple to replace the current list with a new one, or
+to add or remove languages from the current list.</p>
+<p>The actual list of
+files for which tags will be generated depends upon the language
+extension mapping in effect (see the <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> option). Note that the most of
+languages, including user-defined languages, are enabled unless explicitly
+disabled using this option. Language names included in list may be any
+built-in language or one previously defined with <code class="docutils literal notranslate"><span class="pre">--langdef</span></code>.</p>
+<p>The default
+is <code class="docutils literal notranslate"><span class="pre">all</span></code>, which is also accepted as a valid argument. See the
+<code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> option for a list of the all (built-in and user-defined)
+language names.</p>
+<p>Note <code class="docutils literal notranslate"><span class="pre">--languages=</span></code> option works cumulative way; the option can be
+specified with different arguments multiple times in a command line.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--alias-&lt;LANG&gt;=[+|-](&lt;pattern&gt;|default)</span></code></dt><dd><p>Adds (’<code class="docutils literal notranslate"><span class="pre">+</span></code>’) or removes (’<code class="docutils literal notranslate"><span class="pre">-</span></code>’) an alias <em>&lt;pattern&gt;</em> to a language specified
+with <em>&lt;LANG&gt;</em>. ctags refers to the alias pattern in
+“<a class="reference internal" href="#determining-file-language">Determining file language</a>” stage.</p>
+<p>The parameter <em>&lt;pattern&gt;</em> is not a list. Use this option multiple
+times in a command line to add or remove multiple alias
+patterns.</p>
+<p>To restore the default language aliases, specify <code class="docutils literal notranslate"><span class="pre">default</span></code>.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">all</span></code> for <em>&lt;LANG&gt;</em> has meaning in following two cases:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--alias-all=</span></code></dt><dd><p>This clears aliases setting of all languages.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--alias-all=default</span></code></dt><dd><p>This restores the default languages aliases for all languages.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--guess-language-eagerly</span></code></dt><dd><p>Looks into the file contents for heuristically guessing the proper language parser.
+See “<a class="reference internal" href="#determining-file-language">Determining file language</a>”.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-G</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--guess-language-eagerly</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--langmap=&lt;map&gt;[,&lt;map&gt;[...]]</span></code></dt><dd><p>Controls how file names are mapped to languages (see the <code class="docutils literal notranslate"><span class="pre">--list-maps</span></code>
+option). Each comma-separated <em>&lt;map&gt;</em> consists of the language name (either
+a built-in or user-defined language), a colon, and a list of <em>file
+extensions</em> and/or <em>file name patterns</em>. A file extension is specified by
+preceding the extension with a period (e.g. <code class="docutils literal notranslate"><span class="pre">.c</span></code>). A file name pattern
+is specified by enclosing the pattern in parentheses (e.g.
+<code class="docutils literal notranslate"><span class="pre">([Mm]akefile)</span></code>).</p>
+<p>If appropriate support is available from the runtime
+library of your C compiler, then the file name pattern may contain the usual
+shell wildcards common on Unix (be sure to quote the option parameter to
+protect the wildcards from being expanded by the shell before being
+passed to ctags). You can determine if shell wildcards
+are available on your platform by examining the output of the
+<code class="docutils literal notranslate"><span class="pre">--list-features</span></code> option, which will include <code class="docutils literal notranslate"><span class="pre">wildcards</span></code> in the compiled
+feature list; otherwise, the file name patterns are matched against
+file names using a simple textual comparison.</p>
+<p>When mapping a file extension with <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> option,
+it will first be unmapped from any other languages. (<code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code>
+option provides more fine-grained control.)</p>
+<p>If the first character in a <em>&lt;map&gt;</em> is a plus sign (’<code class="docutils literal notranslate"><span class="pre">+</span></code>’), then the extensions and
+file name patterns in that map will be appended to the current map
+for that language; otherwise, the map will replace the current map.
+For example, to specify that only files with extensions of <code class="docutils literal notranslate"><span class="pre">.c</span></code> and <code class="docutils literal notranslate"><span class="pre">.x</span></code> are
+to be treated as C language files, use <code class="docutils literal notranslate"><span class="pre">--langmap=c:.c.x</span></code>; to also add
+files with extensions of <code class="docutils literal notranslate"><span class="pre">.j</span></code> as Java language files, specify
+<code class="docutils literal notranslate"><span class="pre">--langmap=c:.c.x,java:+.j</span></code>. To map makefiles (e.g. files named either
+<code class="docutils literal notranslate"><span class="pre">Makefile</span></code>, <code class="docutils literal notranslate"><span class="pre">makefile</span></code>, or having the extension <code class="docutils literal notranslate"><span class="pre">.mak</span></code>) to a language
+called <code class="docutils literal notranslate"><span class="pre">make</span></code>, specify <code class="docutils literal notranslate"><span class="pre">--langmap=make:([Mm]akefile).mak</span></code>. To map files
+having no extension, specify a period not followed by a non-period
+character (e.g. ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’, <code class="docutils literal notranslate"><span class="pre">..x</span></code>, <code class="docutils literal notranslate"><span class="pre">.x.</span></code>).</p>
+<p>To clear the mapping for a
+particular language (thus inhibiting automatic generation of tags for
+that language), specify an empty extension list (e.g. <code class="docutils literal notranslate"><span class="pre">--langmap=fortran:</span></code>).
+To restore the default language mappings for a particular language,
+supply the keyword <code class="docutils literal notranslate"><span class="pre">default</span></code> for the mapping. To specify restore the
+default language mappings for all languages, specify <code class="docutils literal notranslate"><span class="pre">--langmap=default</span></code>.</p>
+<p>Note that file name patterns are tested before file extensions when inferring
+the language of a file. This order of Universal Ctags is different from
+Exuberant Ctags. See <a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a> for the background of
+this incompatible change.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></code></dt><dd><p>This option provides the way to control mapping(s) of file names to
+languages in a more fine-grained way than <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> option.</p>
+<p>In ctags, more than one language can map to a
+file name <em>&lt;pattern&gt;</em> or file <em>&lt;extension&gt;</em> (<em>N:1 map</em>). Alternatively,
+<code class="docutils literal notranslate"><span class="pre">--langmap</span></code> option handle only <em>1:1 map</em>, only one language
+mapping to one file name <em>&lt;pattern&gt;</em> or file <em>&lt;extension&gt;</em>.  A typical N:1
+map is seen in C++ and ObjectiveC language; both languages have
+a map to <code class="docutils literal notranslate"><span class="pre">.h</span></code> as a file extension.</p>
+<p>A file extension is specified by preceding the extension with a period (e.g. <code class="docutils literal notranslate"><span class="pre">.c</span></code>).
+A file name pattern is specified by enclosing the pattern in parentheses (e.g.
+<code class="docutils literal notranslate"><span class="pre">([Mm]akefile)</span></code>). A prefixed plus (’<code class="docutils literal notranslate"><span class="pre">+</span></code>’) sign is for adding, and
+minus (’<code class="docutils literal notranslate"><span class="pre">-</span></code>’) is for removing. No prefix means replacing the map of <em>&lt;LANG&gt;</em>.</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">--langmap</span></code>, <em>&lt;extension&gt;</em> (or <em>&lt;pattern&gt;</em>) is not a list.
+<code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> takes one extension (or pattern). However,
+the option can be specified with different arguments multiple times
+in a command line.</p>
+</dd>
+</dl>
+</section>
+<section id="tags-file-contents-options">
+<span id="option-tags-file-contents"></span><h3>Tags File Contents Options<a class="headerlink" href="#tags-file-contents-options" title="Permalink to this heading">¶</a></h3>
+<p>See “<a class="reference internal" href="#id1">TAG ENTRIES</a>” about fields, kinds, roles, and extras.</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--excmd=(number|pattern|mix|combine)</span></code></dt><dd><p>Determines the type of <code class="docutils literal notranslate"><span class="pre">EX</span></code> command used to locate tags in the source
+file. [Ignored in etags mode]</p>
+<p>The valid values for type (either the entire word or the first letter
+is accepted) are:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">number</span></code></dt><dd><p>Use only line numbers in the tag file for locating tags. This has
+four advantages:</p>
+<ol class="arabic simple">
+<li><p>Significantly reduces the size of the resulting tag file.</p></li>
+<li><p>Eliminates failures to find tags because the line defining the
+tag has changed, causing the pattern match to fail (note that
+some editors, such as <code class="docutils literal notranslate"><span class="pre">vim</span></code>, are able to recover in many such
+instances).</p></li>
+<li><p>Eliminates finding identical matching, but incorrect, source
+lines (see “<a class="reference internal" href="#bugs">BUGS</a>”).</p></li>
+<li><p>Retains separate entries in the tag file for lines which are
+identical in content. In pattern mode, duplicate entries are
+dropped because the search patterns they generate are identical,
+making the duplicate entries useless.</p></li>
+</ol>
+<p>However, this option has one significant drawback: changes to the
+source files can cause the line numbers recorded in the tag file
+to no longer correspond to the lines in the source file, causing
+jumps to some tags to miss the target definition by one or more
+lines. Basically, this option is best used when the source code
+to which it is applied is not subject to change. Selecting this
+option type causes the following options to be ignored: <code class="docutils literal notranslate"><span class="pre">-B</span></code>, <code class="docutils literal notranslate"><span class="pre">-F</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">number</span></code> type is ignored in Xref and JSON output formats. Use
+<code class="docutils literal notranslate"><span class="pre">--_xformat=&quot;...%n&quot;</span></code> for Xref output format, or <code class="docutils literal notranslate"><span class="pre">--fields=+n-P</span></code> for
+JSON output format.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pattern</span></code></dt><dd><p>Use only search patterns for all tags, rather than the line numbers
+usually used for macro definitions. This has the advantage of
+not referencing obsolete line numbers when lines have been added or
+removed since the tag file was generated.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mixed</span></code></dt><dd><p>In this mode, patterns are generally used with an exceptions.
+For Fortran, line numbers
+are used for common blocks because their corresponding source lines
+are generally identical, making pattern searches useless
+for finding all matches.</p>
+<p>Exuberant Ctags has one more exception; for C, line numbers are used
+for macro definition tags. Universal Ctags doesn’t have this exception
+for C.</p>
+<p>This was the default format generated by the original ctags and is,
+therefore, retained as the default for this option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">combine</span></code></dt><dd><p>Concatenate the line number and pattern with a semicolon in between.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-n</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--excmd=number</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-N</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--excmd=pattern</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--extras=[+|-][&lt;flags&gt;|*]</span></code></dt><dd><p>Specifies whether to include extra tag entries for certain kinds of
+information. See also “<a class="reference internal" href="#extras">Extras</a>” subsection to know what are extras.</p>
+<p>The parameter <em>&lt;flags&gt;</em> is a set of one-letter flags (and/or long-name flags), each
+representing one kind of extra tag entry to include in the tag file.
+If flags is preceded by either the ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ character, the effect of
+each flag is added to, or removed from, those currently enabled;
+otherwise the flags replace any current settings. All entries are
+included  if ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ is given.</p>
+<p>This <code class="docutils literal notranslate"><span class="pre">--extras=</span></code> option is for controlling extras common in all
+languages (or language-independent extras).  Universal Ctags also
+supports language-specific extras. (See “<a class="reference internal" href="#language-specific-fields-and-extras">Language-specific fields and
+extras</a>” about the concept). Use <code class="docutils literal notranslate"><span class="pre">--extras-&lt;LANG&gt;=</span></code> option for
+controlling them.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--extras-(&lt;LANG&gt;|all)=[+|-][&lt;flags&gt;|*]</span></code></dt><dd><p>Specifies whether to include extra tag entries for certain kinds of
+information for language <em>&lt;LANG&gt;</em>. Universal Ctags
+introduces language-specific extras. See “<a class="reference internal" href="#language-specific-fields-and-extras">Language-specific fields and
+extras</a>” about the concept. This option is for controlling them.</p>
+<p>Specifies <code class="docutils literal notranslate"><span class="pre">all</span></code> as <em>&lt;LANG&gt;</em> to apply the parameter <em>&lt;flags&gt;</em> to all
+languages; all extras are enabled with specifying ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ as the
+parameter flags. If specifying nothing as the parameter flags
+(<code class="docutils literal notranslate"><span class="pre">--extras-all=</span></code>), all extras are disabled. These two combinations
+are useful for testing.</p>
+<p>Check the output of the <code class="docutils literal notranslate"><span class="pre">--list-extras=&lt;LANG&gt;</span></code> option for the
+extras of specific language <em>&lt;LANG&gt;</em>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--fields=[+|-][&lt;flags&gt;|*]</span></code></dt><dd><p>Specifies which language-independent fields are to be included in the tag
+entries. Language-independent fields are extension fields which are common
+in all languages. See “<a class="reference internal" href="#tag-file-format">TAG FILE FORMAT</a>” section, and “<a class="reference internal" href="#extension-fields">Extension fields</a>”
+subsection, for details of extension fields.</p>
+<p>The parameter <em>&lt;flags&gt;</em> is a set of one-letter or long-name flags,
+each representing one type of extension field to include.
+Each flag or group of flags may be preceded by either ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ to add it
+to the default set, or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ to exclude it. In the absence of any
+preceding ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ sign, only those fields explicitly listed in flags
+will be included in the output (i.e. overriding the default set). All
+fields are included if ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ is given.</p>
+<p>This option is ignored if the
+option <code class="docutils literal notranslate"><span class="pre">--format=1</span></code> (legacy tag file format) has been specified.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--fields-&lt;LANG&gt;=</span></code> option for controlling language-specific fields.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--fields-(&lt;LANG&gt;|all)=[+|-][&lt;flags&gt;|*]</span></code></dt><dd><p>Specifies which language-specific fields are to be included in
+the tag entries. Universal Ctags
+supports language-specific fields. (See “<a class="reference internal" href="#language-specific-fields-and-extras">Language-specific fields and
+extras</a>” about the concept).</p>
+<p>Specify <code class="docutils literal notranslate"><span class="pre">all</span></code> as <em>&lt;LANG&gt;</em> to apply the parameter <em>&lt;flags&gt;</em> to all
+languages; all fields are enabled with specifying ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ as the
+parameter flags. If specifying nothing as the parameter <em>&lt;flags&gt;</em>
+(i.e. <code class="docutils literal notranslate"><span class="pre">--fields-all=</span></code>), all fields are disabled. These two combinations
+are useful for testing.</p>
+<p>See the description of <code class="docutils literal notranslate"><span class="pre">--fields=[+|-][&lt;flags&gt;|*]</span></code> about <em>&lt;flags&gt;</em>.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--fields=</span></code> option for controlling language-independent fields.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--kinds-(&lt;LANG&gt;|all)=[+|-](&lt;kinds&gt;|*)</span></code></dt><dd><p>Specifies a list of language-specific <em>&lt;kinds&gt;</em> of tags (or kinds) to
+include in the output file for a particular language, where <em>&lt;LANG&gt;</em> is
+case-insensitive and is one of the built-in language names (see the
+<code class="docutils literal notranslate"><span class="pre">--list-languages</span></code> option for a complete list).</p>
+<p>The parameter <em>&lt;kinds&gt;</em> is a group
+of one-letter or long-name flags designating kinds of tags (particular to the language)
+to either include or exclude from the output. The specific sets of
+flags recognized for each language, their meanings and defaults may be
+list using the <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code> option.</p>
+<p>Each letter or group of letters
+may be preceded by either ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ to add it to, or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ to remove it from,
+the default set. In the absence of any preceding ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ sign, only
+those kinds explicitly listed in kinds will be included in the output
+(i.e. overriding the default for the specified language).</p>
+<p>Specify ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ as the parameter to include all kinds implemented
+in <em>&lt;LANG&gt;</em> in the output. Furthermore if <code class="docutils literal notranslate"><span class="pre">all</span></code> is given as <em>&lt;LANG&gt;</em>,
+specification of the parameter <code class="docutils literal notranslate"><span class="pre">kinds</span></code> affects all languages defined
+in ctags. Giving <code class="docutils literal notranslate"><span class="pre">all</span></code> makes sense only when ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ or
+‘<code class="docutils literal notranslate"><span class="pre">F</span></code>’ is given as the parameter <code class="docutils literal notranslate"><span class="pre">kinds</span></code>.</p>
+<p>As an example for the C language, in order to add prototypes and
+external variable declarations to the default set of tag kinds,
+but exclude macros, use <code class="docutils literal notranslate"><span class="pre">--kinds-c=+px-d</span></code>; to include only tags for
+functions, use <code class="docutils literal notranslate"><span class="pre">--kinds-c=f</span></code>.</p>
+<p>Some kinds of C and C++ languages are synchronized; enabling
+(or disabling) a kind in one language enables the kind having
+the same one-letter and long-name in the other language. See also the
+description of <code class="docutils literal notranslate"><span class="pre">MASTER</span></code> column of <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>.</p>
+</dd>
+</dl>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--pattern-length-limit=&lt;N&gt;</span></code></dt><dd><p>Truncate patterns of tag entries after <em>&lt;N&gt;</em> characters. Disable by setting to 0
+(default is 96).</p>
+<p>An input source file with long lines and multiple tag matches per
+line can generate an excessively large tags file with an
+unconstrained pattern length. For example, running ctags on a
+minified JavaScript source file often exhibits this behavior.</p>
+<p>The truncation avoids cutting in the middle of a UTF-8 code point
+spanning multiple bytes to prevent writing invalid byte sequences from
+valid input files. This handling allows for an extra 3 bytes above the
+configured limit in the worse case of a 4 byte code point starting
+right before the limit. Please also note that this handling is fairly
+naive and fast, and although it is resistant against any input, it
+requires a valid input to work properly; it is not guaranteed to work
+as the user expects when dealing with partially invalid UTF-8 input.
+This also partially affect non-UTF-8 input, if the byte sequence at
+the truncation length looks like a multibyte UTF-8 sequence. This
+should however be rare, and in the worse case will lead to including
+up to an extra 3 bytes above the limit.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--pseudo-tags=[+|-](&lt;pseudo-tag&gt;|*)</span></code></dt><dd><p>Enable/disable emitting pseudo-tag named <em>&lt;pseudo-tag&gt;</em>.
+If ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ is given, enable/disable emitting all pseudo-tags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--put-field-prefix</span></code></dt><dd><p>Put <code class="docutils literal notranslate"><span class="pre">UCTAGS</span></code> as prefix for the name of fields newly introduced in
+Universal Ctags.</p>
+<p>Some fields are newly introduced in Universal Ctags and more will
+be introduced in the future. Other tags generators may also
+introduce their specific fields.</p>
+<p>In such a situation, there is a concern about conflicting field
+names; mixing tags files generated by multiple tags generators
+including Universal Ctags is difficult. This option provides a
+workaround for such station.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span><span class="s1">&#39;{line}{end}&#39;</span><span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>hello.c
+<span class="go">main    hello.c /^main(int argc, char **argv)$/;&quot;       f       line:3  end:6</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--put-field-prefix<span class="w"> </span>--fields<span class="o">=</span><span class="s1">&#39;{line}{end}&#39;</span><span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>hello.c
+<span class="go">main    hello.c /^main(int argc, char **argv)$/;&quot;       f       line:3  UCTAGSend:6</span>
+</pre></div>
+</div>
+<p>In the above example, the prefix is put to <code class="docutils literal notranslate"><span class="pre">end</span></code> field which is
+newly introduced in Universal Ctags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--roles-(&lt;LANG&gt;|all).(&lt;kind&gt;|*)=[+|-][&lt;roles&gt;|*]</span></code></dt><dd><p>Specifies a list of kind-specific roles of tags to include in the
+output file for a particular language.
+<em>&lt;kind&gt;</em> specifies the kind where the <em>&lt;roles&gt;</em> are defined.
+<em>&lt;LANG&gt;</em> specifies the language where the kind is defined.
+Each role in <em>&lt;roles&gt;</em> must be surrounded by braces (e.g. <code class="docutils literal notranslate"><span class="pre">{system}</span></code>
+for a role named “system”).</p>
+<p>Like <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> option, ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ is for adding the role to the
+list, and ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ is for removing from the list. ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ is for including
+all roles of the kind to the list.      The option with no argument
+makes the list empty.</p>
+<p>Both a one-letter flag or a long name flag surrounded by braces are
+acceptable for specifying a kind (e.g. <code class="docutils literal notranslate"><span class="pre">--roles-C.h=+{system}{local}</span></code>
+or <code class="docutils literal notranslate"><span class="pre">--roles-C.{header}=+{system}{local}</span></code>).  ‘<code class="docutils literal notranslate"><span class="pre">*</span></code>’ can be used for <em>&lt;KIND&gt;</em>
+only for adding/removing all roles of all kinds in a language to/from
+the list (e.g.  <code class="docutils literal notranslate"><span class="pre">--roles-C.*=*</span></code> or <code class="docutils literal notranslate"><span class="pre">--roles-C.*=</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">all</span></code> can be used for <em>&lt;LANG&gt;</em> only for adding/removing all roles of
+all kinds in all languages to/from the list
+(e.g.  <code class="docutils literal notranslate"><span class="pre">--roles-all.*=*</span></code> or <code class="docutils literal notranslate"><span class="pre">--roles-all.*=</span></code>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--tag-relative=(yes|no|always|never)</span></code></dt><dd><p>Specifies how the file paths recorded in the tag file.
+The default is <code class="docutils literal notranslate"><span class="pre">yes</span></code> when running in etags mode (see
+the <code class="docutils literal notranslate"><span class="pre">-e</span></code> option), <code class="docutils literal notranslate"><span class="pre">no</span></code> otherwise.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">yes</span></code></dt><dd><p>indicates that the file paths recorded in the tag file should be
+<em>relative to the directory containing the tag file</em>
+unless the files supplied on the command line
+are specified with absolute paths.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">no</span></code></dt><dd><p>indicates that the file paths recorded in the tag file should be
+<em>relative to the current directory</em>
+unless the files supplied on the command line
+are specified with absolute paths.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">always</span></code></dt><dd><p>indicates the recorded file paths should be relative
+even if source file names are passed in with absolute paths.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">never</span></code></dt><dd><p>indicates the recorded file paths should be absolute
+even if source file names are passed in with relative paths.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--use-slash-as-filename-separator[=(yes|no)]</span></code></dt><dd><p>Uses slash (’<code class="docutils literal notranslate"><span class="pre">/</span></code>’) character as filename separators instead of backslash
+(’<code class="docutils literal notranslate"><span class="pre">\</span></code>’) character when printing <code class="docutils literal notranslate"><span class="pre">input:</span></code> field.
+The default is <code class="docutils literal notranslate"><span class="pre">yes</span></code> for the default “u-ctags” output format, and
+<code class="docutils literal notranslate"><span class="pre">no</span></code> for the other formats.</p>
+<p><code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_FILESEP</span></code> pseudo tag is for representing  the choice of
+filename separators with this option. See also <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>.</p>
+<p>This option is available on MS Windows only.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-B</span></code></dt><dd><p>Use backward searching patterns (e.g. <code class="docutils literal notranslate"><span class="pre">?pattern?</span></code>). [Ignored in etags mode]</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-F</span></code></dt><dd><p>Use forward searching patterns (e.g. <code class="docutils literal notranslate"><span class="pre">/pattern/</span></code>) (default). [Ignored
+in etags mode]</p>
+</dd>
+</dl>
+</section>
+<section id="option-file-options">
+<h3>Option File Options<a class="headerlink" href="#option-file-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--options=&lt;pathname&gt;</span></code></dt><dd><p>Read additional options from file or directory.</p>
+<p>ctags searches <em>&lt;pathname&gt;</em> in the optlib path list
+first. If ctags cannot find a file or directory
+in the list, ctags reads a file or directory
+at the specified <em>&lt;pathname&gt;</em>.</p>
+<p>If a file is specified, it should contain one option per line. If
+a directory is specified, files suffixed with <code class="docutils literal notranslate"><span class="pre">.ctags</span></code> under it
+are read in alphabetical order.</p>
+<p>As a special case, if <code class="docutils literal notranslate"><span class="pre">--options=NONE</span></code> is specified as the first
+option on the command line, preloading is disabled; the option
+will disable the automatic reading of any configuration options
+from a file (see “<a class="reference internal" href="#files">FILES</a>”).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--options-maybe=&lt;pathname&gt;</span></code></dt><dd><p>Same as <code class="docutils literal notranslate"><span class="pre">--options</span></code> but doesn’t cause an error if file
+(or directory) specified with <em>&lt;pathname&gt;</em> doesn’t exist.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--optlib-dir=[+]&lt;directory&gt;</span></code></dt><dd><p>Add an optlib <em>&lt;directory&gt;</em> to or reset the optlib path list.
+See “<a class="reference internal" href="#default-optlib-path-list">Default optlib path list</a>” about the default elements for optlib path list.</p>
+</dd>
+</dl>
+</section>
+<section id="optlib-options">
+<h3>optlib Options<a class="headerlink" href="#optlib-options" title="Permalink to this heading">¶</a></h3>
+<p>See <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a> for details of each option.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--kinddef-&lt;LANG&gt;=&lt;letter&gt;,&lt;name&gt;,&lt;description&gt;</span></code></dt><dd><p>Define a kind for <em>&lt;LANG&gt;</em>.
+Don’t be confused this with <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--langdef=&lt;name&gt;</span></code></dt><dd><p>Defines a new user-defined language, <em>&lt;name&gt;</em>, to be parsed with regular
+expressions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--mline-regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></code></dt><dd><p>Define multi-line regular expression for locating tags in specific language.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;=/&lt;line_pattern&gt;/&lt;name_pattern&gt;/&lt;kind-spec&gt;/[&lt;flags&gt;]</span></code></dt><dd><p>Define single-line regular expression for locating tags in specific language.</p>
+</dd>
+</dl>
+</section>
+<section id="language-specific-options">
+<span id="option-lang-specific"></span><h3>Language Specific Options<a class="headerlink" href="#language-specific-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--if0[=(yes|no)]</span></code></dt><dd><p>Indicates a preference as to whether code within an “<code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">0</span></code>” branch of a
+preprocessor conditional should be examined for non-macro tags (macro
+tags are always included). Because the intent of this construct is to
+disable code, the default value of this option is <code class="docutils literal notranslate"><span class="pre">no</span></code> (disabled).</p>
+<p>Note that this
+indicates a preference only and does not guarantee skipping code within
+an “<code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">0</span></code>” branch, since the fall-back algorithm used to generate
+tags when preprocessor conditionals are too complex follows all branches
+of a conditional.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--line-directives[=(yes|no)]</span></code></dt><dd><p>Specifies whether <code class="docutils literal notranslate"><span class="pre">#line</span></code> directives should be recognized. These are
+present in the output of a preprocessor and contain the line number, and
+possibly the file name, of the original source file(s) from which the
+preprocessor output file was generated. This option is off by default.</p>
+<p>When enabled, this option will
+cause ctags to generate tag entries marked with the
+file names and line numbers of their locations original source file(s),
+instead of their actual locations in the preprocessor output. The actual
+file names placed into the tag file will have the same leading path
+components as the preprocessor output file, since it is assumed that
+the original source files are located relative to the preprocessor
+output file (unless, of course, the <code class="docutils literal notranslate"><span class="pre">#line</span></code> directive specifies an
+absolute path).</p>
+<p>Note: This option is generally
+only useful when used together with the <code class="docutils literal notranslate"><span class="pre">--excmd=number</span></code> (<code class="docutils literal notranslate"><span class="pre">-n</span></code>) option.
+Also, you may have to use either the <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> or <code class="docutils literal notranslate"><span class="pre">--language-force</span></code> option
+if the extension of the preprocessor output file is not known to
+ctags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-D</span> <span class="pre">&lt;macro&gt;=&lt;definition&gt;</span></code></dt><dd><p>Defines a C preprocessor <em>&lt;macro&gt;</em>. This emulates the behavior of the
+corresponding gcc option. All types of macros are supported,
+including the ones with parameters and variable arguments.
+Stringification, token pasting and recursive macro expansion are also
+supported.
+This extends the function provided by <code class="docutils literal notranslate"><span class="pre">-I</span></code> option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-h</span> <span class="pre">(&lt;list&gt;|default)</span></code></dt><dd><p>Specifies a <em>&lt;list&gt;</em> of file extensions, separated by periods, which are
+to be interpreted as include (or header) files. To indicate files having
+no extension, use a period not followed by a non-period character
+(e.g. ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’, <code class="docutils literal notranslate"><span class="pre">..x</span></code>, <code class="docutils literal notranslate"><span class="pre">.x.</span></code>).</p>
+<p>This option only affects how the scoping of
+particular kinds of tags are interpreted (i.e. whether or not they are
+considered as globally visible or visible only within the file in which
+they are defined); it does not map the extension to any particular
+language. Any tag which is located in a non-include file and cannot be
+seen (e.g. linked to) from another file is considered to have file-limited
+(e.g. static) scope. No kind of tag appearing in an include file
+will be considered to have file-limited scope.</p>
+<p>If the first character in the list is ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’, then the extensions in the list will be
+appended to the current list; otherwise, the list will replace the
+current list. See, also, the <code class="docutils literal notranslate"><span class="pre">fileScope</span></code>/<code class="docutils literal notranslate"><span class="pre">F</span></code> flag of <code class="docutils literal notranslate"><span class="pre">--extras</span></code> option.</p>
+<p>The default list is
+<code class="docutils literal notranslate"><span class="pre">.h.H.hh.hpp.hxx.h++.inc.def</span></code>. To restore the default list, specify “<code class="docutils literal notranslate"><span class="pre">-h</span>
+<span class="pre">default</span></code>”.</p>
+<p>Note that if an extension supplied to this option is not
+already mapped to a particular language (see “<a class="reference internal" href="#determining-file-language">Determining file language</a>”, above),
+you will also need to use either the <code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> or
+<code class="docutils literal notranslate"><span class="pre">--language-force</span></code> option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">&lt;identifier-list&gt;</span></code></dt><dd><p>Specifies a <em>&lt;identifier-list&gt;</em> of identifiers which are to be specially handled while
+parsing C and C++ source files. This option is specifically provided
+to handle special cases arising through the use of preprocessor macros.
+When the identifiers listed are simple identifiers, these identifiers
+will be ignored during parsing of the source files.</p>
+<p>If an identifier is
+suffixed with a ‘<code class="docutils literal notranslate"><span class="pre">+</span></code>’ character (i.e. “<code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">FOO+</span></code>”), ctags will also
+ignore any parenthesis-enclosed argument list which may immediately
+follow the identifier in the source files. See the example of “<code class="docutils literal notranslate"><span class="pre">-I</span>
+<span class="pre">MODULE_VERSION+</span></code>” below.</p>
+<p>If two identifiers are
+separated with the ‘<code class="docutils literal notranslate"><span class="pre">=</span></code>’ character (i.e. <code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">FOO=BAR</span></code>), the first identifiers is replaced by
+the second identifiers for parsing purposes. The list of identifiers may
+be supplied directly on the command line or read in from a separate file.
+See the example of “<code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">CLASS=class</span></code>” below.</p>
+<p>If the first character of <em>&lt;identifier-list&gt;</em> is ‘<code class="docutils literal notranslate"><span class="pre">&#64;</span></code>’, ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’ or a pathname
+separator (’<code class="docutils literal notranslate"><span class="pre">/</span></code>’ or ‘<code class="docutils literal notranslate"><span class="pre">\</span></code>’), or the first two characters specify a drive
+letter (e.g. <code class="docutils literal notranslate"><span class="pre">C:</span></code>), the parameter <em>&lt;identifier-list&gt;</em> will be interpreted as
+a filename from which to read a list of identifiers, one per input line.</p>
+<p>Otherwise, <em>&lt;identifier-list&gt;</em> is a list of identifiers (or identifier
+pairs) to be specially handled, each delimited by either a comma or
+by white space (in which case the list should be quoted to keep the
+entire list as one command line argument).</p>
+<p>Multiple <code class="docutils literal notranslate"><span class="pre">-I</span></code> options may be
+supplied. To clear the list of ignore identifiers, supply a single
+dash (’<code class="docutils literal notranslate"><span class="pre">-</span></code>’) for <em>&lt;identifier-list&gt;</em>.</p>
+<p>This feature is useful when preprocessor macros are used in such a way
+that they cause syntactic confusion due to their presence. Indeed,
+this is the best way of working around a number of problems caused by
+the presence of syntax-busting macros in source files (see “<a class="reference internal" href="#caveats">CAVEATS</a>”).
+Some examples will illustrate this point.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">foo</span><span class="w"> </span><span class="n">ARGDECL4</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">nbytes</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the above example, the macro <code class="docutils literal notranslate"><span class="pre">ARGDECL4</span></code> would be mistakenly
+interpreted to be the name of the function instead of the correct name
+of <code class="docutils literal notranslate"><span class="pre">foo</span></code>. Specifying “<code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">ARGDECL4</span></code>” results in the correct behavior.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cm">/* creates an RCS version string in module */</span>
+<span class="n">MODULE_VERSION</span><span class="p">(</span><span class="s">&quot;$Revision$&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the above example the macro invocation looks too much like a function
+definition because it is not followed by a semicolon (indeed, it
+could even be followed by a global variable definition that would look
+much like a K&amp;R style function parameter declaration). In fact, this
+seeming function definition could possibly even cause the rest of the
+file to be skipped over while trying to complete the definition.
+Specifying “<code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">MODULE_VERSION+</span></code>” would avoid such a problem.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">CLASS</span><span class="w"> </span><span class="n">Example</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// your content here</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The example above uses <code class="docutils literal notranslate"><span class="pre">CLASS</span></code> as a preprocessor macro which expands to
+something different for each platform. For instance <code class="docutils literal notranslate"><span class="pre">CLASS</span></code> may be
+defined as <code class="docutils literal notranslate"><span class="pre">class</span> <span class="pre">__declspec(dllexport)</span></code> on Win32 platforms and simply
+<code class="docutils literal notranslate"><span class="pre">class</span></code> on UNIX. Normally, the absence of the C++ keyword <code class="docutils literal notranslate"><span class="pre">class</span></code>
+would cause the source file to be incorrectly parsed. Correct behavior
+can be restored by specifying “<code class="docutils literal notranslate"><span class="pre">-I</span> <span class="pre">CLASS=class</span></code>”.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--param-&lt;LANG&gt;.&lt;name&gt;=&lt;argument&gt;</span></code></dt><dd><p>Set a <em>&lt;LANG&gt;</em> specific parameter, a parameter specific to the <em>&lt;LANG&gt;</em>.</p>
+<p>Available parameters can be listed with <code class="docutils literal notranslate"><span class="pre">--list-params</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="listing-options">
+<span id="option-listing"></span><h3>Listing Options<a class="headerlink" href="#listing-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-aliases[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists the aliases for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code>
+languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.
+The aliases are used when heuristically testing a language parser for a
+source file.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-excludes</span></code></dt><dd><p>Lists the current exclusion patterns used to exclude files.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-extras[=(&lt;language&gt;|NONE|all)]</span></code></dt><dd><p>Lists the extras recognized for either the specified <em>&lt;language&gt;</em> or
+<code class="docutils literal notranslate"><span class="pre">all</span></code> languages. If <code class="docutils literal notranslate"><span class="pre">NONE</span></code> is specified, it lists only extras
+common in all languages.
+See “<a class="reference internal" href="#extras">Extras</a>” subsection to know what are extras.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+<p>An extra can be enabled or disabled with <code class="docutils literal notranslate"><span class="pre">--extras=</span></code> for common
+extras in all languages, or <code class="docutils literal notranslate"><span class="pre">--extras-&lt;LANG&gt;=</span></code> for the specified
+language.  These option takes one-letter flag or long-name flag as a parameter
+for specifying an extra.</p>
+<p>The meaning of columns in output are as follows:</p>
+<dl class="simple">
+<dt>LETTER</dt><dd><p>One-letter flag. ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ means the extra does not have one-letter flag.</p>
+</dd>
+<dt>NAME</dt><dd><p>Long-name flag. The long-name is used in <code class="docutils literal notranslate"><span class="pre">extras</span></code> field.</p>
+</dd>
+<dt>ENABLED</dt><dd><p>Whether the extra is enabled or not. It takes <code class="docutils literal notranslate"><span class="pre">yes</span></code> or <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+</dd>
+<dt>LANGUAGE</dt><dd><p>The name of language if the extra is owned by a parser.
+<code class="docutils literal notranslate"><span class="pre">NONE</span></code> means the extra is common in parsers.</p>
+</dd>
+<dt>DESCRIPTION</dt><dd><p>Human readable description for the extra.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-features</span></code></dt><dd><p>Lists the compiled features.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-fields[=(&lt;language&gt;|NONE|all)]</span></code></dt><dd><p>Lists the fields recognized for either the specified <em>&lt;language&gt;</em> or
+<code class="docutils literal notranslate"><span class="pre">all</span></code> languages. If <code class="docutils literal notranslate"><span class="pre">NONE</span></code> is specified, it lists only fields
+common in all languages.
+See “<a class="reference internal" href="#extension-fields">Extension fields</a>” subsection to know what are fields.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+<p>The meaning of columns are as follows:</p>
+<dl>
+<dt>LETTER</dt><dd><p>One-letter flag. ‘<code class="docutils literal notranslate"><span class="pre">-</span></code>’ means the field does not have one-letter flag.</p>
+</dd>
+<dt>NAME</dt><dd><p>Long-name of field.</p>
+</dd>
+<dt>ENABLED</dt><dd><p>Whether the field is enabled or not. It takes <code class="docutils literal notranslate"><span class="pre">yes</span></code> or <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+</dd>
+<dt>LANGUAGE</dt><dd><p>The name of language if the field is owned by a parser.
+<code class="docutils literal notranslate"><span class="pre">NONE</span></code> means that the field is a language-independent field which is
+common in all languages.</p>
+</dd>
+<dt>JSTYPE</dt><dd><p>JSON type used in printing the value of field when <code class="docutils literal notranslate"><span class="pre">--output-format=json</span></code>
+is specified. See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>.</p>
+</dd>
+<dt>FIXED</dt><dd><p>Whether this field can be disabled or not in tags output.</p>
+<p>Some fields are printed always in tags output.
+They have <code class="docutils literal notranslate"><span class="pre">yes</span></code> as the value for this column.</p>
+<p>Unlike the tag output mode, JSON output mode allows disabling
+any fields.</p>
+</dd>
+<dt>OP</dt><dd><p>How this field can be accessed from optscript code.
+This field is for Universal Ctags developers.</p>
+</dd>
+<dt>DESCRIPTION</dt><dd><p>Human readable description for the field.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-kinds[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Subset of <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>. This option is kept for
+backward-compatibility with Exuberant Ctags.</p>
+<p>This option prints only LETTER, DESCRIPTION, and ENABLED fields
+of <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code> output. However, the presentation of
+ENABLED column is different from that of <code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code>
+option; <code class="docutils literal notranslate"><span class="pre">[off]</span></code> follows after description if the kind is disabled,
+and nothing follows     if enabled. The most of all kinds are enabled
+by default.</p>
+<p>The critical weakness of this option is that this option does not
+print the name of kind. Universal Ctags introduces
+<code class="docutils literal notranslate"><span class="pre">--list-kinds-full</span></code> because it considers that names are
+important.</p>
+<p>This option does not work with <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> nor
+<code class="docutils literal notranslate"><span class="pre">--with-list-header</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-kinds-full[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists the tag kinds recognized for either the specified <em>&lt;language&gt;</em>
+or <code class="docutils literal notranslate"><span class="pre">all</span></code> languages, and then exits. See “<a class="reference internal" href="#kinds">Kinds</a>” subsection to
+learn what kinds are.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+<p>Each kind of tag recorded in the tag file is represented by a
+one-letter flag, or a long-name flag. They are also used to filter the tags
+placed into the output through use of the <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>
+option.</p>
+<p>The meaning of columns are as follows:</p>
+<dl>
+<dt>LANGUAGE</dt><dd><p>The name of language having the kind.</p>
+</dd>
+<dt>LETTER</dt><dd><p>One-letter flag. This must be unique in a language.</p>
+</dd>
+<dt>NAME</dt><dd><p>The long-name flag of the kind. This can be used as the alternative
+to the one-letter flag described above. If enabling <code class="docutils literal notranslate"><span class="pre">K</span></code> field with
+<code class="docutils literal notranslate"><span class="pre">--fields=+K</span></code>, ctags uses long-names instead of
+one-letters in tags output. To enable/disable a kind with
+<code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code> option, long-name surrounded by braces instead
+of one-letter. See “<a class="reference internal" href="#letters-and-names">Letters and names</a>” for details. This must be
+unique in a language.</p>
+</dd>
+<dt>ENABLED</dt><dd><p>Whether the kind is enabled or not. It takes <code class="docutils literal notranslate"><span class="pre">yes</span></code> or <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+</dd>
+<dt>REFONLY</dt><dd><p>Whether the kind is specialized for reference tagging or not.
+If the column is <code class="docutils literal notranslate"><span class="pre">yes</span></code>, the kind is for reference tagging, and
+it is never used for definition tagging. See also “<a class="reference internal" href="#id1">TAG ENTRIES</a>”.</p>
+</dd>
+<dt>NROLES</dt><dd><p>The number of roles this kind has. See also “<a class="reference internal" href="#roles">Roles</a>”.</p>
+</dd>
+<dt>MASTER</dt><dd><p>The master parser controlling enablement of the kind.
+A kind belongs to a language (owner) in Universal Ctags;
+enabling and disabling a kind in a language has no effect on
+a kind in another language even if both kinds has the
+same one-letter flag and/or the same long-name flag. In other words,
+the namespace of kinds are separated by language.</p>
+<p>However, Exuberant Ctags does not separate the kinds of C and
+C++. Enabling/disabling kindX in C language enables/disables a
+kind in C++ language having the same long-name flag with kindX. To
+emulate this behavior in Universal Ctags, a concept named
+<em>master parser</em> is introduced. Enabling/disabling some kinds
+are synchronized under the control of a master language.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--kinds-C<span class="o">=</span>+<span class="s1">&#39;{local}&#39;</span><span class="w"> </span>--list-kinds-full<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;^(#|C\+\+ .* local)&#39;</span>
+<span class="gp">#</span>LANGUAGE<span class="w">  </span>LETTER<span class="w"> </span>NAME<span class="w">   </span>ENABLED<span class="w"> </span>REFONLY<span class="w"> </span>NROLES<span class="w"> </span>MASTER<span class="w"> </span>DESCRIPTION
+<span class="go">C++        l      local  yes     no      0      C      local variables</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--kinds-C<span class="o">=</span>-<span class="s1">&#39;{local}&#39;</span><span class="w"> </span>--list-kinds-full<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;^(#|C\+\+ .* local)&#39;</span>
+<span class="gp">#</span>LANGUAGE<span class="w">  </span>LETTER<span class="w"> </span>NAME<span class="w">   </span>ENABLED<span class="w"> </span>REFONLY<span class="w"> </span>NROLES<span class="w"> </span>MASTER<span class="w"> </span>DESCRIPTION
+<span class="go">C++        l      local  no      no      0      C      local variables</span>
+</pre></div>
+</div>
+<p>You see <code class="docutils literal notranslate"><span class="pre">ENABLED</span></code> field of <code class="docutils literal notranslate"><span class="pre">local</span></code> kind of C++ language is changed
+Though <code class="docutils literal notranslate"><span class="pre">local</span></code> kind of C language is enabled/disabled. If you swap the languages, you
+see the same result.</p>
+</dd>
+<dt>DESCRIPTION</dt><dd><p>Human readable description for the kind.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-languages</span></code></dt><dd><p>Lists the names of the languages understood by ctags,
+and then exits. These language names are case insensitive and may be
+used in many other options like <code class="docutils literal notranslate"><span class="pre">--language-force</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--languages</span></code>, <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code>, and so on.</p>
+<p>Each language listed is disabled if followed by <code class="docutils literal notranslate"><span class="pre">[disabled]</span></code>.
+To use the parser for such a language, specify the language as an
+argument of <code class="docutils literal notranslate"><span class="pre">--languages=+</span></code> option.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--machinable</span></code> and <code class="docutils literal notranslate"><span class="pre">--with-list-header</span></code> options are ignored if they are
+specified with this option.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-map-extensions[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists the file extensions which associate a file
+name with a language for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code>
+languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-map-patterns[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists the file name patterns which associate a file
+name with a language for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code>
+languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-maps[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists file name patterns and the file extensions which associate a file
+name with a language for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code>
+languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+<p>To list the file extensions or file name patterns individually, use
+<code class="docutils literal notranslate"><span class="pre">--list-map-extensions</span></code> or <code class="docutils literal notranslate"><span class="pre">--list-map-patterns</span></code> option.
+See the <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> option, and “<a class="reference internal" href="#determining-file-language">Determining file language</a>”, above.</p>
+<p>This option does not work with <code class="docutils literal notranslate"><span class="pre">--machinable</span></code> nor
+<code class="docutils literal notranslate"><span class="pre">--with-list-header</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-mline-regex-flags</span></code></dt><dd><p>Output list of flags which can be used in a multiline regex parser
+definition.
+See <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-params[=(&lt;language&gt;|all)]</span></code></dt><dd><p>Lists the parameters for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code>
+languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-pseudo-tags</span></code></dt><dd><p>Output list of pseudo-tags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-regex-flags</span></code></dt><dd><p>Lists the flags that can be used in <code class="docutils literal notranslate"><span class="pre">--regex-&lt;LANG&gt;</span></code> option.
+See <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-roles[=(&lt;language&gt;|all)[.(&lt;kind-specs&gt;|*)]]</span></code></dt><dd><p>List the roles for either the specified <em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code> languages.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+<p>If the parameter <em>&lt;kindspecs&gt;</em> is given after the parameter
+<em>&lt;language&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code> with concatenating with ‘<code class="docutils literal notranslate"><span class="pre">.</span></code>’, list only roles
+defined in the kinds. Both one-letter flags and long name flags surrounded
+by braces are acceptable as the parameter <em>&lt;kindspecs&gt;</em>.</p>
+<p>The meaning of columns are as follows:</p>
+<dl class="simple">
+<dt>LANGUAGE</dt><dd><p>The name of language having the role.</p>
+</dd>
+<dt>KIND(L/N)</dt><dd><p>The one-letter flag and the long-name flag of kind having the role.</p>
+</dd>
+<dt>NAME</dt><dd><p>The long-name flag of the role.</p>
+</dd>
+<dt>ENABLED</dt><dd><p>Whether the kind is enabled or not. It takes <code class="docutils literal notranslate"><span class="pre">yes</span></code> or <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+</dd>
+<dt>DESCRIPTION</dt><dd><p>Human readable description for the role.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--list-subparsers[=(&lt;baselang&gt;|all)]</span></code></dt><dd><p>Lists the subparsers for a base language for either the specified
+<em>&lt;baselang&gt;</em> or <code class="docutils literal notranslate"><span class="pre">all</span></code> languages, and then exits.
+<code class="docutils literal notranslate"><span class="pre">all</span></code> is used as default value if the option argument is omitted.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--machinable[=(yes|no)]</span></code></dt><dd><p>Use tab character as separators for <code class="docutils literal notranslate"><span class="pre">--list-</span></code> option output.  It
+may be suitable for scripting. See “<a class="reference internal" href="#list-options">List options</a>” for considered
+use cases. Disabled by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--with-list-header[=(yes|no)]</span></code></dt><dd><p>Print headers describing columns in <code class="docutils literal notranslate"><span class="pre">--list-</span></code> option output.
+See also “<a class="reference internal" href="#list-options">List options</a>”.</p>
+</dd>
+</dl>
+</section>
+<section id="miscellaneous-options">
+<span id="option-misc"></span><h3>Miscellaneous Options<a class="headerlink" href="#miscellaneous-options" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--help</span></code></dt><dd><p>Prints to standard output a detailed usage description, and then exits.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-?</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--help</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--help-full</span></code></dt><dd><p>Prints to standard output a detailed usage description including experimental
+features, and then exits. Visit <a class="reference external" href="https://docs.ctags.io/">https://docs.ctags.io/</a> for information
+about the latest exciting experimental features.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--license</span></code></dt><dd><p>Prints a summary of the software license to standard output, and then exits.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--print-language</span></code></dt><dd><p>Just prints the language parsers for specified source files, and then exits.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--quiet[=(yes|no)]</span></code></dt><dd><p>Write fewer messages (default is <code class="docutils literal notranslate"><span class="pre">no</span></code>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--totals[=(yes|no|extra)]</span></code></dt><dd><p>Prints statistics about the source files read and the tag file written
+during the current invocation of ctags. This option
+is <code class="docutils literal notranslate"><span class="pre">no</span></code> by default.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">extra</span></code> value prints parser specific statistics for parsers
+gathering such information.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--verbose[=(yes|no)]</span></code></dt><dd><p>Enable verbose mode. This prints out information on option processing
+and a brief message describing what action is being taken for each file
+considered by ctags. Normally, ctags
+does not read command line arguments until after options are read
+from the configuration files (see “<a class="reference internal" href="#files">FILES</a>”, below).
+However, if this option is the first argument on
+the command line, it will take effect before any options are read from
+these sources. The default is <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-V</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--verbose</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--version[=&lt;language&gt;|NONE]</span></code></dt><dd><p>Prints a version identifier for ctags to standard
+output, and then exits. This is guaranteed to always contain the string
+“Universal Ctags”. See also the description for <code class="docutils literal notranslate"><span class="pre">TAG_PROGRAM_VERSION</span></code>
+and <code class="docutils literal notranslate"><span class="pre">TAG_OUTPUT_VERSION</span></code> in <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">NONE</span></code> is given, prints the version identifier in a simplified way.</p>
+<p>If <em>&lt;language&gt;</em> is given, print the version identifier for the parser
+for <em>&lt;language&gt;</em>. See also the description for <code class="docutils literal notranslate"><span class="pre">TAG_PARSER_VERSION</span></code> in
+<a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="obsoleted-options">
+<h3>Obsoleted Options<a class="headerlink" href="#obsoleted-options" title="Permalink to this heading">¶</a></h3>
+<p>These options are kept for backward-compatibility with Exuberant Ctags.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">-w</span></code></dt><dd><p>This option is silently ignored for backward-compatibility with the
+ctags of SVR4 Unix.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--file-scope[=(yes|no)]</span></code></dt><dd><p>This options is removed. Use <code class="docutils literal notranslate"><span class="pre">--extras=[+|-]F</span></code> or
+<code class="docutils literal notranslate"><span class="pre">--extras=[+|-]{fileScope}</span></code> instead.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--extra=[+|-][&lt;flags&gt;|*]</span></code></dt><dd><p>Equivalent to <code class="docutils literal notranslate"><span class="pre">--extras=[+|-][&lt;flags&gt;|*]</span></code>, which was introduced to make
+the option naming convention align to the other options like
+<code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;=</span></code> and <code class="docutils literal notranslate"><span class="pre">--fields=</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--&lt;LANG&gt;-kinds=[+|-](&lt;kinds&gt;|*)</span></code></dt><dd><p>This option is obsolete. Use <code class="docutils literal notranslate"><span class="pre">--kinds-&lt;LANG&gt;=...</span></code> instead.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="operational-details">
+<h2>OPERATIONAL DETAILS<a class="headerlink" href="#operational-details" title="Permalink to this heading">¶</a></h2>
+<p>As ctags considers each source file name in turn, it tries to
+determine the language of the file by applying tests described in
+“<a class="reference internal" href="#determining-file-language">Determining file language</a>”.</p>
+<p>If a language was identified, the file is opened and then the appropriate
+language parser is called to operate on the currently open file. The parser
+parses through the file and adds an entry to the tag file for each
+language object it is written to handle. See “<a class="reference internal" href="#tag-file-format">TAG FILE FORMAT</a>”, below,
+for details on these entries.</p>
+<section id="notes-for-c-c-parser">
+<h3>Notes for C/C++ Parser<a class="headerlink" href="#notes-for-c-c-parser" title="Permalink to this heading">¶</a></h3>
+<p>This implementation of ctags imposes no formatting
+requirements on C code as do legacy implementations. Older implementations
+of ctags tended to rely upon certain formatting assumptions in order to
+help it resolve coding dilemmas caused by preprocessor conditionals.</p>
+<p>In general, ctags tries to be smart about conditional
+preprocessor directives. If a preprocessor conditional is encountered
+within a statement which defines a tag, ctags follows
+only the first branch of that conditional (except in the special case of
+<code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">0</span></code>, in which case it follows only the last branch). The reason for
+this is that failing to pursue only one branch can result in ambiguous
+syntax, as in the following example:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifdef TWO_ALTERNATIVES</span>
+<span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#else</span>
+<span class="k">union</span><span class="w"> </span><span class="p">{</span>
+<span class="cp">#endif</span>
+<span class="w">        </span><span class="kt">short</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Both branches cannot be followed, or braces become unbalanced and
+ctags would be unable to make sense of the syntax.</p>
+<p>If the application of this heuristic fails to properly parse a file,
+generally due to complicated and inconsistent pairing within the
+conditionals, ctags will retry the file using a
+different heuristic which does not selectively follow conditional
+preprocessor branches, but instead falls back to relying upon a closing
+brace (’<code class="docutils literal notranslate"><span class="pre">}</span></code>’) in column 1 as indicating the end of a block once any brace
+imbalance results from following a <code class="docutils literal notranslate"><span class="pre">#if</span></code> conditional branch.</p>
+<p>ctags will also try to specially handle arguments lists
+enclosed in double sets of parentheses in order to accept the following
+conditional construct:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">extern</span> <span class="n">void</span> <span class="n">foo</span> <span class="n">__ARGS</span><span class="p">((</span><span class="nb">int</span> <span class="n">one</span><span class="p">,</span> <span class="n">char</span> <span class="n">two</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Any name immediately preceding the ‘<code class="docutils literal notranslate"><span class="pre">((</span></code>’ will be automatically ignored and
+the previous name will be used.</p>
+<p>C++ operator definitions are specially handled. In order for consistency
+with all types of operators (overloaded and conversion), the operator
+name in the tag file will always be preceded by the string “operator ”
+(i.e. even if the actual operator definition was written as “operator&lt;&lt;”).</p>
+<p>After creating or appending to the tag file, it is sorted by the tag name,
+removing identical tag lines.</p>
+</section>
+<section id="determining-file-language">
+<span id="guessing"></span><h3>Determining file language<a class="headerlink" href="#determining-file-language" title="Permalink to this heading">¶</a></h3>
+<section id="file-name-mapping">
+<h4>File name mapping<a class="headerlink" href="#file-name-mapping" title="Permalink to this heading">¶</a></h4>
+<p>Unless the <code class="docutils literal notranslate"><span class="pre">--language-force</span></code> option is specified, the language of each source
+file is automatically selected based upon a <em>mapping</em> of file names to
+languages. The mappings in effect for each language may be displayed using
+the <code class="docutils literal notranslate"><span class="pre">--list-maps</span></code> option and may be changed using the <code class="docutils literal notranslate"><span class="pre">--langmap</span></code> or
+<code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;</span></code> options.</p>
+<p>If the name of a file is not mapped to a language, ctags tries
+to heuristically guess the language for the file by inspecting its content.</p>
+<p>All files that have no file name mapping and no guessed parser are
+ignored. This permits running ctags on all files in
+either a single directory (e.g.  “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">*</span></code>”), or on
+all files in an entire source directory tree
+(e.g. “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">-R</span></code>”), since only those files whose
+names are mapped to languages will be scanned.</p>
+<p>An extension may be mapped to multiple parsers. For example, <code class="docutils literal notranslate"><span class="pre">.h</span></code>
+are mapped to C++, C and ObjectiveC. These mappings can cause
+issues. ctags tries to select the proper parser
+for the source file by applying heuristics to its content, however
+it is not perfect.  In case of issues one can use <code class="docutils literal notranslate"><span class="pre">--language-force=&lt;language&gt;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--langmap=&lt;map&gt;[,&lt;map&gt;[...]]</span></code>, or the <code class="docutils literal notranslate"><span class="pre">--map-&lt;LANG&gt;=[+|-]&lt;extension&gt;|&lt;pattern&gt;</span></code>
+options. (Some of the heuristics are applied whether <code class="docutils literal notranslate"><span class="pre">--guess-language-eagerly</span></code>
+is given or not.)</p>
+</section>
+<section id="heuristically-guessing">
+<h4>Heuristically guessing<a class="headerlink" href="#heuristically-guessing" title="Permalink to this heading">¶</a></h4>
+<p>If ctags cannot select a parser from the mapping of file names,
+various heuristic tests are conducted to determine the language:</p>
+<dl>
+<dt>template file name testing</dt><dd><p>If the file name has an <code class="docutils literal notranslate"><span class="pre">.in</span></code> extension, ctags applies
+the mapping to the file name without the extension. For example,
+<code class="docutils literal notranslate"><span class="pre">config.h</span></code> is tested for a file named <code class="docutils literal notranslate"><span class="pre">config.h.in</span></code>.</p>
+</dd>
+<dt>“interpreter” testing</dt><dd><p>The first line of the file is checked to see if the file is a <code class="docutils literal notranslate"><span class="pre">#!</span></code>
+script for a recognized language. ctags looks for
+a parser having the same name.</p>
+<p>If ctags finds no such parser,
+ctags looks for the name in alias lists. For
+example, consider if the first line is <code class="docutils literal notranslate"><span class="pre">#!/bin/sh</span></code>.  Though
+ctags has a “shell” parser, it doesn’t have a “sh”
+parser. However, <code class="docutils literal notranslate"><span class="pre">sh</span></code> is listed as an alias for <code class="docutils literal notranslate"><span class="pre">shell</span></code>, therefore
+ctags selects the “shell” parser for the file.</p>
+<p>An exception is <code class="docutils literal notranslate"><span class="pre">env</span></code>. If <code class="docutils literal notranslate"><span class="pre">env</span></code> is specified (for example
+“<code class="docutils literal notranslate"><span class="pre">#!/usr/bin/env</span> <span class="pre">python</span></code>”), ctags
+reads more lines to find real interpreter specification.</p>
+<p>To display the list of aliases, use <code class="docutils literal notranslate"><span class="pre">--list-aliases</span></code> option.
+To add an item to the list or to remove an item from the list, use the
+<code class="docutils literal notranslate"><span class="pre">--alias-&lt;LANG&gt;=+&lt;pattern&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">--alias-&lt;LANG&gt;=-&lt;pattern&gt;</span></code> option
+respectively.</p>
+</dd>
+<dt>“zsh autoload tag” testing</dt><dd><p>If the first line starts with <code class="docutils literal notranslate"><span class="pre">#compdef</span></code> or <code class="docutils literal notranslate"><span class="pre">#autoload</span></code>,
+ctags regards the line as “zsh”.</p>
+</dd>
+<dt>“emacs mode at the first line” testing</dt><dd><p>The Emacs editor has multiple editing modes specialized for programming
+languages. Emacs can recognize a marker called modeline in a file
+and utilize the marker for the mode selection. This heuristic test does
+the same as what Emacs does.</p>
+<p>ctags treats <code class="docutils literal notranslate"><span class="pre">MODE</span></code> as a name of interpreter and applies the same
+rule of “interpreter” testing if the first line has one of
+the following patterns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-*-</span> <span class="n">mode</span><span class="p">:</span> <span class="n">MODE</span> <span class="o">-*-</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-*-</span> <span class="n">MODE</span> <span class="o">-*-</span>
+</pre></div>
+</div>
+</dd>
+<dt>“emacs mode at the EOF” testing</dt><dd><p>Emacs editor recognizes another marker at the end of file as a
+mode specifier. This heuristic test does the same as what Emacs does.</p>
+<p>ctags treats <code class="docutils literal notranslate"><span class="pre">MODE</span></code> as a name of an interpreter and applies the same
+rule of “interpreter” heuristic testing, if the lines at the tail of the file
+have the following pattern:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Local</span> <span class="n">Variables</span><span class="p">:</span>
+<span class="o">...</span>
+<span class="n">mode</span><span class="p">:</span> <span class="n">MODE</span>
+<span class="o">...</span>
+<span class="n">End</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>3000 characters are sought from the end of file to find the pattern.</p>
+</dd>
+<dt>“vim modeline” testing</dt><dd><p>Like the modeline of the Emacs editor, Vim editor has the same concept.
+ctags treats <code class="docutils literal notranslate"><span class="pre">TYPE</span></code> as a name of interpreter and applies the same
+rule of “interpreter” heuristic testing if the first or last 5 lines of the file
+have one of the following patterns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">filetype</span><span class="o">=</span><span class="n">TYPE</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ft</span><span class="o">=</span><span class="n">TYPE</span>
+</pre></div>
+</div>
+</dd>
+<dt>“PHP marker” testing</dt><dd><p>If the first line is started with <code class="docutils literal notranslate"><span class="pre">&lt;?php</span></code>,
+ctags regards the line as “php”.</p>
+</dd>
+</dl>
+<p>Looking into the file contents is a more expensive operation than file
+name matching. So ctags runs the testings in limited
+conditions.  “interpreter” testing is enabled only when a file is an
+executable or the <code class="docutils literal notranslate"><span class="pre">--guess-language-eagerly</span></code> (<code class="docutils literal notranslate"><span class="pre">-G</span></code> in short) option is
+given. The other heuristic tests are enabled only when <code class="docutils literal notranslate"><span class="pre">-G</span></code> option is
+given.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--print-language</span></code> option can be used just to print the results of
+parser selections for given files instead of generating a tags file.</p>
+<p>Examples:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--print-language<span class="w"> </span>config.h.in<span class="w"> </span>input.m<span class="w"> </span>input.unknown
+<span class="go">config.h.in: C++</span>
+<span class="go">input.m: MatLab</span>
+<span class="go">input.unknown: NONE</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">NONE</span></code> means that ctags does not select any parser for the file.</p>
+</section>
+</section>
+</section>
+<section id="tag-file-format">
+<h2>TAG FILE FORMAT<a class="headerlink" href="#tag-file-format" title="Permalink to this heading">¶</a></h2>
+<p>This section describes the tag file format briefly.  See <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a> and
+<a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> for more details.</p>
+<p>When not running in etags mode, each entry in the tag file consists of a
+separate line, each looking like this, called <em>regular tags</em>, in the most general case:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tag_name</span><span class="o">&gt;&lt;</span><span class="n">TAB</span><span class="o">&gt;&lt;</span><span class="n">file_name</span><span class="o">&gt;&lt;</span><span class="n">TAB</span><span class="o">&gt;&lt;</span><span class="n">ex_cmd</span><span class="o">&gt;</span><span class="p">;</span><span class="s2">&quot;&lt;TAB&gt;&lt;extension_fields&gt;</span>
+</pre></div>
+</div>
+<p>The fields and separators of these lines are specified as follows:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;tag_name&gt;</span></code>: tag name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;TAB&gt;</span></code>: single tab character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code>: name of the file in which the object associated with the tag is located</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;TAB&gt;</span></code>: single tab character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;ex_cmd&gt;</span></code>: EX command used to locate the tag within the file; generally a
+search pattern (either <code class="docutils literal notranslate"><span class="pre">/pattern/</span></code> or <code class="docutils literal notranslate"><span class="pre">?pattern?</span></code>) or line number (see
+<code class="docutils literal notranslate"><span class="pre">--excmd=&lt;type&gt;</span></code> option).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">;&quot;&lt;TAB&gt;&lt;extension_fields&gt;</span></code>: a set of extension fields. See
+“<a class="reference internal" href="#extension-fields">Extension fields</a>” for more details.</p>
+<p>Tag file format 2 (see <code class="docutils literal notranslate"><span class="pre">--format</span></code>) extends the EX command
+to include the extension fields embedded in an EX comment immediately appended
+to the EX command, which leaves it backward-compatible with original
+<code class="docutils literal notranslate"><span class="pre">vi(1)</span></code> implementations.</p>
+</li>
+</ol>
+</div></blockquote>
+<p>A few special tags, called <em>pseudo tags</em>, are written into the tag file for internal purposes.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!_TAG_FILE_FORMAT       2       /extended format; --format=1 will not append ;&quot; to lines/
+!_TAG_FILE_SORTED       1       /0=unsorted, 1=sorted, 2=foldcase/
+...
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--pseudo-tags=[+|-](&lt;pseudo-tag&gt;|*)</span></code> option enables or disables emitting pseudo-tags.</p>
+<p>See the output of “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-pseudo-tags</span></code>” for the list of
+the kinds.
+See also <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a> and <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> for more details of the pseudo tags.</p>
+<p>These tags are composed in such a way that they always sort to the top of
+the file. Therefore, the first two characters of these tags are used a magic
+number to detect a tag file for purposes of determining whether a
+valid tag file is being overwritten rather than a source file.</p>
+<p>Note that the name of each source file will be recorded in the tag file
+exactly as it appears on the command line. Therefore, if the path you
+specified on the command line was relative to the current directory, then
+it will be recorded in that same manner in the tag file. See, however,
+the <code class="docutils literal notranslate"><span class="pre">--tag-relative=(yes|no|always|never)</span></code> option for how this behavior can be
+modified.</p>
+</section>
+<section id="tag-entries">
+<span id="id1"></span><h2>TAG ENTRIES<a class="headerlink" href="#tag-entries" title="Permalink to this heading">¶</a></h2>
+<p>A tag is an index for a language object. The concept of a tag and related
+items in Exuberant Ctags are refined and extended in Universal Ctags.</p>
+<p>A tag is categorized into <em>definition tags</em> or <em>reference tags</em>.
+In general, Exuberant Ctags only tags <em>definitions</em> of
+language objects: places where newly named language objects <em>are introduced</em>.
+Universal Ctags, on the other hand, can also tag <em>references</em> of language
+objects: places where named language objects <em>are used</em>. However, support
+for generating reference tags is new and limited to specific areas of
+specific languages in the current version.</p>
+<section id="extension-fields">
+<h3>Extension fields<a class="headerlink" href="#extension-fields" title="Permalink to this heading">¶</a></h3>
+<p>A tag can record various information, called <em>extension fields</em>.</p>
+<p>Extension fields are tab-separated key-value pairs appended to the end of
+the EX command as a comment, as described above. These key value pairs
+appear in the general form <code class="docutils literal notranslate"><span class="pre">key:value</span></code>.</p>
+<p>In addition, information on the scope of the tag definition may be
+available, with the key portion equal to some language-dependent construct
+name and its value the name declared for that construct in the program.
+This scope entry indicates the scope in which the tag was found.
+For example, a tag generated for a C structure member would have a scope
+looking like <code class="docutils literal notranslate"><span class="pre">struct:myStruct</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--fields=[+|-][&lt;flags&gt;|*]</span></code> and <code class="docutils literal notranslate"><span class="pre">--fields-(&lt;LANG&gt;|all)=[+|-][&lt;flags&gt;|*]</span></code> options specifies
+which available extension fields are to be included in the tag entries.</p>
+<p>See the output of “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-fields</span></code>” for the list of
+extension fields.
+The essential fields are <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">input</span></code>, <code class="docutils literal notranslate"><span class="pre">pattern</span></code>, and <code class="docutils literal notranslate"><span class="pre">line</span></code>.
+The meaning of major fields is as follows (long-name flag/one-letter flag):</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">access</span></code>/<code class="docutils literal notranslate"><span class="pre">a</span></code></dt><dd><p>Indicates the visibility of this class member, where value is specific
+to the language.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">end</span></code>/<code class="docutils literal notranslate"><span class="pre">e</span></code></dt><dd><p>Indicates the line number of the end lines of the language object.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">extras</span></code>/<code class="docutils literal notranslate"><span class="pre">E</span></code></dt><dd><p>Extra tag type information. See “<a class="reference internal" href="#extras">Extras</a>” for details.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">file</span></code>/<code class="docutils literal notranslate"><span class="pre">f</span></code></dt><dd><p>Indicates that the tag has file-limited visibility. This key has no
+corresponding value. Enabled by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">implementation</span></code>/<code class="docutils literal notranslate"><span class="pre">m</span></code></dt><dd><p>When present, this indicates a limited implementation (abstract vs.
+concrete) of a routine or class, where value is specific to the
+language (<code class="docutils literal notranslate"><span class="pre">virtual</span></code> or <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">virtual</span></code> for C++; <code class="docutils literal notranslate"><span class="pre">abstract</span></code> for Java).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inherits</span></code>/<code class="docutils literal notranslate"><span class="pre">i</span></code></dt><dd><p>When present, value is a comma-separated list of classes from which
+this class is derived (i.e. inherits from).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">input</span></code>/<code class="docutils literal notranslate"><span class="pre">F</span></code></dt><dd><p>The name of source file where <code class="docutils literal notranslate"><span class="pre">name</span></code> is defined or referenced.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">k</span></code></dt><dd><p><a class="reference external" href="Kinds">Kind</a> of tag as one-letter. Enabled by default.
+This field has no long-name.
+See also <code class="docutils literal notranslate"><span class="pre">kind</span></code>/<code class="docutils literal notranslate"><span class="pre">z</span></code> flag.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">K</span></code></dt><dd><p><a class="reference external" href="Kinds">Kind</a> of tag as long-name.
+This field has no long-name.
+See also <code class="docutils literal notranslate"><span class="pre">kind</span></code>/<code class="docutils literal notranslate"><span class="pre">z</span></code> flag.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">kind</span></code>/<code class="docutils literal notranslate"><span class="pre">z</span></code></dt><dd><p>Include the <code class="docutils literal notranslate"><span class="pre">kind:</span></code> key in <a class="reference external" href="Kinds">kind field</a>.  See also <code class="docutils literal notranslate"><span class="pre">k</span></code> and <code class="docutils literal notranslate"><span class="pre">K</span></code> flags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">language</span></code>/<code class="docutils literal notranslate"><span class="pre">l</span></code></dt><dd><p>Language of source file containing tag</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">line</span></code>/<code class="docutils literal notranslate"><span class="pre">n</span></code></dt><dd><p>The line number where <code class="docutils literal notranslate"><span class="pre">name</span></code> is defined or referenced in <code class="docutils literal notranslate"><span class="pre">input</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code>/<code class="docutils literal notranslate"><span class="pre">N</span></code></dt><dd><p>The name of language objects.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">nth</span></code>/<code class="docutils literal notranslate"><span class="pre">o</span></code></dt><dd><p>The order in the parent scope.
+(i.e. 4th parameter in the function).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pattern</span></code>/<code class="docutils literal notranslate"><span class="pre">P</span></code></dt><dd><p>Can be used to search the <code class="docutils literal notranslate"><span class="pre">name</span></code> in <code class="docutils literal notranslate"><span class="pre">input</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">roles</span></code>/<code class="docutils literal notranslate"><span class="pre">r</span></code></dt><dd><p>Roles assigned to the tag. See “<a class="reference internal" href="#roles">Roles</a>” for more details.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">s</span></code></dt><dd><p>Scope of tag definition. Enabled by default.
+This field has no long-name.
+See also <code class="docutils literal notranslate"><span class="pre">scope</span></code>/<code class="docutils literal notranslate"><span class="pre">Z</span></code> flag.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">scope</span></code>/<code class="docutils literal notranslate"><span class="pre">Z</span></code></dt><dd><p>Prepend the <code class="docutils literal notranslate"><span class="pre">scope:</span></code> key to scope (<code class="docutils literal notranslate"><span class="pre">s</span></code>) field.
+See also <code class="docutils literal notranslate"><span class="pre">s</span></code> flag.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">scopeKind</span></code>/<code class="docutils literal notranslate"><span class="pre">p</span></code></dt><dd><p>Kind of scope as long-name</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">signature</span></code>/<code class="docutils literal notranslate"><span class="pre">S</span></code></dt><dd><p>When present, value is a language-dependent representation of the
+signature of a routine (e.g. prototype or parameter list). A routine signature in its complete form
+specifies the return type of a routine and its formal argument list.
+This extension field is presently supported only for C-based
+languages and does not include the return type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">typeref</span></code>/<code class="docutils literal notranslate"><span class="pre">t</span></code></dt><dd><p>Type and name of a variable, typedef, or return type of
+callable like function as <code class="docutils literal notranslate"><span class="pre">typeref:</span></code> field.
+Enabled by default.</p>
+</dd>
+</dl>
+<section id="kinds">
+<h4>Kinds<a class="headerlink" href="#kinds" title="Permalink to this heading">¶</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">kind</span></code> is a field which represents the <em>kind</em> of language object
+specified by a tag. Kinds used and defined are very different between
+parsers. For example, C language defines <code class="docutils literal notranslate"><span class="pre">macro</span></code>, <code class="docutils literal notranslate"><span class="pre">function</span></code>,
+<code class="docutils literal notranslate"><span class="pre">variable</span></code>, <code class="docutils literal notranslate"><span class="pre">typedef</span></code>, etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--kinds-(&lt;LANG&gt;|all)=[+|-](&lt;kinds&gt;|*)</span></code> option specifies a list of language-specific
+kinds of tags (or kinds) to include in the output file for a particular
+language.</p>
+<p>See the output of “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-kinds-full</span></code>” for the complete
+list of the kinds.</p>
+<p>Its value is either one of the
+corresponding one-letter flags or a long-name flag. It is permitted
+(and is, in fact, the default) for the key portion of this field to be
+omitted. The optional behaviors are controlled with the <code class="docutils literal notranslate"><span class="pre">--fields</span></code> option as follows.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>kinds.c
+<span class="go">foo     kinds.c /^int foo() {$/;&quot;       f       typeref:typename:int</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+k<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>kinds.c
+<span class="go">foo     kinds.c /^int foo() {$/;&quot;       f       typeref:typename:int</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+K<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>kinds.c
+<span class="go">foo     kinds.c /^int foo() {$/;&quot;       function        typeref:typename:int</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+z<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>kinds.c
+<span class="go">foo     kinds.c /^int foo() {$/;&quot;       kind:f  typeref:typename:int</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+zK<span class="w"> </span>-o<span class="w"> </span>-<span class="w"> </span>kinds.c
+<span class="go">foo     kinds.c /^int foo() {$/;&quot;       kind:function   typeref:typename:int</span>
+</pre></div>
+</div>
+</section>
+<section id="roles">
+<h4>Roles<a class="headerlink" href="#roles" title="Permalink to this heading">¶</a></h4>
+<p><em>Role</em> is a newly introduced concept in Universal Ctags. Role is a
+concept associated with reference tags, and is not implemented widely yet.</p>
+<p>As described previously in “<a class="reference internal" href="#kinds">Kinds</a>”, the <code class="docutils literal notranslate"><span class="pre">kind</span></code> field represents the type
+of language object specified with a tag, such as a function vs. a variable.
+Specific kinds are defined for reference tags, such as the C++ kind <code class="docutils literal notranslate"><span class="pre">header</span></code> for
+header file, or Java kind <code class="docutils literal notranslate"><span class="pre">package</span></code> for package statements. For such reference
+kinds, a <code class="docutils literal notranslate"><span class="pre">roles</span></code> field can be added to distinguish the role of the reference
+kind. In other words, the <code class="docutils literal notranslate"><span class="pre">kind</span></code> field identifies the <em>what</em> of the language
+object, whereas the <code class="docutils literal notranslate"><span class="pre">roles</span></code> field identifies the <em>how</em> of a referenced language
+object. Roles are only used with specific kinds.</p>
+<p>For a definition tag, this field takes <code class="docutils literal notranslate"><span class="pre">def</span></code> as a value.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">Baz</span></code> is tagged as a reference tag with kind <code class="docutils literal notranslate"><span class="pre">package</span></code> and with
+role <code class="docutils literal notranslate"><span class="pre">imported</span></code> with the following code.</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nn">Bar</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">Baz</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">Foo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+KEr<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>roles.java
+<span class="go">Bar     roles.java     /^package Bar;$/;&quot;      package roles:def</span>
+<span class="go">Foo     roles.java     /^class Foo {$/;&quot;       class   roles:def</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+EKr<span class="w"> </span>--extras<span class="o">=</span>+r<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>roles.java
+<span class="go">Bar     roles.java     /^package Bar;$/;&quot;      package roles:def</span>
+<span class="go">Baz     roles.java     /^import Baz;$/;&quot;       package roles:imported  extras:reference</span>
+<span class="go">Foo     roles.java     /^class Foo {$/;&quot;       class   roles:def</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--roles-(&lt;LANG&gt;|all).(&lt;kind&gt;|all)=[+|-][&lt;roles&gt;|*]</span></code> option specifies a list of kind-specific
+roles of tags to include in the output file for a particular language.</p>
+<p>Inquire the output of “<code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-roles</span></code>” for the list of
+roles.</p>
+</section>
+</section>
+<section id="extras">
+<h3>Extras<a class="headerlink" href="#extras" title="Permalink to this heading">¶</a></h3>
+<p>Generally, ctags tags only language objects appearing
+in source files, as is. In other words, a value for a <code class="docutils literal notranslate"><span class="pre">name:</span></code> field
+should be found on the source file associated with the <code class="docutils literal notranslate"><span class="pre">name:</span></code>. An
+<code class="docutils literal notranslate"><span class="pre">extra</span></code> type tag (<em>extra</em>) is for tagging a language object with a processed
+name, or for tagging something not associated with a language object. A typical
+extra tag is <code class="docutils literal notranslate"><span class="pre">qualified</span></code>, which tags a language object with a
+class-qualified or scope-qualified name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--extras-(&lt;LANG&gt;|all)=[+|-][&lt;flags&gt;|*]</span></code> option specifies
+whether to include extra tag entries for certain kinds of information.</p>
+<p>Inquire the output of <code class="docutils literal notranslate"><span class="pre">ctags</span> <span class="pre">--list-extras</span></code> for the list of extras.
+The meaning of major extras is as follows (long-name flag/one-letter flag):</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">anonymous</span></code>/none</dt><dd><p>Include an entry for the language object that has no name like lambda
+function. This extra has no one-letter flag and is enabled by
+default.</p>
+<p>The extra tag is useful as a placeholder to fill scope fields
+for language objects defined in a language object with no name.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="p">};</span>
+</pre></div>
+</div>
+<p>‘<code class="docutils literal notranslate"><span class="pre">x</span></code>’ and ‘<code class="docutils literal notranslate"><span class="pre">y</span></code>’ are the members of a structure. When filling the scope
+fields for them, ctags has trouble because the struct
+where ‘<code class="docutils literal notranslate"><span class="pre">x</span></code>’ and ‘<code class="docutils literal notranslate"><span class="pre">y</span></code>’ belong to has no name. For overcoming the trouble,
+ctags generates an anonymous extra tag for the struct
+and fills the scope fields with the name of the extra tag.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>-f<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>input.c
+<span class="go">__anon9f26d2460108      input.c /^struct {$/;&quot;  s</span>
+<span class="go">x       input.c /^      double x, y;$/;&quot;        m       struct:__anon9f26d2460108</span>
+<span class="go">y       input.c /^      double x, y;$/;&quot;        m       struct:__anon9f26d2460108</span>
+<span class="go">p       input.c /^} p = { .x = 0.0, .y = 0.0 };$/;&quot;     v       typeref:struct:__anon9f26d2460108</span>
+</pre></div>
+</div>
+<p>The above tag output has <code class="docutils literal notranslate"><span class="pre">__anon9f26d2460108</span></code> as an anonymous extra tag.
+The typeref field of ‘<code class="docutils literal notranslate"><span class="pre">p</span></code>’ also receives the benefit of it.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">fileScope</span></code>/<code class="docutils literal notranslate"><span class="pre">F</span></code></dt><dd><p>Indicates whether tags scoped only for a single file (i.e. tags which
+cannot be seen outside of the file in which they are defined, such as
+language objects with <code class="docutils literal notranslate"><span class="pre">static</span></code> modifier of C language) should be included
+in the output. See also the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option.</p>
+<p>This extra tag is enabled by default. Add <code class="docutils literal notranslate"><span class="pre">--extras=-F</span></code> option not to
+output tags scoped only for a single-file. This is the replacement for
+<code class="docutils literal notranslate"><span class="pre">--file-scope</span></code> option of Exuberant Ctags.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">f</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">g</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>filescope.c
+<span class="go">f       filescope.c     /^static int f() {$/;&quot;  f       typeref:typename:int    file:</span>
+<span class="go">g       filescope.c     /^int g() {$/;&quot; f       typeref:typename:int</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--extras<span class="o">=</span>-F<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>filescope.c
+<span class="go">g       filescope.c     /^int g() {$/;&quot; f       typeref:typename:int</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">inputFile</span></code>/<code class="docutils literal notranslate"><span class="pre">f</span></code></dt><dd><p>Include an entry for the base file name of every source file
+(e.g. <code class="docutils literal notranslate"><span class="pre">example.c</span></code>), which addresses the first line of the file.
+This flag is the replacement for <code class="docutils literal notranslate"><span class="pre">--file-tags</span></code> hidden option of
+Exuberant Ctags.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">end:</span></code> field is enabled, the end line number of the file can be
+attached to the tag. (However, ctags omits the <code class="docutils literal notranslate"><span class="pre">end:</span></code> field
+if no newline is in the file like an empty file.)</p>
+<p>By default, ctags doesn’t create the <code class="docutils literal notranslate"><span class="pre">inputFile</span></code>/<code class="docutils literal notranslate"><span class="pre">f</span></code> extra
+tag for the source file when ctags doesn’t find a parser
+for it. Enabling <code class="docutils literal notranslate"><span class="pre">Unknown</span></code> parser with <code class="docutils literal notranslate"><span class="pre">--languages=+Unknown</span></code> forces
+ctags to create the extra tags for any source files.</p>
+<p>The etags mode enables the <code class="docutils literal notranslate"><span class="pre">Unknown</span></code> parser implicitly.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pseudo</span></code>/<code class="docutils literal notranslate"><span class="pre">p</span></code></dt><dd><p>Include pseudo-tags. Enabled by default unless the tag file is
+written to standard output. See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> about
+the detail of pseudo-tags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">qualified</span></code>/<code class="docutils literal notranslate"><span class="pre">q</span></code></dt><dd><p>Include an extra class-qualified or namespace-qualified tag entry
+for each tag which is a member of a class or a namespace.</p>
+<p>This may allow easier location of a specific tags when
+multiple occurrences of a tag name occur in the tag file.
+Note, however, that this could potentially more than double
+the size of the tag file.</p>
+<p>The actual form of the qualified tag depends upon the language
+from which the tag was derived (using a form that is most
+natural for how qualified calls are specified in the
+language). For C++ and Perl, it is in the form
+<code class="docutils literal notranslate"><span class="pre">class::member</span></code>; for Eiffel and Java, it is in the form
+<code class="docutils literal notranslate"><span class="pre">class.member</span></code>.</p>
+<p>Note: Using backslash characters as separators forming
+qualified name in PHP. However, in tags output of
+Universal Ctags, a backslash character in a name is escaped
+with a backslash character. See <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a> about the escaping.</p>
+<p>The following example demonstrates the <code class="docutils literal notranslate"><span class="pre">qualified</span></code> extra tag.</p>
+<div class="highlight-Java notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">point</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>For the above source file, ctags tags <code class="docutils literal notranslate"><span class="pre">point</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> by
+default.  If the <code class="docutils literal notranslate"><span class="pre">qualified</span></code> extra is enabled from the command line
+(<code class="docutils literal notranslate"><span class="pre">--extras=+q</span></code>), then <code class="docutils literal notranslate"><span class="pre">point.x</span></code> is also tagged even though the string
+“<code class="docutils literal notranslate"><span class="pre">point.x</span></code>” is not in the source code.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+K<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>qualified.java
+<span class="go">point   qualified.java  /^class point {$/;&quot;     class</span>
+<span class="go">x       qualified.java  /^      double x;$/;&quot;   field   class:point</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+K<span class="w"> </span>--extras<span class="o">=</span>+q<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>qualified.java
+<span class="go">point   qualified.java  /^class point {$/;&quot;     class</span>
+<span class="go">x       qualified.java  /^      double x;$/;&quot;   field   class:point</span>
+<span class="go">point.x qualified.java  /^      double x;$/;&quot;   field   class:point</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">reference</span></code>/<code class="docutils literal notranslate"><span class="pre">r</span></code></dt><dd><p>Include reference tags. See “<a class="reference internal" href="#id1">TAG ENTRIES</a>” about reference tags.</p>
+<p>The following example demonstrates the <code class="docutils literal notranslate"><span class="pre">reference</span></code> extra tag.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;utils.h&quot;</span>
+<span class="cp">#define X</span>
+<span class="cp">#undef X</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">roles:system</span></code> or <code class="docutils literal notranslate"><span class="pre">roles:local</span></code> fields will be
+added depending on whether the include file name begins with ‘<code class="docutils literal notranslate"><span class="pre">&lt;</span></code>’ or not.</p>
+<p>“<code class="docutils literal notranslate"><span class="pre">#define</span> <span class="pre">X</span></code>” emits a definition tag. On the other hand “<code class="docutils literal notranslate"><span class="pre">#undef</span> <span class="pre">X</span></code>” emits a
+reference tag.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+EKr<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>inc.c
+<span class="go">X       inc.c   /^#define X$/;&quot; macro   file:   roles:def       extras:fileScope</span>
+<span class="gp">$ </span>ctags<span class="w"> </span>--fields<span class="o">=</span>+EKr<span class="w"> </span>--extras<span class="o">=</span>+r<span class="w"> </span>-uo<span class="w"> </span>-<span class="w"> </span>inc.c
+<span class="go">stdio.h inc.c   /^#include &lt;stdio.h&gt;/;&quot; header  roles:system    extras:reference</span>
+<span class="go">utils.h inc.c   /^#include &quot;utils.h&quot;/;&quot; header  roles:local     extras:reference</span>
+<span class="go">X       inc.c   /^#define X$/;&quot; macro   file:   roles:def       extras:fileScope</span>
+<span class="go">X       inc.c   /^#undef X$/;&quot;  macro   file:   roles:undef     extras:fileScope,reference</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="language-specific-fields-and-extras">
+<h3>Language-specific fields and extras<a class="headerlink" href="#language-specific-fields-and-extras" title="Permalink to this heading">¶</a></h3>
+<p>Exuberant Ctags has the concept of <em>fields</em> and <em>extras</em>. They are common
+between parsers of different languages. Universal Ctags extends this concept
+by providing language-specific fields and extras.</p>
+</section>
+</section>
+<section id="how-to-use-with-vi">
+<h2>HOW TO USE WITH VI<a class="headerlink" href="#how-to-use-with-vi" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">vi(1)</span></code> will, by default, expect a tag file by the name <code class="docutils literal notranslate"><span class="pre">tags</span></code> in the current
+directory. Once the tag file is built, the following commands exercise
+the tag indexing feature:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">vi</span> <span class="pre">-t</span> <span class="pre">tag</span></code></dt><dd><p>Start vi and position the cursor at the file and line where <code class="docutils literal notranslate"><span class="pre">tag</span></code>
+is defined.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">:ta</span> <span class="pre">tag</span></code></dt><dd><p>Find a tag.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Ctrl-]</span></code></dt><dd><p>Find the tag under the cursor.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Ctrl-T</span></code></dt><dd><p>Return to previous location before jump to tag (not widely implemented).</p>
+</dd>
+</dl>
+</section>
+<section id="how-to-use-with-gnu-emacs">
+<h2>HOW TO USE WITH GNU EMACS<a class="headerlink" href="#how-to-use-with-gnu-emacs" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">emacs(1)</span></code> will, by default, expect a tag file by the name <code class="docutils literal notranslate"><span class="pre">TAGS</span></code> in the
+current directory. Once the tag file is built, the following commands
+exercise the tag indexing feature:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">M-x</span> <span class="pre">visit-tags-table</span> <span class="pre">&lt;RET&gt;</span> <span class="pre">FILE</span> <span class="pre">&lt;RET&gt;</span></code></dt><dd><p>Select the tag file, <code class="docutils literal notranslate"><span class="pre">FILE</span></code>, to use.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">M-.</span> <span class="pre">[TAG]</span> <span class="pre">&lt;RET&gt;</span></code></dt><dd><p>Find the first definition of TAG. The default tag is the identifier
+under the cursor.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">M-*</span></code></dt><dd><p>Pop back to where you previously invoked <code class="docutils literal notranslate"><span class="pre">M-.</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">C-u</span> <span class="pre">M-.</span></code></dt><dd><p>Find the next definition for the last tag.</p>
+</dd>
+</dl>
+<p>For more commands, see the Tags topic in the Emacs info document.</p>
+</section>
+<section id="how-to-use-with-nedit">
+<h2>HOW TO USE WITH NEDIT<a class="headerlink" href="#how-to-use-with-nedit" title="Permalink to this heading">¶</a></h2>
+<p>NEdit version 5.1 and later can handle the new extended tag file format
+(see <code class="docutils literal notranslate"><span class="pre">--format</span></code>).</p>
+<ul class="simple">
+<li><p>To make NEdit use the tag file, select “File-&gt;Load Tags File”.</p></li>
+<li><p>To jump to the definition for a tag, highlight the word, then press <code class="docutils literal notranslate"><span class="pre">Ctrl-D</span></code>.</p></li>
+</ul>
+<p>NEdit 5.1 can read multiple tag files from different
+directories. Setting the X resource <code class="docutils literal notranslate"><span class="pre">nedit.tagFile</span></code> to the name of a tag
+file instructs NEdit to automatically load that tag file at startup time.</p>
+</section>
+<section id="caveats">
+<h2>CAVEATS<a class="headerlink" href="#caveats" title="Permalink to this heading">¶</a></h2>
+<p>Because ctags is neither a preprocessor nor a compiler,
+use of preprocessor macros can fool ctags into either
+missing tags or improperly generating inappropriate tags. Although
+ctags has been designed to handle certain common cases,
+this is the single biggest cause of reported problems. In particular,
+the use of preprocessor constructs which alter the textual syntax of C
+can fool ctags. You can work around many such problems
+by using the <code class="docutils literal notranslate"><span class="pre">-I</span></code> option.</p>
+<p>Note that since ctags generates patterns for locating
+tags (see the <code class="docutils literal notranslate"><span class="pre">--excmd</span></code> option), it is entirely possible that the wrong line
+may be found by your editor if there exists another source line which is
+identical to the line containing the tag. The following example
+demonstrates this condition:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">variable</span><span class="p">;</span>
+
+<span class="cm">/* ... */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">variable</span><span class="p">;</span>
+<span class="p">{</span>
+<span class="w">        </span><span class="cm">/* ... */</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Depending upon which editor you use and where in the code you happen to be,
+it is possible that the search pattern may locate the local parameter
+declaration before it finds the actual global variable definition,
+since the lines (and therefore their search patterns) are
+identical.</p>
+<p>This can be avoided by use of the <code class="docutils literal notranslate"><span class="pre">--excmd=n</span></code> option.</p>
+</section>
+<section id="incompatible-changes">
+<h2>INCOMPATIBLE CHANGES<a class="headerlink" href="#incompatible-changes" title="Permalink to this heading">¶</a></h2>
+<p>See <a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a> about incompatibilities between Universal
+Ctags and Exuberant Ctags.</p>
+<p>This section describes major incompatibilities within versions of Universal
+Ctags.</p>
+<dl class="simple">
+<dt>Unifying the kind Letter for <code class="docutils literal notranslate"><span class="pre">unknown</span></code> kinds</dt><dd><p>Some parsers used different kind letters for <code class="docutils literal notranslate"><span class="pre">unknown</span></code> kinds.
+EmacsLisp used <code class="docutils literal notranslate"><span class="pre">u</span></code>. Go used <code class="docutils literal notranslate"><span class="pre">u</span></code>. Julian used <code class="docutils literal notranslate"><span class="pre">x</span></code>. Lisp used <code class="docutils literal notranslate"><span class="pre">u</span></code>.
+Lua used <code class="docutils literal notranslate"><span class="pre">X</span></code>. and Python used <code class="docutils literal notranslate"><span class="pre">x</span></code>. They were unified to <code class="docutils literal notranslate"><span class="pre">Y</span></code> in
+the during development of version 5.9.x.</p>
+</dd>
+</dl>
+</section>
+<section id="bugs">
+<h2>BUGS<a class="headerlink" href="#bugs" title="Permalink to this heading">¶</a></h2>
+<p>ctags has more options than <code class="docutils literal notranslate"><span class="pre">ls(1)</span></code>.</p>
+<p>ctags assumes the input file is written in the correct
+grammar.  Otherwise output of ctags is undefined. In other words it has garbage
+in, garbage out (GIGO) feature.</p>
+<p>When parsing a C++ member function definition (e.g. <code class="docutils literal notranslate"><span class="pre">className::function</span></code>),
+ctags cannot determine whether the scope specifier
+is a class name or a namespace specifier and always lists it as a class name
+in the scope portion of the extension fields. Also, if a C++ function
+is defined outside of the class declaration (the usual case), the access
+specification (i.e. public, protected, or private) and implementation
+information (e.g. virtual, pure virtual) contained in the function
+declaration are not known when the tag is generated for the function
+definition. It will, however be available for prototypes (e.g. <code class="docutils literal notranslate"><span class="pre">--kinds-c++=+p</span></code>).</p>
+<p>No qualified tags are generated for language objects inherited into a class.</p>
+</section>
+<section id="environment-variables">
+<h2>ENVIRONMENT VARIABLES<a class="headerlink" href="#environment-variables" title="Permalink to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">TMPDIR</span></code></dt><dd><p>On Unix-like hosts where <code class="docutils literal notranslate"><span class="pre">mkstemp(3)</span></code> is available, the value of this
+variable specifies the directory in which to place temporary files.
+This can be useful if the size of a temporary file becomes too large
+to fit on the partition holding the default temporary directory
+defined at compilation time.</p>
+<p>ctags creates temporary
+files only if either (1) an emacs-style tag file is being
+generated, (2) the tag file is being sent to standard output, or
+(3) the program was compiled to use an internal sort algorithm to sort
+the tag files instead of the <code class="docutils literal notranslate"><span class="pre">sort(1)</span></code> utility of the operating system.
+If the <code class="docutils literal notranslate"><span class="pre">sort(1)</span></code> utility of the operating system is being used, it will
+generally observe this variable also.</p>
+<p>Note that if ctags
+is setuid, the value of <code class="docutils literal notranslate"><span class="pre">TMPDIR</span></code> will be ignored.</p>
+</dd>
+</dl>
+</section>
+<section id="files">
+<h2>FILES<a class="headerlink" href="#files" title="Permalink to this heading">¶</a></h2>
+<section id="output-files">
+<h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">tags</span></code></dt><dd><p>The default tag file created by ctags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TAGS</span></code></dt><dd><p>The default tag file created by etags.</p>
+</dd>
+</dl>
+</section>
+<section id="preloading-option-files">
+<h3>Preloading option files<a class="headerlink" href="#preloading-option-files" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/ctags/*.ctags</span></code>, or <code class="docutils literal notranslate"><span class="pre">$HOME/.config/ctags/*.ctags</span></code> if
+<code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME</span></code> is not defined
+(on other than MS Windows)</p>
+<p><code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d/*.ctags</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">$HOMEDRIVE$HOMEPATH/ctags.d/*.ctags</span></code> (on MS Windows only)</p>
+<p><code class="docutils literal notranslate"><span class="pre">.ctags.d/*.ctags</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">ctags.d/*.ctags</span></code></p>
+<blockquote>
+<div><p>If any of these configuration files exist, each will be expected to
+contain a set of default options which are read in the order listed
+when ctags starts, but before any command line options
+are read. This makes it possible to set up personal or project-level defaults.</p>
+<p>It
+is possible to compile ctags to read an additional
+configuration file before any of those shown above, which will be
+indicated if the output produced by the <code class="docutils literal notranslate"><span class="pre">--version</span></code> option lists the
+<code class="docutils literal notranslate"><span class="pre">custom-conf</span></code> feature.</p>
+<p>Options appearing on the command line will override options
+specified in these files. Only options will be read from these
+files.</p>
+<p>Note that the option
+files are read in line-oriented mode in which spaces are significant
+(since shell quoting is not possible) but spaces at the beginning
+of a line are ignored. Each line of the file is read as
+one command line parameter (as if it were quoted with single quotes).
+Therefore, use new lines to indicate separate command-line arguments.</p>
+<p>A line starting with ‘<code class="docutils literal notranslate"><span class="pre">#</span></code>’ is treated as a comment.</p>
+<p><code class="docutils literal notranslate"><span class="pre">*.ctags</span></code> files in a directory are loaded in alphabetical order.</p>
+</div></blockquote>
+</section>
+<section id="default-optlib-path-list">
+<h3>Default optlib path list<a class="headerlink" href="#default-optlib-path-list" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/ctags</span></code>, or <code class="docutils literal notranslate"><span class="pre">$HOME/.config/ctags</span></code> if
+<code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME</span></code> is not defined
+(on other than MS Windows)</p>
+<p><code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">$HOMEDRIVE$HOMEPATH/ctags.d</span></code> (on MS Windows only)</p>
+<blockquote>
+<div><p>These directories are parts of the optlib path list by default.
+See “<a class="reference internal" href="#option-file-options">Option File Options</a>” about the optlib path list.</p>
+<p>If you have a set of options that you want to enable
+conditionally, make a directory in the path in the optlib path
+list, and put the options to the files having .ctags as extensions
+under the directory. <code class="docutils literal notranslate"><span class="pre">--options=&lt;the-directory-name&gt;</span></code> is for
+enabling the options.</p>
+<p>For example, consider you have some options you want to enable
+only when tagging the Linux kernel source tree.  In that case,
+make <code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d/linux</span></code> directory, put the options to
+<code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d/linux/my.ctags</span></code>. If you have many options, you
+can split them into multiple files like
+<code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d/linux/device-driver.ctags</span></code> and
+<code class="docutils literal notranslate"><span class="pre">$HOME/.ctags.d/linux/network-stack.ctags</span></code>. Either way, you can
+enable the options in the .ctags file(s) under the directory by
+adding <code class="docutils literal notranslate"><span class="pre">--options=linux</span></code> to your ctags command line.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="see-also">
+<h2>SEE ALSO<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p>See <a class="reference internal" href="ctags-optlib.7.html#ctags-optlib-7"><span class="std std-ref">ctags-optlib(7)</span></a> for defining (or extending) a parser
+in a configuration file.</p>
+<p>See <a class="reference internal" href="tags.5.html#tags-5"><span class="std std-ref">tags(5)</span></a> for the format of tag files.</p>
+<p>See <a class="reference internal" href="ctags-incompatibilities.7.html#ctags-incompatibilities-7"><span class="std std-ref">ctags-incompatibilities(7)</span></a> about known incompatible changes
+with Exuberant Ctags.</p>
+<p>See <a class="reference internal" href="ctags-client-tools.7.html#ctags-client-tools-7"><span class="std std-ref">ctags-client-tools(7)</span></a> if you are interested in writing
+a tool for processing tags files.</p>
+<p>See <a class="reference internal" href="ctags-lang-python.7.html#ctags-lang-python-7"><span class="std std-ref">ctags-lang-python(7)</span></a> about python input specific notes.</p>
+<p>See <a class="reference internal" href="readtags.1.html#readtags-1"><span class="std std-ref">readtags(1)</span></a> about a client tool for binary searching a
+name in a sorted tags file.</p>
+<p>The official Universal Ctags web site at: <a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p>Also <code class="docutils literal notranslate"><span class="pre">ex(1)</span></code>, <code class="docutils literal notranslate"><span class="pre">vi(1)</span></code>, <code class="docutils literal notranslate"><span class="pre">elvis(1)</span></code>, or, better yet, <code class="docutils literal notranslate"><span class="pre">vim(1)</span></code>, the official editor of ctags.
+For more information on <code class="docutils literal notranslate"><span class="pre">vim(1)</span></code>, see the Vim web site at: <a class="reference external" href="https://www.vim.org/">https://www.vim.org/</a></p>
+</section>
+<section id="author">
+<h2>AUTHOR<a class="headerlink" href="#author" title="Permalink to this heading">¶</a></h2>
+<p>Universal Ctags project
+<a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p>Darren Hiebert &lt;<a class="reference external" href="mailto:dhiebert&#37;&#52;&#48;users&#46;sourceforge&#46;net">dhiebert<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a>&gt;
+<a class="reference external" href="http://DarrenHiebert.com/">http://DarrenHiebert.com/</a></p>
+</section>
+<section id="motivation">
+<h2>MOTIVATION<a class="headerlink" href="#motivation" title="Permalink to this heading">¶</a></h2>
+<p>“Think ye at all times of rendering some service to every member of the
+human race.”</p>
+<p>“All effort and exertion put forth by man from the fullness of his heart is
+worship, if it is prompted by the highest motives and the will to do
+service to humanity.”</p>
+<p>-- From the Baha’i Writings</p>
+</section>
+<section id="credits">
+<h2>CREDITS<a class="headerlink" href="#credits" title="Permalink to this heading">¶</a></h2>
+<p>This version of ctags (Universal Ctags) derived from
+the repository, known as fishman-ctags, started by Reza Jelveh.</p>
+<p>The fishman-ctags was derived from Exuberant Ctags.</p>
+<p>Some parsers are taken from <code class="docutils literal notranslate"><span class="pre">tagmanager</span></code> of the Geany (<a class="reference external" href="https://www.geany.org/">https://www.geany.org/</a>)
+project.</p>
+<p>Exuberant Ctags was originally derived from and
+inspired by the ctags program by Steve Kirkendall &lt;<a class="reference external" href="mailto:kirkenda&#37;&#52;&#48;cs&#46;pdx&#46;edu">kirkenda<span>&#64;</span>cs<span>&#46;</span>pdx<span>&#46;</span>edu</a>&gt;
+that comes with the Elvis vi clone (though virtually none of the original
+code remains).</p>
+<p>Credit is also due Bram Moolenaar &lt;<a class="reference external" href="mailto:Bram&#37;&#52;&#48;vim&#46;org">Bram<span>&#64;</span>vim<span>&#46;</span>org</a>&gt;, the author of vim,
+who has devoted so much of his time and energy both to developing the editor
+as a service to others, and to helping the orphans of Uganda.</p>
+<p>The section entitled “<a class="reference internal" href="#how-to-use-with-gnu-emacs">HOW TO USE WITH GNU EMACS</a>” was shamelessly stolen
+from the info page for GNU etags.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">ctags</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#command-line-interface">COMMAND LINE INTERFACE</a><ul>
+<li><a class="reference internal" href="#letters-and-names">Letters and names</a></li>
+<li><a class="reference internal" href="#list-options">List options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#options">OPTIONS</a><ul>
+<li><a class="reference internal" href="#input-output-file-options">Input/Output File Options</a></li>
+<li><a class="reference internal" href="#output-format-options">Output Format Options</a></li>
+<li><a class="reference internal" href="#language-selection-and-mapping-options">Language Selection and Mapping Options</a></li>
+<li><a class="reference internal" href="#tags-file-contents-options">Tags File Contents Options</a></li>
+<li><a class="reference internal" href="#option-file-options">Option File Options</a></li>
+<li><a class="reference internal" href="#optlib-options">optlib Options</a></li>
+<li><a class="reference internal" href="#language-specific-options">Language Specific Options</a></li>
+<li><a class="reference internal" href="#listing-options">Listing Options</a></li>
+<li><a class="reference internal" href="#miscellaneous-options">Miscellaneous Options</a></li>
+<li><a class="reference internal" href="#obsoleted-options">Obsoleted Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#operational-details">OPERATIONAL DETAILS</a><ul>
+<li><a class="reference internal" href="#notes-for-c-c-parser">Notes for C/C++ Parser</a></li>
+<li><a class="reference internal" href="#determining-file-language">Determining file language</a><ul>
+<li><a class="reference internal" href="#file-name-mapping">File name mapping</a></li>
+<li><a class="reference internal" href="#heuristically-guessing">Heuristically guessing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tag-file-format">TAG FILE FORMAT</a></li>
+<li><a class="reference internal" href="#tag-entries">TAG ENTRIES</a><ul>
+<li><a class="reference internal" href="#extension-fields">Extension fields</a><ul>
+<li><a class="reference internal" href="#kinds">Kinds</a></li>
+<li><a class="reference internal" href="#roles">Roles</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extras">Extras</a></li>
+<li><a class="reference internal" href="#language-specific-fields-and-extras">Language-specific fields and extras</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-to-use-with-vi">HOW TO USE WITH VI</a></li>
+<li><a class="reference internal" href="#how-to-use-with-gnu-emacs">HOW TO USE WITH GNU EMACS</a></li>
+<li><a class="reference internal" href="#how-to-use-with-nedit">HOW TO USE WITH NEDIT</a></li>
+<li><a class="reference internal" href="#caveats">CAVEATS</a></li>
+<li><a class="reference internal" href="#incompatible-changes">INCOMPATIBLE CHANGES</a></li>
+<li><a class="reference internal" href="#bugs">BUGS</a></li>
+<li><a class="reference internal" href="#environment-variables">ENVIRONMENT VARIABLES</a></li>
+<li><a class="reference internal" href="#files">FILES</a><ul>
+<li><a class="reference internal" href="#output-files">Output files</a></li>
+<li><a class="reference internal" href="#preloading-option-files">Preloading option files</a></li>
+<li><a class="reference internal" href="#default-optlib-path-list">Default optlib path list</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+<li><a class="reference internal" href="#author">AUTHOR</a></li>
+<li><a class="reference internal" href="#motivation">MOTIVATION</a></li>
+<li><a class="reference internal" href="#credits">CREDITS</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../man-pages.html"
+                          title="previous chapter">Man pages</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="ctags-json-output.5.html"
+                          title="next chapter">ctags-json-output</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="ctags-json-output.5.html" title="ctags-json-output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../man-pages.html" title="Man pages"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../man-pages.html" >Man pages</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">ctags</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

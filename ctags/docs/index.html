@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Universal Ctags Hacking Guide &#8212; Universal Ctags 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building ctags" href="building.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="building.html" title="Building ctags"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Universal Ctags Hacking Guide</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="universal-ctags-hacking-guide">
+<h1>Universal Ctags Hacking Guide<a class="headerlink" href="#universal-ctags-hacking-guide" title="Permalink to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Version<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Draft</p>
+</dd>
+<dt class="field-even">Authors<span class="colon">:</span></dt>
+<dd class="field-even"><p>Universal Ctags developers</p>
+</dd>
+<dt class="field-odd">Web Page<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://ctags.io/">Universal Ctags</a> (abbreviated as u-ctags) is a <em>maintained</em> implementation of
+<code class="docutils literal notranslate"><span class="pre">ctags</span></code>.
+<code class="docutils literal notranslate"><span class="pre">ctags</span></code> generates an index (or tag) file of language objects found in source
+files for programming languages.
+This index makes it easy for text editors and other tools to locate the indexed
+items.</p>
+<p><a class="reference external" href="http://ctags.sourceforge.net/">Exuberant Ctags</a> (e-ctags) maintained by Darren Hiebert, the ancestor of
+<a class="reference external" href="https://ctags.io/">Universal Ctags</a>, improved traditional ctags with multi-language support, the
+ability for the user to define new languages searched by regular expressions
+(called optlib in Universal Ctags), and the ability to generate emacs-style TAGS
+files.
+But the activity of the project unfortunately stalled.</p>
+<p><a class="reference external" href="https://ctags.io/">Universal Ctags</a> has the objective of continuing the development of <a class="reference external" href="http://ctags.sourceforge.net/">Exuberant
+Ctags</a>.
+Reza Jelveh &lt;<a class="reference external" href="mailto:reza&#46;jelveh&#37;&#52;&#48;gmail&#46;com">reza<span>&#46;</span>jelveh<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt; initially created a personal fork of
+<a class="reference external" href="http://ctags.sourceforge.net/">Exuberant Ctags</a> on GitHub.
+As interest and participation grew, it was decided to move development to a
+dedicated project as <a class="reference external" href="https://ctags.io/">Universal Ctags</a>.
+The goal of this project is to maintain a common/unified working space where
+people interested in making ctags better can work together.</p>
+<p>Some of the major features of <a class="reference external" href="https://ctags.io/">Universal Ctags</a> are:</p>
+<ul class="simple">
+<li><p>greater number of supported languages</p></li>
+<li><dl class="simple">
+<dt>better language support</dt><dd><ul>
+<li><p>new extended C/C++ language parser, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>fully extended optlib (a feature to define a new language parser from a
+command line)</p></li>
+<li><p>interactive mode (experimental)</p></li>
+</ul>
+<p>The primary documents of <a class="reference external" href="https://ctags.io/">Universal Ctags</a> are man pages. Users should first
+consult the <a class="reference internal" href="man/ctags.1.html#ctags-1"><span class="std std-ref">ctags(1)</span></a>, and <a class="reference internal" href="man-pages.html#man-pages"><span class="std std-ref">other man pages</span></a> if
+necessary.</p>
+<p>This guide, which also includes the man pages, is primarily for developers and
+provides additional information to the man pages, including experimental
+features.</p>
+<p>This is a draft document. Proofreading and pull-requests are welcome!</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="building.html">Building ctags</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotools.html">Building with configure (*nix including GNU/Linux)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows.html">Building/hacking/using on MS-Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="osx.html">Building on Mac OS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="man-pages.html">Man pages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags.1.html">ctags(1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-json-output.5.html">ctags-json-output(5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/tags.5.html">tags(5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-optlib.7.html">ctags-optlib(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-client-tools.7.html">ctags-client-tools(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-incompatibilities.7.html">ctags-incompatibilities(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-faq.7.html">ctags-faq(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-asm.7.html">ctags-lang-asm(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-autoit.7.html">ctags-lang-autoit(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-elm.7.html">ctags-lang-elm(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-fortran.7.html">ctags-lang-fortran(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-gdscript.7.html">ctags-lang-gdscript(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-iPythonCell.7.html">ctags-lang-iPythonCell(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-inko.7.html">ctags-lang-inko(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-javascript.7.html">ctags-lang-javascript(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-julia.7.html">ctags-lang-julia(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-kconfig.7.html">ctags-lang-kconfig(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-python.7.html">ctags-lang-python(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-r.7.html">ctags-lang-r(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-rmarkdown.7.html">ctags-lang-rmarkdown(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-sql.7.html">ctags-lang-sql(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-systemtap.7.html">ctags-lang-systemtap(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-tcl.7.html">ctags-lang-tcl(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-terraform.7.html">ctags-lang-terraform(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/ctags-lang-verilog.7.html">ctags-lang-verilog(7)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="man/readtags.1.html">readtags(1)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parsers.html">Parsers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parser-asm.html">Asm parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-cmake.html">CMake parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-cxx.html">The new C/C++ parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-gdscript.html">The new GDScript parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-html.html">The new HTML parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-puppetManifest.html">puppetManifest parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-python.html">The new Python parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-tcl.html">The new Tcl parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-vim.html">The Vim parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parser-xslt.html">XSLT parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="option-file.html">Option files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="option-file.html#order-of-loading-option-files">Order of loading option files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="option-file.html#options-pathname-option"><code class="docutils literal notranslate"><span class="pre">--options=PATHNAME</span></code> option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="option-file.html#tips-for-writing-an-option-file">Tips for writing an option file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="option-file.html#difference-from-exuberant-ctags">Difference from Exuberant Ctags</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="output-format.html">Output formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="output-tags.html">Changes to the tags file format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-xref.html">Xref output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output-json.html">JSON output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running-multi-parsers.html">Running multiple parsers on an input file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running-multi-parsers.html#guest-parser-applying-a-parser-to-specified-areas-of-input-file">Guest parser: Applying a parser to specified areas of input file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running-multi-parsers.html#subparser-tagging-definitions-of-higher-upper-level-language">Subparser: Tagging definitions of higher (upper) level language</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interactive-mode.html">Interactive mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interactive-mode.html#generate-tags">generate-tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interactive-mode.html#sandbox-submode">sandbox submode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="news.html">Other changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="news.html#new-and-extended-options">New and extended options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html#incompatible-changes-in-command-line">Incompatible changes in command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html#changes-imported-from-exuberant-ctags">Changes imported from Exuberant Ctags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html#parser-related-changes">Parser related changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="news.html#readtags">Readtags</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optlib.html">Extending ctags with Regex parser (<em>optlib</em>)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#regular-expression-regex-engine">Regular expression (regex) engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#perl-compatible-regular-expressions-pcre2-engine">Perl-compatible regular expressions (PCRE2) engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#regex-option-argument-flags">Regex option argument flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#overriding-the-letter-for-file-kind">Overriding the letter for file kind</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#generating-fully-qualified-tags-automatically-from-scope-information">Generating fully qualified tags automatically from scope information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#multi-line-pattern-match">Multi-line pattern match</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#advanced-pattern-matching-with-multiple-regex-tables">Advanced pattern matching with multiple regex tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#scheduling-a-guest-parser-with-guest-regex-flag">Scheduling a guest parser with <code class="docutils literal notranslate"><span class="pre">_guest</span></code> regex flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#defining-a-subparser">Defining a subparser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optlib.html#translating-an-option-file-into-c-source-code-optlib2c">Translating an option file into C source code (optlib2c)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="optscript.html">Optscript, a programming language for extending optlib parsers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#preparation-for-learning">Preparation for learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#syntax-extension">Syntax extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#the-optscript-command">The <code class="docutils literal notranslate"><span class="pre">optscript</span></code> command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#optscript-in-ctags">Optscript in ctags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#recipes">Recipes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optscript.html#difference-between-optscript-and-postscript">Difference between Optscript and PostScript</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending ctags with a parser written in C</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parser-in-c.html">Writing a parser in C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html">Input text stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#output-tag-stream">Output tag stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#tokeninfo-api">tokenInfo API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#multiple-parsers">Multiple parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#packcc-compiler-compiler">PackCC compiler-compiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#automatic-parser-guessing-tbw">Automatic parser guessing (TBW)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#managing-regular-expression-parsers-tbw">Managing regular expression parsers (TBW)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal.html#ghost-kind-in-regex-parser-tbw">Ghost kind in regex parser (TBW)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing-ctags.html">Testing ctags</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#tmain-a-facility-for-testing-main-part"><em>Tmain</em>: a facility for testing main part</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#tinst-installation-test"><em>Tinst</em>: installation test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#fussy-syntax-checking">Fussy syntax checking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#finding-performance-bottleneck">Finding performance bottleneck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#checking-coverage">Checking coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-ctags.html#running-cppcheck">Running cppcheck</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing-parser.html">Testing a parser</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#units-test-facility"><em>Units</em> test facility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#reviewing-the-result-of-units-test">Reviewing the result of Units test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#semi-fuzz-fuzz-testing">Semi-fuzz(<em>Fuzz</em>) testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#noise-testing"><em>Noise</em> testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#chop-and-slap-testing"><em>Chop</em> and <em>slap</em> testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#input-validation-for-units">Input validation for <em>Units</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing-parser.html#testing-examples-in-language-specific-man-pages">Testing examples in language specific man pages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing-readtags.html">Testing readtags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reporting.html">Request for extending a parser (or Reporting a bug of parser)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html#before-reporting">Before reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html#the-content-of-report">The content of report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html#an-example-of-good-report">An example of good report</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributions.html">Contributions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#basic-rules">Basic rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#before-you-start">Before You Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#developing-a-parser">Developing a parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#writing-documents">Writing Documents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#committing-and-submitting-a-pull-request">Committing and submitting a pull request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributions.html#rules-for-reviewing-a-pull-request">Rules for reviewing a pull request</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="releasing.html">How to release a new version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other-projects.html">Relationship between other projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="other-projects.html#other-tagging-engines">Other tagging engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other-projects.html#software-using-ctags">Software using ctags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other-projects.html#other-interesting-ctags-repositories">Other interesting ctags repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="other-projects.html#tracking-other-projects">Tracking other projects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developers.html">Who we are</a></li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="building.html"
+                          title="next chapter">Building ctags</a></p>
+  </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="building.html" title="Building ctags"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Universal Ctags 0.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Universal Ctags Hacking Guide</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015-2022, Universal Ctags Team.
+      Last updated on 08 Jun 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    </div>
+  </body>
+</html>

@@ -8,7 +8,7 @@ import { ucf_to_xdc_normal_order,ucf_to_xdc_sort_order } from './verilog_format/
 import {   registerHoverProvider, registerGotoDefinition  } from './routine_jump/hover';
 import LintManager from './linter/LintManager';
 import { createLogger, Logger } from './logger';
-import { extractData } from './verilog_format/utils';
+import { extractData } from './bit_backup/utils';
 import { doSelection,reverse } from './verilog_format/Increment_Selection';
 import { findVerilogModules, VerilogModuleNode } from './verilog_core';
 import { activate as activateRoutineJump, deactivate as deactivateRoutineJump } from './routine_jump/routine_jump';
@@ -22,7 +22,8 @@ import * as DefinitionProvider from './providers/DefinitionProvider';
 import * as CompletionItemProvider from './providers/CompletionItemProvider';
 import * as HoverProvider from './providers/HoverProvider';
 import path = require('path');
-
+import { runExtensionWorkflow, selectAndProcessIpFolder } from './readVeo.ts/readVeo';
+import { runExtensionBitbackup,refreshWebview,vivadoQuestsimModelsim} from './bit_backup/bit_backup'; 
 var ctagsManager: CtagsManager;
 export var logger: Logger; // Global logger
 let extensionID: string = 'mshr-h.veriloghdl';
@@ -249,14 +250,49 @@ export function activate(context: vscode.ExtensionContext) {
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
-		// //动态代码片段-可以加入作者名称
-		registerDynamicSnippet(context);
+		// // //动态代码片段-可以加入作者名称
+		// registerDynamicSnippet(context);
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 		//命令创建modelsim / tb 
 		context.subscriptions.push(...registerCommands());
 
+		// // 读取VIVAD 的最新ip的Veo文件 ：就是IP的例化文件
+		context.subscriptions.push(
+			vscode.commands.registerCommand('extension.Vivado_FindIP', async () => {
+			await runExtensionWorkflow(context);
+			})
+		);
+		  
+		// 读取VIVAD 的Veo文件 手动选择需要的IP文件夹
+		context.subscriptions.push(
+			vscode.commands.registerCommand('extension.Vivado_FindIP_hand', async () => {
+			await selectAndProcessIpFolder(context);
+			})
+		);
+
+		//bit文件备份
+
+		context.subscriptions.push(
+			vscode.commands.registerCommand('extension.Vivado_Bitbackup', async () => {
+			await runExtensionBitbackup(context);
+			})
+		);
+
+		// 显示备份的bit的日志web
+		context.subscriptions.push(
+			vscode.commands.registerCommand('bitBackup.Vivado_WebShowLog', async () => {
+			await refreshWebview(context);
+			})
+		);
+		// VIVADO 联合仿真
+		//vivadoQuestsimModelsim 
+		context.subscriptions.push(
+			vscode.commands.registerCommand('extension.Vivado_Questsim_Modelsim', async () => {
+			await vivadoQuestsimModelsim(context);
+			})
+		);
 		
 
 		context.subscriptions.push(disposable);

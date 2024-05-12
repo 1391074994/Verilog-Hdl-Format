@@ -6,6 +6,7 @@
 * 操作范例:[bilibi 示范链接](https://www.bilibili.com/video/BV1xi421d7e9/?vd_source=99e34f775e17481ae5a0ed7fad6b00cc#reply1451507881)
 * 演示文档链接:[[中文文档]](https://1391074994.github.io/Verilog-Hdl-Format/)[[english]](https://1391074994.github.io/Verilog-Hdl-Format/#/./README_en)
 * github链接:[verilog-hdl-format](https://github.com/1391074994/verilog-hdl-format)
+* VSCODE版本需要大于等于 1.74.3
 ## 功能简介
 1. 语法功能
     * [代码格式化](./gsh/geshihua.md)
@@ -16,11 +17,15 @@
     * [代码补全](./bq/bq.md)
     * [定义悬停](./yf/yf.md)
     * [代码错误检查](./linter/linter.md)
+
 2. 其他功能
+    * [VIVADO联合仿真]()
+    * [VIVADO程序备份和自动下载]()
     * [ucf转xdc文件](./ucf_to_xdc/ucf_to_xdc.md) 
     * [vivado仿真文件的快速转换](./sim_do/sim_do.md)
     * [游标列递增、递减](./incrementSelection/incrementSelection.md)
     * [颜色主题](./thems/thems.md)
+
 
 1. 实现verilog代码格式化功能（变量对齐，逗号对齐，括号对齐）,在设置界面可以配置缩进量。功能触发：按下 ctrl+shift+p :输入 verilog。 快捷键 CTRL + L;功能2：加入只对于always块的格式化，在设置界面可以配置缩进量。命令：verilog-simplealign.always_valuation_func；快捷键ctrl + U。
 2. 一键例化功能,例化的代码自动复制到剪切板。功能触发：按下 ctrl+shift+p :输入 Convert_instance。一键tb功能:按下 ctrl+shift+p :输入 Convert_testbench.
@@ -36,7 +41,10 @@
 10. 加入了verilog 文件树显示功能.需要命令Refresh the verilog file tree display(中文：刷新verilog文件树显示)触发和刷新（容器右上角有刷新按钮/主编辑器区域鼠标右键也有命令）
 11. 加入verilog定义跳转,例化名跳转,例化的端口跳转。快捷跳转需要ctags,（支持跨文件跳转）。
 12. 加入了颜色主题- VSCODE 颜色主题：[jiang percy verilog themes]()
-
+13. 读取VIVAD 的最新ip的Veo文件 ：就是IP的例化文件
+14. 加入了bit文件备份功能,使用Bitbackup命令进行备份
+15. 加入自动生成下载bit程序和刷新ILA脚本,使用ReFreShWbLog命令打开WEB界面,点击按钮后直接在VIVADO 的 tcl栏目黏贴既可运行备份的版本程序.
+16. 加入了VIVADO和questasim/modelsim的联合仿真功能
 
 * 代码片段:支持输入的代码片段:  | module | geli | jishuqi | shangshenyan | tb | zhuangtaiji | always | dapai | assign | alwaysposclk | alwaysnegclk | begin | end | initial | case | reg | regarray | regmemory | wire | wirearray | array | parameter | localparam | integer | signed | include | def | ifdef | ifndef | elsif | endif | undef | ts | default_nettype | ternary | if | ifelse | for | while | forever | function | generate |genvar
       其中 比较常用的部分:module/geli/jishuqi/shangshenyan/tb/zhuangtaiji/always/dapai
@@ -105,10 +113,6 @@ output          [ /*[num5]*/  7:/*[num6]*/ 0]      uart_data_232_0        ,
 ```
 
 13. Verilog Module Finder: Exclude Folders ： verilog 文件树的排除文件夹名称，可以自定义增加，删除需要匹配的文件夹名称。[所打开的文件夹中屏蔽掉IP/或者一些备份文件的Verilog文件，使文件树的TOP层显示更加干净，默认是屏蔽（ip和core的文件夹）]()。
-
-
-* 文件树的显示的时候
-
 
 14. FPGA_verilog.ctags.path:需要外部环境ctags的路径。可以实现语法定义跳转（支持跨文件）。
 

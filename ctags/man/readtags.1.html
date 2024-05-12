@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<title>readtags</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7952 2016-07-26 18:15:59Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+.subscript {
+  vertical-align: sub;
+  font-size: smaller }
+
+.superscript {
+  vertical-align: super;
+  font-size: smaller }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left, table.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right, table.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.align-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+.align-top    {
+  vertical-align: top }
+
+.align-middle {
+  vertical-align: middle }
+
+.align-bottom {
+  vertical-align: bottom }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="readtags">
+<span id="readtags-1"></span>
+<h1 class="title">readtags</h1>
+<h2 class="subtitle" id="find-tag-file-entries-matching-specified-names">Find tag file entries matching specified names</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Version:</th>
+<td>6.0.0</td></tr>
+<tr class="manual-group field"><th class="docinfo-name">Manual group:</th><td class="field-body">Universal Ctags</td>
+</tr>
+<tr class="manual-section field"><th class="docinfo-name">Manual section:</th><td class="field-body">1</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="synopsis">
+<h1>SYNOPSIS</h1>
+<div class="line-block">
+<div class="line"><strong>readtags</strong> -h | --help</div>
+<div class="line"><strong>readtags</strong> (-H | --help-expression) (filter|sorter|formatter)</div>
+<div class="line"><strong>readtags</strong> -v | --version</div>
+<div class="line"><strong>readtags</strong> [OPTION]... ACTION</div>
+</div>
+</div>
+<div class="section" id="description">
+<h1>DESCRIPTION</h1>
+<p>The <strong>readtags</strong> program filters, sorts and prints tag entries in a tags file.
+The basic filtering is done using <strong>actions</strong>, by which you can list all
+regular tags, pseudo tags or regular tags matching specific name. Then, further
+filtering, sorting, and formatting can be done using <strong>post processors</strong>, namely
+<strong>filter expressions</strong>, <strong>sorter expressions</strong>, and <strong>formatter expressions</strong>.</p>
+</div>
+<div class="section" id="actions">
+<h1>ACTIONS</h1>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-l</span></tt>, <tt class="docutils literal"><span class="pre">--list</span></tt></dt>
+<dd>List regular tags.</dd>
+<dt><tt class="docutils literal"><span class="pre">[-]</span> NAME</tt></dt>
+<dd>List regular tags matching NAME.
+&quot;-&quot; as NAME indicates arguments after this as NAME even if they start with -.</dd>
+<dt><tt class="docutils literal"><span class="pre">-D</span></tt>, <tt class="docutils literal"><span class="pre">--list-pseudo-tags</span></tt></dt>
+<dd>Equivalent to <tt class="docutils literal"><span class="pre">--list-pseudo-tags</span></tt>.</dd>
+</dl>
+</div>
+<div class="section" id="options">
+<h1>OPTIONS</h1>
+<div class="section" id="controlling-the-tags-reading-behavior">
+<h2>Controlling the Tags Reading Behavior</h2>
+<p>The behavior of reading tags can be controlled using these options:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-t</span> TAGFILE</tt>, <tt class="docutils literal"><span class="pre">--tag-file</span> TAGFILE</tt></dt>
+<dd>Use specified tag file (default: &quot;tags&quot;).
+Giving &quot;-&quot; as TAGFILE indicates reading the tags file content from the
+standard input. &quot;-&quot; can make the command line simpler. However,
+it doesn't mean efficient; readtags stores the data to a temorary
+file and reads that file for taking the ACTION.</dd>
+<dt><tt class="docutils literal"><span class="pre">-s[0|1|2]</span></tt>, <tt class="docutils literal"><span class="pre">--override-sort-detection</span> METHOD</tt></dt>
+<dd>Override sort detection of tag file.
+METHOD: unsorted|sorted|foldcase</dd>
+</dl>
+<p>The NAME action will perform binary search on sorted (including &quot;foldcase&quot;)
+tags files, which is much faster then on unsorted tags files.</p>
+</div>
+<div class="section" id="controlling-the-name-action-behavior">
+<h2>Controlling the NAME Action Behavior</h2>
+<p>The behavior of the NAME action can be controlled using these options:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-i</span></tt>, <tt class="docutils literal"><span class="pre">--icase-match</span></tt></dt>
+<dd>Perform case-insensitive matching in the NAME action.</dd>
+<dt><tt class="docutils literal"><span class="pre">-p</span></tt>, <tt class="docutils literal"><span class="pre">--prefix-match</span></tt></dt>
+<dd>Perform prefix matching in the NAME action.</dd>
+</dl>
+</div>
+<div class="section" id="controlling-the-output">
+<h2>Controlling the Output</h2>
+<p>By default, the output of readtags contains only the name, input and pattern
+field. The Output can be tweaked using these options:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-A</span></tt>, <tt class="docutils literal"><span class="pre">--absolute-input</span></tt></dt>
+<dd>Do the same as <tt class="docutils literal"><span class="pre">-C</span></tt> option but use only absolute path form.</dd>
+<dt><tt class="docutils literal"><span class="pre">-C</span></tt>, <tt class="docutils literal"><span class="pre">--canonicalize-input</span></tt></dt>
+<dd><p class="first">Resolve '..' and '.' in input fields of regular tags.
+This produces a unique representation of the input path.
+This option works only with tags files having <tt class="docutils literal">!_TAG_PROC_CWD</tt> pseudo
+tag.</p>
+<p class="last">NOTE: The current implementation accepts only <tt class="docutils literal">!_TAG_PROC_CWD</tt>
+starting with <tt class="docutils literal">/</tt>; a Windows directory name starting with a
+drive letter like <tt class="docutils literal"><span class="pre">C:\Somewhere</span></tt> is not acceptable.</p>
+</dd>
+<dt><tt class="docutils literal"><span class="pre">-d</span></tt>, <tt class="docutils literal"><span class="pre">--debug</span></tt></dt>
+<dd>Turn on debugging output.</dd>
+<dt><tt class="docutils literal"><span class="pre">-E</span></tt>, <tt class="docutils literal"><span class="pre">--escape-output</span></tt></dt>
+<dd>Escape characters like tabs in output as described in tags(5).</dd>
+<dt><tt class="docutils literal"><span class="pre">-e</span></tt>, <tt class="docutils literal"><span class="pre">--extension-fields</span></tt></dt>
+<dd>Include extension fields in output.</dd>
+<dt><tt class="docutils literal"><span class="pre">-n</span></tt>, <tt class="docutils literal"><span class="pre">--line-number</span></tt></dt>
+<dd>Also include the line number field when <tt class="docutils literal"><span class="pre">-e</span></tt> option is give.</dd>
+</dl>
+<p>About the <tt class="docutils literal"><span class="pre">-E</span></tt> option: certain characters are escaped in a tags file, to make
+it machine-readable. e.g., ensuring no tabs character appear in fields other
+than the pattern field. By default, readtags translates them to make it
+human-readable, but when utilizing readtags output in a script or a client
+tool, <tt class="docutils literal"><span class="pre">-E</span></tt> option should be used. See ctags-client-tools(7) for more
+discussion on this.</p>
+<p>About printing input fields ({tagfile} in tags(5)) with <tt class="docutils literal"><span class="pre">-E</span></tt> option: readtags
+always prints the input field literally (as it is in the tags file), and when
+ctags writes the tags file, the escaping rules are applied only when
+<tt class="docutils literal">TAG_OUTPUT_MODE</tt> pseudo tag has &quot;u-ctags&quot; and <tt class="docutils literal">TAG_OUTPUT_FILESEP</tt> has
+&quot;slash&quot; as values for their input fields, as explained in
+ctags-client-tools(7).</p>
+</div>
+<div class="section" id="filtering-sorting-and-formatting">
+<h2>Filtering, Sorting, and Formatting</h2>
+<p>Further filtering, sorting, and formatting on the tags listed by actions
+are performed using:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-Q</span> EXP</tt>, <tt class="docutils literal"><span class="pre">--filter</span> EXP</tt></dt>
+<dd>Filter the tags listed by ACTION with EXP before printing.</dd>
+<dt><tt class="docutils literal"><span class="pre">-S</span> EXP</tt>, <tt class="docutils literal"><span class="pre">--sorter</span> EXP</tt></dt>
+<dd>Sort the tags listed by ACTION with EXP before printing.</dd>
+<dt><tt class="docutils literal"><span class="pre">-F</span> EXP</tt>, <tt class="docutils literal"><span class="pre">--formatter</span> EXP</tt></dt>
+<dd>Format the tags listed by ACTION with EXP when printing.</dd>
+</dl>
+<p>These are discussed in the <a class="reference internal" href="#expression">EXPRESSION</a> section.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples</h2>
+<ul>
+<li><p class="first">List all tags in &quot;/path/to/tags&quot;:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>/path/to/tags<span class="whitespace"> </span>-l
+</pre>
+</li>
+<li><p class="first">List all tags in &quot;tags&quot; that start with &quot;mymethod&quot;:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-p<span class="whitespace"> </span>-<span class="whitespace"> </span>mymethod
+</pre>
+</li>
+<li><p class="first">List all tags matching &quot;mymethod&quot;, case insensitively:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-i<span class="whitespace"> </span>-<span class="whitespace"> </span>mymethod
+</pre>
+</li>
+<li><p class="first">List all tags start with &quot;myvar&quot;, and printing all fields (i.e., the whole line):</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-p<span class="whitespace"> </span>-ne<span class="whitespace"> </span>-<span class="whitespace"> </span>myvar
+</pre>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="expression">
+<h1>EXPRESSION</h1>
+<p>Scheme-style expressions are used for the <tt class="docutils literal"><span class="pre">-Q</span></tt>, <tt class="docutils literal"><span class="pre">-S</span></tt>, and <tt class="docutils literal"><span class="pre">-F</span></tt> options.
+For those who doesn't know Scheme or Lisp, just remember:</p>
+<ul class="simple">
+<li>A function call is wrapped in a pair of parenthesis. The first item in it is
+the function/operator name, the others are arguments.</li>
+<li>Function calls can be nested.</li>
+<li>Missing values and boolean false are represented by <tt class="docutils literal">#f</tt>. <tt class="docutils literal">#t</tt> and all
+other values are considered to be true.</li>
+</ul>
+<p>So, <tt class="docutils literal">(+ 1 (+ 2 3))</tt> means add 2 and 3 first, then add the result with 1.
+<tt class="docutils literal">(and &quot;string&quot; 1 #t)</tt> means logical AND on <tt class="docutils literal">&quot;string&quot;</tt>, <tt class="docutils literal">1</tt> and <tt class="docutils literal">#t</tt>,
+and the result is true since there is no <tt class="docutils literal">#f</tt>.</p>
+<div class="section" id="filtering">
+<h2>Filtering</h2>
+<p>The tag entries that make the filter expression produces true value are printed
+by readtags.</p>
+<p>The basic operators for filtering are <tt class="docutils literal">eq?</tt>, <tt class="docutils literal">prefix?</tt>, <tt class="docutils literal">suffix?</tt>,
+<tt class="docutils literal">substr?</tt>, and <tt class="docutils literal">#/PATTERN/</tt>. Language common fields can be accessed using
+variables starting with <tt class="docutils literal">$</tt>, e.g., <tt class="docutils literal">$language</tt> represents the language field.
+For example:</p>
+<ul>
+<li><p class="first">List all tags start with &quot;myfunc&quot; in Python code files:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-p<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(eq? $language &quot;Python&quot;)'</span><span class="whitespace"> </span>-<span class="whitespace"> </span>myfunc
+</pre>
+</li>
+</ul>
+<p><tt class="docutils literal">downcase</tt> or <tt class="docutils literal">upcase</tt> operators can be used to perform case-insensitive
+matching:</p>
+<ul>
+<li><p class="first">List all tags containing &quot;my&quot;, case insensitively:</p>
+<blockquote>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(substr? (downcase $name) &quot;my&quot;)'</span><span class="whitespace"> </span>-l
+</pre>
+</blockquote>
+</li>
+</ul>
+<p>We have logical operators like <tt class="docutils literal">and</tt>, <tt class="docutils literal">or</tt> and <tt class="docutils literal">not</tt>. The value of a
+missing field is #f, so we could deal with missing fields:</p>
+<ul>
+<li><p class="first">List all tags containing &quot;impl&quot; in Python code files, but allow the
+<tt class="docutils literal">language:</tt> field to be missing:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(and (substr? $name &quot;impl&quot;)\
+                    (or (not $language)\
+                        (eq? $language &quot;Python&quot;)))'</span><span class="whitespace"> </span>-l
+</pre>
+</li>
+</ul>
+<p><tt class="docutils literal">#/PATTERN/</tt> is for the case when string predicates (<tt class="docutils literal">prefix?</tt>, <tt class="docutils literal">suffix?</tt>,
+and <tt class="docutils literal">substr?</tt>) are not enough. You can use &quot;Posix extended regular expression&quot;
+as PATTERN.</p>
+<ul>
+<li><p class="first">List all tags inherits from the class &quot;A&quot;:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(#/(^|,) ?A(,|$)/ $inherits)'</span><span class="whitespace"> </span>-l
+</pre>
+</li>
+</ul>
+<p>Here <tt class="docutils literal">$inherits</tt> is a comma-separated class list like &quot;A,B,C&quot;, &quot;P, A, Q&quot;, or
+just &quot;A&quot;. Notice that this filter works on both situations where there's a
+space after each comma or there's not.</p>
+<p>Case-insensitive matching can be performed by <tt class="docutils literal">#/PATTERN/i</tt>:</p>
+<ul>
+<li><p class="first">List all tags inherits from the class &quot;A&quot; or &quot;a&quot;:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(#/(^|,) ?A(,|$)/i $inherits)'</span><span class="whitespace"> </span>-l
+</pre>
+</li>
+</ul>
+<p>To include &quot;/&quot; in a pattern, prefix <tt class="docutils literal">\</tt> to the &quot;/&quot;.</p>
+<p>NOTE: The above regular expression pattern for inspecting inheritances is just
+an example to show how to use <tt class="docutils literal">#/PATTERN/</tt> expression. Tags file generators
+have no consensus about the format of <tt class="docutils literal">inherits:</tt>, e.g., whether there should
+be a space after a comma. Even parsers in ctags have no consensus. Noticing the
+format of the <tt class="docutils literal">inherits:</tt> field of specific languages is needed for such
+queries.</p>
+<p>The expressions <tt class="docutils literal">#/PATTERN/</tt> and <tt class="docutils literal">#/PATTERN/i</tt> are for interactive use.
+Readtags also offers an alias <tt class="docutils literal"><span class="pre">string-&gt;regexp</span></tt>, so <tt class="docutils literal">#/PATTERN/</tt> is equal to
+<tt class="docutils literal"><span class="pre">(string-&gt;regexp</span> &quot;PATTERN&quot;)</tt>, and <tt class="docutils literal">#/PATTERN/i</tt> is equal to
+<tt class="docutils literal"><span class="pre">(string-&gt;regexp</span> &quot;PATTERN&quot; <span class="pre">:case-fold</span> #t)</tt>. <tt class="docutils literal"><span class="pre">string-&gt;regexp</span></tt> doesn't need
+to prefix <tt class="docutils literal">\</tt> for including &quot;/&quot; in a pattern. <tt class="docutils literal"><span class="pre">string-&gt;regexp</span></tt> may simplify
+a client tool building an expression. See also ctags-client-tools(7) for
+building expressions in your tool.</p>
+<p>Let's now consider missing fields. The tags file may have tag entries that has
+no <tt class="docutils literal">inherits:</tt> field. In that case <tt class="docutils literal">$inherits</tt> is #f, and the regular
+expression matching raises an error, since string operators only work for
+strings. To avoid this problem:</p>
+<ul>
+<li><p class="first">Safely list all tags inherits from the class &quot;A&quot;:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(and $inherits (#/(^|,) ?A(,|$)/ $inherits))'</span><span class="whitespace"> </span>-l
+</pre>
+</li>
+</ul>
+<p>This makes sure <tt class="docutils literal">$inherits</tt> is not missing first, then match it by regexp.</p>
+<p>Sometimes you want to keep tags where the field <em>is</em> missing. For example, your
+want to exclude reference tags, which is marked by the <tt class="docutils literal">extras:</tt> field, then
+you want to keep tags who doesn't have <tt class="docutils literal">extras:</tt> field since they are also
+not reference tags. Here's how to do it:</p>
+<ul>
+<li><p class="first">List all tags but the reference tags:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(or (not $extras) (#/(^|,) ?reference(,|$)/ $extras))'</span><span class="whitespace"> </span>-l
+</pre>
+</li>
+</ul>
+<p>Notice that <tt class="docutils literal">(not $extras)</tt> produces <tt class="docutils literal">#t</tt> when <tt class="docutils literal">$extras</tt> is missing, so
+the whole <tt class="docutils literal">or</tt> expression produces <tt class="docutils literal">#t</tt>.</p>
+<p>The combination of <tt class="docutils literal">ctags <span class="pre">-o</span> -</tt> and <tt class="docutils literal">readtags <span class="pre">-t</span> -</tt> is handy for inspecting
+a source file as far as the source file is enough short.</p>
+<ul>
+<li><p class="first">List all the large (&gt; 100 lines) functions in a file:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>ctags<span class="whitespace"> </span>-o<span class="whitespace"> </span>-<span class="whitespace"> </span>--fields<span class="operator">=</span>+neKz<span class="whitespace"> </span>input.c<span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">  </span><span class="punctuation">|</span><span class="whitespace"> </span>./readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>-<span class="whitespace"> </span>-en<span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">               </span>-Q<span class="whitespace"> </span><span class="literal string single">'(and (eq? $kind &quot;function&quot;) $end $line (&gt; (- $end $line) 100))'</span><span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">               </span>-l
+</pre>
+</li>
+<li><p class="first">List all the tags including line 80 in a file:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>ctags<span class="whitespace"> </span>-o<span class="whitespace"> </span>-<span class="whitespace"> </span>--fields<span class="operator">=</span>+neKz<span class="whitespace"> </span>input.c<span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">  </span><span class="punctuation">|</span><span class="whitespace"> </span>readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>-<span class="whitespace"> </span>-ne<span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">             </span>-Q<span class="whitespace"> </span><span class="error">'</span><span class="operator">(</span>and<span class="whitespace"> </span><span class="name variable">$line</span><span class="whitespace">
+</span><span class="generic output">                      (or (eq? $line 80)
+                          (and $end (&lt; $line 80) (&lt; 80 $end))))' \
+    -l</span>
+</pre>
+</li>
+</ul>
+<p>Run &quot;readtags -H filter&quot; to know about all valid functions and variables.</p>
+</div>
+<div class="section" id="sorting">
+<h2>Sorting</h2>
+<p>When sorting, the sorter expression is evaluated on two tag entries to decide
+which should sort before the other one, until the order of all tag entries is
+decided.</p>
+<p>In a sorter expression, <tt class="docutils literal">$</tt> and <tt class="docutils literal">&amp;</tt> are used to access the fields in the
+two tag entries, and let's call them $-entry and &amp;-entry. The sorter expression
+should have a value of -1, 0 or 1. The value -1 means the $-entry should be put
+above the &amp;-entry, 1 means the contrary, and 0 makes their order in the output
+uncertain.</p>
+<p>The core operator of sorting is <tt class="docutils literal">&lt;&gt;</tt>. It's used to compare two strings or two
+numbers (numbers are for the <tt class="docutils literal">line:</tt> or <tt class="docutils literal">end:</tt> fields). In <tt class="docutils literal">(&lt;&gt; a b)</tt>, if
+<tt class="docutils literal">a</tt> &lt; <tt class="docutils literal">b</tt>, the result is -1; <tt class="docutils literal">a</tt> &gt; <tt class="docutils literal">b</tt> produces 1, and <tt class="docutils literal">a</tt> = <tt class="docutils literal">b</tt>
+produces 0. Strings are compared using the <tt class="docutils literal">strcmp</tt> function, see strcmp(3).</p>
+<p>For example, sort by names, and make those shorter or alphabetically smaller
+ones appear before the others:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-S<span class="whitespace"> </span><span class="literal string single">'(&lt;&gt; $name &amp;name)'</span><span class="whitespace"> </span>-l
+</pre>
+<p>This reads &quot;If the tag name in the $-entry is smaller, it goes before the
+&amp;-entry&quot;.</p>
+<p>The <tt class="docutils literal">&lt;or&gt;</tt> operator is used to chain multiple expressions until one returns
+-1 or 1. For example, sort by input file names, then line numbers if in the
+same file:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-S<span class="whitespace"> </span><span class="literal string single">'(&lt;or&gt; (&lt;&gt; $input &amp;input) (&lt;&gt; $line &amp;line))'</span><span class="whitespace"> </span>-l
+</pre>
+<p>The <tt class="docutils literal">*-</tt> operator is used to flip the compare result. i.e., <tt class="docutils literal">(*- (&lt;&gt; a b))</tt>
+is the same as <tt class="docutils literal">(&lt;&gt; b a)</tt>.</p>
+<p>Filter expressions can be used in sorter expressions. The technique is use
+<tt class="docutils literal">if</tt> to produce integers that can be compared based on the filter, like:</p>
+<pre class="code lisp literal-block">
+<span class="punctuation">(</span><span class="name variable">&lt;&gt;</span><span class="whitespace"> </span><span class="punctuation">(</span><span class="keyword">if</span><span class="whitespace"> </span><span class="name variable">filter-expr-on-$-entry</span><span class="whitespace"> </span><span class="literal number integer">-1</span><span class="whitespace"> </span><span class="literal number integer">1</span><span class="punctuation">)</span><span class="whitespace">
+    </span><span class="punctuation">(</span><span class="keyword">if</span><span class="whitespace"> </span><span class="name variable">filter-expr-on-&amp;-entry</span><span class="whitespace"> </span><span class="literal number integer">-1</span><span class="whitespace"> </span><span class="literal number integer">1</span><span class="punctuation">))</span>
+</pre>
+<p>So if $-entry satisfies the filter, while &amp;-entry doesn't, it's the same as
+<tt class="docutils literal">(&lt;&gt; <span class="pre">-1</span> 1)</tt>, which produces <tt class="docutils literal"><span class="pre">-1</span></tt>.</p>
+<p>For example, we want to put tags with &quot;file&quot; kind below other tags, then the
+sorter would look like:</p>
+<pre class="code lisp literal-block">
+<span class="punctuation">(</span><span class="name variable">&lt;&gt;</span><span class="whitespace"> </span><span class="punctuation">(</span><span class="keyword">if</span><span class="whitespace"> </span><span class="punctuation">(</span><span class="name variable">eq?</span><span class="whitespace"> </span><span class="name variable">$kind</span><span class="whitespace"> </span><span class="literal string">&quot;file&quot;</span><span class="punctuation">)</span><span class="whitespace"> </span><span class="literal number integer">1</span><span class="whitespace"> </span><span class="literal number integer">-1</span><span class="punctuation">)</span><span class="whitespace">
+    </span><span class="punctuation">(</span><span class="keyword">if</span><span class="whitespace"> </span><span class="punctuation">(</span><span class="name variable">eq?</span><span class="whitespace"> </span><span class="name variable">&amp;kind</span><span class="whitespace"> </span><span class="literal string">&quot;file&quot;</span><span class="punctuation">)</span><span class="whitespace"> </span><span class="literal number integer">1</span><span class="whitespace"> </span><span class="literal number integer">-1</span><span class="punctuation">))</span>
+</pre>
+<p>A quick read tells us: If $-entry has &quot;file&quot; kind, and &amp;-entry doesn't, the
+sorter becomes <tt class="docutils literal">(&lt;&gt; 1 <span class="pre">-1)</span></tt>, which produces <tt class="docutils literal">1</tt>, so the $-entry is put below
+the &amp;-entry, exactly what we want.</p>
+</div>
+<div class="section" id="formatting">
+<h2>Formatting</h2>
+<p>A formatter expression defines how readtags prints tag entries.</p>
+<p>A formatter expression may produce a string, a boolean, an integer,
+or a list. Readtags prints the produced string, and integer as is.
+Readtags prints nothing for <tt class="docutils literal">#f</tt>, and a newline for <tt class="docutils literal">#t</tt>.</p>
+<p>A list could contain any number of strings, booleans,
+integers, and/or lists. Readtags prints the elements of a list
+sequentially and recursively.</p>
+<p>All the operators for filtering are also available in formatter
+expressions. In addition to the operators, <tt class="docutils literal">list</tt> is available
+in formatter expressions. As the name shows, <tt class="docutils literal">list</tt> is for
+making a list. <tt class="docutils literal">list</tt> makes a list containing arguments passed to
+the operator. e.g., the following expression makes a list contains
+<tt class="docutils literal">1</tt>, <tt class="docutils literal">#f</tt>, and <tt class="docutils literal">&quot;hello&quot;</tt>:</p>
+<pre class="code lisp literal-block">
+<span class="punctuation">(</span><span class="name builtin">list</span><span class="whitespace"> </span><span class="literal number integer">1</span><span class="whitespace"> </span><span class="error">#</span><span class="name variable">f</span><span class="whitespace"> </span><span class="literal string">&quot;hello&quot;</span><span class="punctuation">)</span>
+</pre>
+<p>NOTE: Unlike real-Lisp, backquote constructs are not available.</p>
+<p>To show some examples, the following tags file (<tt class="docutils literal">output.tags</tt>) is assumed
+as input for readtags:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">readtags.1.rst</tt>, line 390)</p>
+<p>Cannot analyze code. No Pygments lexer found for &quot;tags&quot;.</p>
+<pre class="literal-block">
+.. code-block:: tags
+
+   M    input.c 4;&quot;     macro   file:
+   N    input.c 3;&quot;     macro   file:
+   bar  input.c 11;&quot;    f       typeref:typename:void   file:   signature:(char ** argv,int * r)
+   foo  input.c 6;&quot;     f       typeref:typename:int    file:   signature:(int v)
+   main input.c 16;&quot;    f       typeref:typename:int    signature:(int argc,char ** argv)
+
+</pre>
+</div>
+<p>An exapmle for printing only function names:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>output.tags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(eq? $kind &quot;function&quot;)'</span><span class="whitespace"> </span>-F<span class="whitespace"> </span><span class="literal string single">'(list $name #t)'</span><span class="whitespace"> </span>-l<span class="whitespace">
+</span><span class="generic output">bar
+foo
+main</span>
+</pre>
+<p>Doing the same only with a formatter expression:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>output.tags<span class="whitespace"> </span>-F<span class="whitespace"> </span><span class="literal string single">'(if (eq? $kind &quot;function&quot;) (list $name #t) #f)'</span><span class="whitespace"> </span>-l<span class="whitespace">
+</span><span class="generic output">bar
+foo
+main</span>
+</pre>
+<p>Generating declarations for the functions:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-t<span class="whitespace"> </span>output.tags<span class="whitespace"> </span>-F<span class="whitespace"> </span><span class="literal string escape">\
+</span><span class="whitespace">  </span><span class="error">'</span><span class="operator">(</span><span class="keyword">if</span><span class="whitespace"> </span><span class="operator">(</span>eq?<span class="whitespace"> </span><span class="name variable">$kind</span><span class="whitespace"> </span><span class="literal string double">&quot;function&quot;</span><span class="operator">)</span><span class="whitespace">
+</span><span class="generic output">      (list (if $file &quot;static &quot; #f) $typeref-name &quot; &quot; $name $signature &quot;;&quot; #t)
+</span><span class="generic prompt">     #</span>f<span class="operator">)</span><span class="error">'</span><span class="whitespace"> </span>-l<span class="whitespace">
+</span><span class="generic output">static void bar(char ** argv,int * r);
+static int foo(int v);
+int main(int argc,char ** argv);</span>
+</pre>
+</div>
+<div class="section" id="inspecting-the-behavior-of-expressions">
+<h2>Inspecting the Behavior of Expressions</h2>
+<p>The <cite>print</cite> operator can be used to print the value of an expression. For
+example:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(print $name)'</span><span class="whitespace"> </span>-l
+</pre>
+<p>prints the name of each tag entry before it. Since the return value of
+<tt class="docutils literal">print</tt> is not #f, all the tag entries are printed. We could control this
+using the <tt class="docutils literal">begin</tt> or <tt class="docutils literal">begin0</tt> operator. <tt class="docutils literal">begin</tt> returns the value of its
+last argument, and <tt class="docutils literal">begin0</tt> returns the value of its first argument. For
+example:</p>
+<pre class="code console literal-block">
+<span class="generic prompt">$ </span>readtags<span class="whitespace"> </span>-Q<span class="whitespace"> </span><span class="literal string single">'(begin0 #f (print (prefix? &quot;ctags&quot; &quot;ct&quot;)))'</span><span class="whitespace"> </span>-l
+</pre>
+<p>prints a bunch of &quot;#t&quot; (depending on how many lines are in the tags file), and
+the actual tag entries are not printed.</p>
+</div>
+</div>
+<div class="section" id="see-also">
+<h1>SEE ALSO</h1>
+<p>See tags(5) for the details of tags file format.</p>
+<p>See ctags-client-tools(7) for the tips writing a
+tool utilizing tags file.</p>
+<p>The official Universal Ctags web site at:</p>
+<p><a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p>The git repository for the library used in readtags command:</p>
+<p><a class="reference external" href="https://github.com/universal-ctags/libreadtags">https://github.com/universal-ctags/libreadtags</a></p>
+</div>
+<div class="section" id="credits">
+<h1>CREDITS</h1>
+<p>Universal Ctags project
+<a class="reference external" href="https://ctags.io/">https://ctags.io/</a></p>
+<p>Darren Hiebert &lt;<a class="reference external" href="mailto:dhiebert&#64;users.sourceforge.net">dhiebert&#64;users.sourceforge.net</a>&gt;
+<a class="reference external" href="http://DarrenHiebert.com/">http://DarrenHiebert.com/</a></p>
+<p>The readtags command and libreadtags maintained at Universal Ctags
+are derived from readtags.c and readtags.h developd at
+<a class="reference external" href="http://ctags.sourceforge.net">http://ctags.sourceforge.net</a>.</p>
+</div>
+</div>
+</body>
+</html>
