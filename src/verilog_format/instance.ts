@@ -70,7 +70,7 @@ export function extractModuleContent(code: string): string {
 export function converModuleRoutine(code: string): string {
   // 提取变量名及其对应的行内注释，同时识别全行注释及其位置
   const extractedData = extractVariablesAndFullLineComments(code);
-
+  console.log("extractedData",extractedData);
   // 识别模块名称
   const moduleNameMatch = code.match(/module\s+\s*(\w+)/);
   const moduleName = moduleNameMatch ? moduleNameMatch[1] : '';
@@ -79,7 +79,8 @@ export function converModuleRoutine(code: string): string {
   const variableNames = extractedData.variables.map(item => item.name);
 
   // 认识到模块名称后的参数
-  const parameterMatches = code.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g);
+  // const parameterMatches = code.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g);
+     const parameterMatches = code.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|\$))/g);//只能匹配 parameter 开头的格式  ，另外一种只些一个parameter的暂时不支持。
   const parameterPairs = Array.from(parameterMatches, match => ({param1: match[1], param2: match[2]}));
 
   // 转换成目标格式
@@ -117,6 +118,7 @@ export function converModuleRoutine(code: string): string {
 
     // 添加行尾注释
     const comment = extractedData.variables[i].comment;
+    console.log("comment",comment);
     if (comment) {
       convertedCode2 += ` // ${comment}`;
     }
@@ -173,8 +175,42 @@ return convertedCode + '\n\n' ;
 
 
 // 提取变量名及其行内注释，同时识别全行注释及其位置
+
+
+// function extractVariablesAndFullLineComments(code: string): {variables: {name: string, comment?: string}[], fullLineComments: string[], fullLineCommentPositions: number[]} {
+//   const lines = code.split('\n');
+//   const variables: {name: string, comment?: string}[] = [];
+//   const fullLineComments: string[] = [];
+//   const fullLineCommentPositions: number[] = []; // 记录全行注释对应变量的位置
+//   let variableIndex = 0; // 当前处理到的变量索引
+
+//   // 特殊处理首行全行注释
+//   if (lines[0].trim().startsWith('//')) {
+//     fullLineComments.push(lines[0]);
+//     fullLineCommentPositions.push(-1); // 表示首行全行注释
+//   }
+
+//   lines.forEach((line, index) => {
+//     const variableMatch = line.match(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)\s*(\w+)/);
+//     if (variableMatch) {
+//       const name = variableMatch[5];
+//       const commentMatch = line.match(/\/\/(.*)$/);
+//       const comment = commentMatch ? commentMatch[1].trim() : undefined;
+//       variables.push({name, comment});
+//       variableIndex++;
+//     } else if (line.trim().startsWith("//")) {
+//       // Adjusting to correctly place comments before the first variable or after any other variable
+//       fullLineCommentPositions.push(variableIndex > 0 ? variableIndex - 1 : -1); // Ensure -1 is only for the first comment
+//       fullLineComments.push(line);
+//     }
+//   });
+
+//   return { variables, fullLineComments, fullLineCommentPositions };
+// }
+
+
 function extractVariablesAndFullLineComments(code: string): {variables: {name: string, comment?: string}[], fullLineComments: string[], fullLineCommentPositions: number[]} {
-  const lines = code.split('\n');
+  const lines = code.split(/\r?\n/);
   const variables: {name: string, comment?: string}[] = [];
   const fullLineComments: string[] = [];
   const fullLineCommentPositions: number[] = []; // 记录全行注释对应变量的位置
@@ -203,6 +239,16 @@ function extractVariablesAndFullLineComments(code: string): {variables: {name: s
 
   return { variables, fullLineComments, fullLineCommentPositions };
 }
+
+
+
+
+
+
+
+
+
+
 
 // export function deactivate() {}
 

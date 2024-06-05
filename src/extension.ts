@@ -21,9 +21,17 @@ import { CtagsManager } from './ctags';
 import * as DefinitionProvider from './providers/DefinitionProvider';
 import * as CompletionItemProvider from './providers/CompletionItemProvider';
 import * as HoverProvider from './providers/HoverProvider';
-import path = require('path');
+// import path = require('path');
+const path = require('path');
 import { runExtensionWorkflow, selectAndProcessIpFolder } from './readVeo.ts/readVeo';
 import { runExtensionBitbackup,refreshWebview,vivadoQuestsimModelsim} from './bit_backup/bit_backup'; 
+import { ftpSet } from './bit_backup/ftpSet'; 
+
+
+
+import{proRegMarkdown} from './md_doc/md_doc';
+
+
 var ctagsManager: CtagsManager;
 export var logger: Logger; // Global logger
 let extensionID: string = 'mshr-h.veriloghdl';
@@ -251,7 +259,7 @@ export function activate(context: vscode.ExtensionContext) {
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 		// // //动态代码片段-可以加入作者名称
-		// registerDynamicSnippet(context);
+		registerDynamicSnippet(context);
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
@@ -293,9 +301,20 @@ export function activate(context: vscode.ExtensionContext) {
 			await vivadoQuestsimModelsim(context);
 			})
 		);
-		
+//----------------------------------------------------------------------------------------------------------		
+//	寄存器文档生成
+//----------------------------------------------------------------------------------------------------------		
+proRegMarkdown(context);
 
-		context.subscriptions.push(disposable);
+//----------------------------------------------------------------------------------------------------------		
+//	FTP
+//----------------------------------------------------------------------------------------------------------		
+  ftpSet(context);
+
+
+
+
+context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated

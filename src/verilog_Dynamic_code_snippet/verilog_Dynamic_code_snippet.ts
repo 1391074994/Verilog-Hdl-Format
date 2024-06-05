@@ -8,6 +8,7 @@ export function registerDynamicSnippet(context: vscode.ExtensionContext) {
         provideCompletionItems(document, position, token, context) {
             let userName = vscode.workspace.getConfiguration('extension').get('userName');
             let companyName = vscode.workspace.getConfiguration('extension').get('companyName');
+            let mail = vscode.workspace.getConfiguration('extension').get('mail');
             let extension = vscode.extensions.getExtension('Jiang-Percy.Verilog-Hdl-Format');
             let version = extension ? extension.packageJSON.version : 'unknown';
 
@@ -30,6 +31,7 @@ export function registerDynamicSnippet(context: vscode.ExtensionContext) {
                 "//----------------------------------------------------------------------------------------\n" +
                 "// Created by:             " + userName + "\n" +
                 "// Created date:           $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND\n" +
+                "// mail      :             " + mail     +"\n" +
                 "// Version:                V1.0\n" +
                 "// TEXT NAME:              $TM_FILENAME\n" +
                 "// PATH:                   $TM_FILEPATH\n" +
@@ -66,6 +68,7 @@ export function registerDynamicSnippet(context: vscode.ExtensionContext) {
                 "//----------------------------------------------------------------------------------------\n" +
                 "// Created by:             " + userName + "\n" +
                 "// Created date:           $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND\n" +
+                "// mail      :             " + mail     +"\n" +
                 "// Version:                V1.0\n" +
                 "// TEXT NAME:              $TM_FILENAME\n" +
                 "// PATH:                   $TM_FILEPATH\n" +

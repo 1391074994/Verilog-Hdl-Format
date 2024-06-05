@@ -2,7 +2,7 @@
   "name": "Verilog-Hdl-Format",
   "displayName": "Verilog Hdl Format",
   "description": "FPGA 代码格式化,文件树显示,一键例化,语法高亮,语法跳转,代码补全,定义悬停,代码错误检查等功能",
-  "version": "2.3.20240512",
+  "version": "2.5.20240605",
   "publisher": "Jiang-Percy",
   "engines": {
     "vscode": "^1.74.3"
@@ -237,6 +237,22 @@
       {
         "command": "extension.Vivado_Questsim_Modelsim",
         "title": "Vivado_Questsim_Modelsim"
+      },
+      {
+        "command": "extension.doc_reg_produce",
+        "title": "doc_reg_produce"
+      },
+      {
+        "command": "ftp-extension.upload",
+        "title": "Upload File via FTP"
+      },
+      {
+        "command": "ftp-extension.download",
+        "title": "Download File via FTP"
+      },
+      {
+        "command": "ftp-extension.getFtpConfig",
+        "title": "getFtpConfig"
       }
     ],
     "grammars": [
@@ -428,6 +444,14 @@
             "Please Write Company name"
           ],
           "description": "Your Organization or company,which will be included in the output file."
+        },
+        "extension.mail": {
+          "type": "string",
+          "title": "mail",
+          "default": [
+            "Please Write mail "
+          ],
+          "description": "Your mail,which will be included in the output file."
         },
         "verilogModuleFinder.excludeFolders": {
           "type": "array",
@@ -727,6 +751,7 @@
     "test": "node ./out/src/test/bsv.js"
   },
   "devDependencies": {
+    "@types/ftp": "^0.3.29",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.49.0",
@@ -744,8 +769,11 @@
   },
   "dependencies": {
     "antlr4ts": "^0.5.0-alpha.4",
+    "basic-ftp": "^5.0.5",
     "date-fns": "^3.6.0",
+    "ftp": "^0.3.10",
     "graceful-fs": "^4.2.11",
+    "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"
   }
 }

@@ -11,6 +11,7 @@ import { format as formatDate } from 'date-fns';
 import { parseStringPromise } from 'xml2js';
 import { glob } from 'glob';
 import { exec, spawn } from 'child_process';
+import { getFtpConfig, uploadFile, uploadFileCommand } from './ftpSet';
 
 
 /**
@@ -122,7 +123,7 @@ async function findSIMFolder(startPath: string): Promise<string | undefined> {
 
 async function copyBitAndLtxFilesToParentBitFolder(
   runsFolderPath: string,
-  webviewPanel: vscode.WebviewPanel
+  // webviewPanel: vscode.WebviewPanel
 ): Promise<void> {
   // 去到 impl_1 下
   const impl1FolderPath = path.join(runsFolderPath, 'impl_1');
@@ -194,7 +195,7 @@ async function copyBitAndLtxFilesToParentBitFolder(
 
         // 记录用户日志信息（包括自定义信息）
         const logFilePath = path.join(currentDateFolder, 'backup_log.txt');
-        const logContent = `${dateFormatted}: log message: ${customLogMessage ?? 'an anonymous user'}`;
+        const logContent = `${dateFormatted}: ${customLogMessage ?? 'an anonymous user'}`;
 
 
         // 将日志内容写入文件
@@ -215,7 +216,7 @@ async function copyBitAndLtxFilesToParentBitFolder(
 
 async function copyBitAndLtxFilesToBitimplyFolder(
   runsFolderPath: string,
-  webviewPanel: vscode.WebviewPanel
+  // webviewPanel: vscode.WebviewPanel
 ): Promise<void> {
   // 去到 impl_1 下
   const impl1FolderPath = path.join(runsFolderPath, 'impl_1');
@@ -247,10 +248,10 @@ async function copyBitAndLtxFilesToBitimplyFolder(
 
             vscode.window.showInformationMessage(`bit/ltx/log文件备份成功: 到 ${destinationFilePath}`);
  
-            const customLogMessage = "impl_1的现存文件-备份文件夹";
+            const customLogMessage = "【临时备份最新Bit文件/创建刷新ILA脚本】→ 存放的路径";
             // 记录用户日志信息（包括自定义信息）
             const logFilePath = path.join(currentDateFolder, 'backup_log.txt');
-            const logContent = `${dateFormatted}: log message: ${customLogMessage ?? 'an anonymous user'}`;
+            const logContent = `${dateFormatted}: ${customLogMessage ?? 'an anonymous user'}`;
 
 
             // 将日志内容写入文件
@@ -287,17 +288,17 @@ export async function runExtensionBitbackup(context: vscode.ExtensionContext): P
     vscode.window.showInformationMessage(`找到runs文件夹: ${runsImpl1FolderPath}`);
 
     // 创建Webview面板
-    const webviewPanel = vscode.window.createWebviewPanel(
-      'bitBackupLogViewer', // 修改视图类型 ID 以匹配代码2
-      'Bit Backup Log Viewer', // 修改标题以匹配代码2
-      vscode.ViewColumn.One, // 显示在编辑器的第一列
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
-    );
+    // const webviewPanel = vscode.window.createWebviewPanel(
+    //   'bitBackupLogViewer', // 修改视图类型 ID 以匹配代码2
+    //   'Bit Backup Log Viewer', // 修改标题以匹配代码2
+    //   vscode.ViewColumn.One, // 显示在编辑器的第一列
+    //   {
+    //     enableScripts: true,
+    //     retainContextWhenHidden: true
+    //   }
+    // );
 
-    await copyBitAndLtxFilesToParentBitFolder(runsImpl1FolderPath, webviewPanel);
+    await copyBitAndLtxFilesToParentBitFolder(runsImpl1FolderPath);
 
     // 直接使用refreshWebview来初始化webviewPanel的内容
     await refreshWebview(context);
@@ -337,17 +338,18 @@ async function runExtensionBitbackupImply(context: vscode.ExtensionContext): Pro
     const firstDir = a_impl_1_backDirs[0] || '';
     
     // 创建Webview面板
-    const webviewPanel = vscode.window.createWebviewPanel(
-      'bitBackupLogViewer', // 修改视图类型 ID 以匹配代码2
-      'Bit Backup Log Viewer', // 修改标题以匹配代码2
-      vscode.ViewColumn.One, // 显示在编辑器的第一列
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
-    );
+    // const webviewPanel = vscode.window.createWebviewPanel(
+    //   'bitBackupLogViewer', // 修改视图类型 ID 以匹配代码2
+    //   'Bit Backup Log Viewer', // 修改标题以匹配代码2
+    //   vscode.ViewColumn.One, // 显示在编辑器的第一列
+    //   {
+    //     enableScripts: true,
+    //     retainContextWhenHidden: true
+    //   }
+    // );
 
-    await copyBitAndLtxFilesToBitimplyFolder(runsImpl1FolderPath, webviewPanel);
+    // await copyBitAndLtxFilesToBitimplyFolder(runsImpl1FolderPath, webviewPanel);
+    await copyBitAndLtxFilesToBitimplyFolder(runsImpl1FolderPath);
 
     // 直接使用refreshWebview来初始化webviewPanel的内容
     await refreshWebview(context);
@@ -360,7 +362,19 @@ async function runExtensionBitbackupImply(context: vscode.ExtensionContext): Pro
   }
 }
 
+//===========================================================================
+// FTP 
+//===========================================================================
 
+interface FtpConfig {
+  host: string;
+  user: string;
+  password: string;
+  remotePath: string;
+  localPath: string;
+}
+
+    
 
 
 
@@ -368,7 +382,7 @@ async function runExtensionBitbackupImply(context: vscode.ExtensionContext): Pro
 //============================================================================
 // 下面的是 刷新WEB功能 +  每个版本的程序的.Tcl脚本的创建功能
 //============================================================================
-
+let webviewPanel: vscode.WebviewPanel | undefined;
 export async function refreshWebview(context: vscode.ExtensionContext): Promise<void> {
   const currentWorkspaceFolder = vscode.workspace.workspaceFolders?.[0];
 
@@ -433,12 +447,12 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   gap: 0.5em;
                 }
 
-                button {
-                  width: auto; /* Default to auto width */
-                  min-width: 180px; /* Maintain a minimum width */
+                button {  
+                  width: auto; /* Default to auto width         这个两个决定按钮大小 */               
+                  min-width: 120px; /* Maintain a minimum width 这个两个决定按钮大小 */      
                   display: inline-block;
                   font-size: 16px;
-                  padding: 8px 16px;
+                  padding: 6px 10px;/*这行设置了按钮的内边距，上下的内边距是8像素，左右的是16像素，给按钮内容留出一些空间。*/
                   background-color: var(--primary-color);
                   color: white;
                   border: none;
@@ -449,7 +463,7 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   position: relative;
                   overflow: hidden;
                   align-items: center;
-                  // height: 40px; /* 设置一个固定的高度 */
+                 /* height: 40px; /* 设置一个固定的高度 */*/
                 }
 
                 pre {
@@ -457,7 +471,7 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   min-width: 0; /* Remove minimum width constraint */
                   box-sizing: border-box;
                   font-family: monospace;
-                  font-size: 14px;
+                  font-size: 16px;/*中间文本显示的字体大小*/
                   line-height: 1.4;
                   overflow-x: auto;
                   padding: 5px;
@@ -477,7 +491,7 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                 .log-file-container {
                   display: flex;
                   grid-template-columns: 1fr 3fr 1fr; /* 左右窄，中间宽 */
-                  grid-gap: 10px; /* 适当的间隙，避免重叠 */
+                  grid-gap: 2px; /* 适当的间隙，避免重叠 */
                   margin-bottom: 1em;
                   align-items: center; 
                 }
@@ -561,22 +575,82 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
               }
             </script>
 
+            <!--ftp -->
+              <script>
+              function ftpUpload(filePath) {
+                vscode.postMessage({
+                  command: 'ftp-extension.upload',
+                  filePath: encodeURIComponent(filePath)
+                });
+              }
+
+              function submitFtpConfig() {
+                const host = document.getElementById('ftpHost').value;
+                const remotePath = document.getElementById('remotePath').value;
+                const user = document.getElementById('ftpUser').value;
+                const password = document.getElementById('ftpPassword').value;
+                vscode.postMessage({
+                  command: 'setFtpConfig',
+                  config: { host,remotePath, user, password }
+                });
+              }
+              
+            </script>
+            
+
+            <script>
+            function handleButtonClick() {
+              vscode.postMessage({ command: 'triggerBackBitltxTcl' });
+            }
+            </script>
+
+            <script>
+            function printSuccessMessage() {
+              vscode.postMessage({
+                command: 'bit_backup'
+              });
+            }
+          </script>
+
 
 
             </head>
 
             <body>
-              <h2><i class="fas fa-file-code"></i> Bit Backup Log Viewer</h2>
+              <h2><i class="fas fa-file-code"></i> 程序备份 / FTP上传 / VIVADO_TCL脚本 </h2>
 
               <div id="fixed-buttons">
-              <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="handleButtonClick()"> 创建最新Bit文件的刷新ILA脚本</button>
+              <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="handleButtonClick()"> 临时备份最新Bit文件/创建刷新ILA脚本</button>
+              <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 10px;" onclick="printSuccessMessage()">程序备份</button>
 
-              <script>
-                function handleButtonClick() {
-                  vscode.postMessage({ command: 'triggerBackBitltxTcl' });
-                }
-              </script>
 
+            </div>
+
+
+            <div>
+              <h3 style="margin-bottom: 0.5em;">FTP 配置</h3>
+              <div style="display: flex; align-items: flex-start; padding: 0 10px;">
+                <div style="margin-right: 10px;">
+                  <label for="ftpHost">FTP 服务器IP地址:</label>
+                  <input type="text" id="ftpHost" name="ftpHost" value="192.168.0.100">
+                  </div>
+                  <div>
+                  <div style="margin-right: 10px;">
+                    <label for="remotePath">FTP 服务器路径地址:</label>
+                    <input type="text" id="remotePath" name="remotePath" value="/sdcard/app">
+                  </div>
+                </div>
+                <div style="margin-right: 10px;">
+                  <label for="ftpUser">FTP 用户名:</label>
+                  <input type="text" id="ftpUser" name="ftpUser" value="default_user">
+                </div>
+                <div>
+                  <label for="ftpPassword">FTP 密码:</label>
+                  <input type="password" id="ftpPassword" name="ftpPassword" value="default_password">
+                </div>
+              </div>
+              <br>
+              <button onclick="submitFtpConfig()">保存 FTP 配置</button>
             </div>
 
 
@@ -587,20 +661,32 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
             </html>
             `;
 
-
+            if (webviewPanel) {
+              webviewPanel.webview.html = htmlContent; // Refresh the existing webview
+            } else {
+              webviewPanel = vscode.window.createWebviewPanel(
+                'bitBackupLogViewer',
+                'Bit Backup Log Viewer',
+                vscode.ViewColumn.One,
+                { enableScripts: true, retainContextWhenHidden: true }
+              );
 
 
       
-      const webviewPanel = vscode.window.createWebviewPanel(
-        'bitBackupLogViewer',
-        'Bit Backup Log Viewer',
-        vscode.ViewColumn.One,
-        { enableScripts: true, retainContextWhenHidden: true }
-      );
+      // const webviewPanel = vscode.window.createWebviewPanel(
+      //   'bitBackupLogViewer',
+      //   'Bit Backup Log Viewer',
+      //   vscode.ViewColumn.One,
+      //   { enableScripts: true, retainContextWhenHidden: true }
+      // );
+
+
+
+
 
       webviewPanel.webview.html = htmlContent;
 
-
+      let ftpConfig = { host: '192.168.0.100', user: '', password: '', remotePath: '/sdcard/app', localPath: '' }; // Initialize with default values
       webviewPanel.webview.onDidReceiveMessage(
         async (message) => {
           // console.log('Received message:', message);
@@ -609,17 +695,20 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
           const filePath = decodeURIComponent(decodeURIComponent(message.filePath));
           const openfolderPath = decodeURIComponent(decodeURIComponent(message.folderPath));
           let choose = 1;
+
           if (message.command === 'processLtxFile') {
             choose = 1;
             console.log('Processing LTX file:', filePath);
             await processLtxFile(filePath,choose);
           }
+
           // 创建单独的刷新ila界面的tcl脚本
           else if(message.command === 'DuplicateProcessLtxFile'){
             choose = 2;
             console.log('Processing LTX file:', filePath);
             await processLtxFile(filePath,choose);
           }
+
           //备份 impl_1到 bit\a_impl_1_back 下 然后创建单独的刷新ila界面的tcl脚本
           else if(message.command === 'triggerBackBitltxTcl'){
             // console.log('Refresh Vivado Itx');
@@ -644,9 +733,63 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
             const ltxFilePath_a_impl_1_backDirs = path.join(a_impl_1_backDirs, `${bitBaseName}.ltx`);
             //生成tcl脚本
             await processLtxFile(ltxFilePath_a_impl_1_backDirs,choose);
+            console.log('ltxFilePath_a_impl_1_backDirs:', ltxFilePath_a_impl_1_backDirs);
           }
+      // FTP
+
+      
+      // else if (message.command === 'ftp-extension.upload') {
+      //   const { bitFilePath, ltxFilePath, bitFileName, ltxFileName } = extractBitAndLtxFilePaths(filePath) || {};
+      //   if (!bitFilePath || !ltxFilePath || !bitFileName || !ltxFileName) {
+      //     return;
+      //   }
+      //   const customConfig = {
+      //     host: '192.168.3.3',
+      //     user: 'your-custom-user',
+      //     password: 'your-custom-password',
+      //     remotePath: "/" + bitFileName,
+      //     localPath: bitFilePath,
+      //   };
+      //   const ftpConfig = await getFtpConfig(customConfig);
+      //   await uploadFile(ftpConfig);
+      // }
 
 
+      //   else if (message.command === 'setFtpConfig') {
+      //     const { host, user, password } = message.config;
+      //     // Use the FTP configuration information entered by the user
+      //     console.log('Received FTP Config:', { host, user, password });
+      //     // Here you can save the configuration to the extension's global state or perform other actions
+      //   } 
+
+
+
+      else if (message.command === 'setFtpConfig') {
+        const { host,remotePath, user, password } = message.config;
+        ftpConfig = { ...ftpConfig, host,remotePath,user, password }; // Update the FTP configuration
+        console.log('Updated FTP Config:', ftpConfig);
+      }
+      else if (message.command === 'ftp-extension.upload') {
+        const { bitFilePath, ltxFilePath, bitFileName, ltxFileName } = extractBitAndLtxFilePaths(filePath) || {};
+        if (!bitFilePath || !ltxFilePath || !bitFileName || !ltxFileName) {
+          return;
+        }
+
+        const uploadConfig = {
+          ...ftpConfig,
+          remotePath: ftpConfig.remotePath +'/'+ bitFileName,
+          localPath: bitFilePath,
+        };
+
+        console.log('Uploading files to FTP:', uploadConfig);
+        await uploadFile(uploadConfig);
+      }
+    
+
+          else if (message.command === 'bit_backup') {
+            // console.log('');
+            await runExtensionBitbackup(context);
+          }
 
           else if (message.command === 'openFolder') {
             // console.log('Opening folder:', openfolderPath);
@@ -656,7 +799,11 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
         undefined,
         context.subscriptions
       );
-
+      
+      webviewPanel.onDidDispose(() => {
+        webviewPanel = undefined;
+      });
+    }
 
     } else {
       vscode.window.showWarningMessage('未在bit文件夹及其子文件夹中找到backup_log.txt');
@@ -665,6 +812,54 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
     vscode.window.showWarningMessage('在工作区层次结构中未找到runs/impl_1文件夹');
   }
 }
+
+
+
+
+
+
+/**
+ * 从给定的 filePath 解析出 .bit 和 .ltx 文件的路径。
+ *
+ * @param filePath - 包含 .ltx 文件的完整路径。
+ * @returns - 如果成功，返回一个对象包含 bitFilePath 和 ltxFilePath；如果失败，返回 null。
+ *          成功时的对象结构：{ bitFilePath: string, ltxFilePath: string }
+ */
+    export function extractBitAndLtxFilePaths(filePath: string): { bitFilePath: string, ltxFilePath: string ,bitFileName : string, ltxFileName:string} | null {
+  try {
+    // 1. 提取传入 filePath 中的文件名（含扩展名）
+    console.log ('filePath:', filePath);
+    const fileNameWithExt = path.basename(filePath);
+    // 2. 从文件名（含扩展名）中解析出 .bit 文件名
+    const [baseNameWithoutExt] = fileNameWithExt.split('.');
+
+    // 检查文件名是否包含扩展名
+    if (!baseNameWithoutExt) {
+      throw new Error('Invalid file name: no base name found');
+    }
+
+    // 3. 根据解析出的 .bit 文件名动态构建 bitFilePath 和 ltxFilePath
+    const bitFilePath = path.join(path.dirname(filePath), `${baseNameWithoutExt}.bit`);
+    const ltxFilePath = path.join(path.dirname(filePath), `${baseNameWithoutExt}.ltx`);
+    
+    const bitFileName = path.basename(bitFilePath);
+    const ltxFileName = path.basename(ltxFilePath);
+    //打印上面四个变量
+    console.log('bitFilePath:', bitFilePath);
+    console.log('ltxFilePath:', ltxFilePath);
+    console.log('bitFileName:', bitFileName);
+    console.log('ltxFileName:', ltxFileName);
+
+    
+
+    return { bitFilePath, ltxFilePath ,bitFileName, ltxFileName};
+  } catch (error:any) {
+    console.error('Error extracting bit and ltx file paths:', error.message);
+    return null;
+  }
+}
+
+
 
 
 async function openFolderInExplorer(folderPath: string) {
@@ -691,7 +886,7 @@ function generateBackupLogContainers(backupLogFilePaths: string[]): string {
     .map((backupLogFilePath) => {
       const logFileFolder = path.dirname(backupLogFilePath);
       const folderName = path.basename(logFileFolder);
-      console.log(`folderName: ${folderName}`);
+      // console.log(`folderName: ${folderName}`);
 
               // console.log(`logFileFolder: ${logFileFolder}`);
 
@@ -732,8 +927,9 @@ function generateBackupLogContainers(backupLogFilePaths: string[]): string {
             <button class="folder-button second-button" data-tooltip="${logFileFolder}" onclick="vscode.postMessage({command: 'openFolder', folderPath: '${encodeURIComponent(logFileFolder)}'})">Open</button>
             </div>
             <pre>${backupLogContent}</pre>
-            <button class="folder-button first-button" style="display: inline-block; margin-top: 0em;" onclick="triggerProcessLtxFile('${encodeURIComponent(ltxFilePath)}')">Process Vivado bit_ltx_run.tcl</button>
+            <button class="folder-button first-button" style="display: inline-block; margin-top: 0em;" onclick="triggerProcessLtxFile('${encodeURIComponent(ltxFilePath)}')">Produce bit_ltx_run.tcl</button>
             <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="triggerDuplicateProcessLtxFile('${encodeURIComponent(ltxFilePath)}')"> Refresh Vivado Itx</button>
+            <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="ftpUpload('${encodeURIComponent(ltxFilePath)}')"> FTP Upload</button>
           </div>
         `;
         // 
@@ -1607,7 +1803,3 @@ export async function vivadoQuestsimModelsim(context: { subscriptions: any[]; })
     vscode.window.showErrorMessage(`Error executing Vivado commands: ${error.message}`);
   }
 };
-
-
-
-

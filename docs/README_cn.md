@@ -17,10 +17,13 @@
     * [定义悬停](./zh-ch/yf/yf.md)
     * [代码错误检查](./zh-ch/linter/linter.md)
 2. 其他功能
-    * [ucf转xdc文件](./zh-ch/ucf_to_xdc/ucf_to_xdc.md) 
     * [vivado仿真文件的快速转换](./zh-ch/sim_do/sim_do.md)
+    * [VIVADO程序备份和自动下载]()
+    * [VIVADO联合仿真]()
+    * [ucf转xdc文件](./zh-ch/ucf_to_xdc/ucf_to_xdc.md) 
     * [游标列递增、递减](./zh-ch/incrementSelection/incrementSelection.md)
     * [颜色主题](./zh-ch/thems/thems.md)
+    * [FTP功能]()
 
 3. 实现verilog代码格式化功能（变量对齐，逗号对齐，括号对齐）,在设置界面可以配置缩进量。功能触发：按下 ctrl+shift+p :输入 verilog。 快捷键 CTRL + L;功能2：加入只对于always块的格式化，在设置界面可以配置缩进量。命令：verilog-simplealign.always_valuation_func；快捷键ctrl + U。
 4. 一键例化功能,例化的代码自动复制到剪切板。功能触发：按下 ctrl+shift+p :输入 Convert_instance。一键tb功能:按下 ctrl+shift+p :输入 Convert_testbench.
@@ -36,7 +39,11 @@
 12. 加入了verilog 文件树显示功能.需要命令Refresh the verilog file tree display(中文：刷新verilog文件树显示)触发和刷新（容器右上角有刷新按钮/主编辑器区域鼠标右键也有命令）
 13. 加入verilog定义跳转,例化名跳转,例化的端口跳转。快捷跳转需要ctags,（支持跨文件跳转）。
 14. 加入了颜色主题- VSCODE 颜色主题：[jiang percy verilog themes]()
-
+15. 读取VIVAD 的最新ip的Veo文件 ：就是IP的例化文件
+16. 加入了bit文件备份功能,[第一次使用需要使用命令：Vivado_Bitbackup进行第一次的文件备份]()使用Bitbackup命令进行备份-管理界面后续可以使用命令 [Vivado_WebShowLog]() 进行刷新
+17. 加入自动生成下载bit程序和刷新ILA脚本,使用ReFreShWbLog命令打开WEB界面,点击按钮后直接在VIVADO 的 tcl栏目黏贴既可运行备份的版本程序.
+18. 加入了VIVADO和questasim/modelsim的联合仿真功能
+19. 加入了FTP 功能，以及WEB界面的程序一键FTP上传功能
 
 * 代码片段:支持输入的代码片段:  | module | geli | jishuqi | shangshenyan | tb | zhuangtaiji | always | dapai | assign | alwaysposclk | alwaysnegclk | begin | end | initial | case | reg | regarray | regmemory | wire | wirearray | array | parameter | localparam | integer | signed | include | def | ifdef | ifndef | elsif | endif | undef | ts | default_nettype | ternary | if | ifelse | for | while | forever | function | generate |genvar
       其中 比较常用的部分:module/geli/jishuqi/shangshenyan/tb/zhuangtaiji/always/dapai
