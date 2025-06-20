@@ -4,13 +4,13 @@ import * as vscode from 'vscode';
 import { simpleAlign,always_valuation_func } from './verilog_format/simpleAlign';  
 import { instance } from './verilog_format/instance';  
 import { testbench } from './verilog_format/testbench';  
-import { ucf_to_xdc_normal_order,ucf_to_xdc_sort_order } from './verilog_format/UcfConvertXdc';  
+import { /*ucf_to_xdc_normal_order,*/ucf_to_xdc_sort_order } from './verilog_format/UcfConvertXdc';  
 import {   registerHoverProvider, registerGotoDefinition  } from './routine_jump/hover';
 import LintManager from './linter/LintManager';
 import { createLogger, Logger } from './logger';
 import { extractData } from './bit_backup/utils';
 import { doSelection,reverse } from './verilog_format/Increment_Selection';
-import { findVerilogModules, VerilogModuleNode } from './verilog_core';
+import { findVerilogModules, setFileAsTopLevel, VerilogModuleNode, VerilogModuleTreeDataProvider } from './FPGA_tree/FPGA_tree';
 import { activate as activateRoutineJump, deactivate as deactivateRoutineJump } from './routine_jump/routine_jump';
 import { registerDynamicSnippet} from './verilog_Dynamic_code_snippet/verilog_Dynamic_code_snippet';	
 import { registerCommands} from './verilog_Dynamic_code_snippet/snippets';	
@@ -26,15 +26,15 @@ const path = require('path');
 import { runExtensionWorkflow, selectAndProcessIpFolder } from './readVeo.ts/readVeo';
 import { runExtensionBitbackup,refreshWebview,vivadoQuestsimModelsim} from './bit_backup/bit_backup'; 
 import { ftpSet } from './bit_backup/ftpSet'; 
-
-
-
 import{proRegMarkdown} from './md_doc/md_doc';
 
+import{findXprFileAndSave, processXprFile} from './united_simulation/vivado_xpr';
+import { modelsimUnited } from './united_simulation/modelsim_united';
+import { findXprAndRunSimulation, runTbDoFile } from './united_simulation/vivado_united_modelsim';
+import { registerCmdModuleTree } from './united_simulation/VERILOG_SIM_CMD';
 
 var ctagsManager: CtagsManager;
 export var logger: Logger; // Global logger
-let extensionID: string = 'mshr-h.veriloghdl';
 let lintManager: LintManager; 
 
 
@@ -45,7 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "verilog-hdl-format" is now active!');
 
 	logger = createLogger('Verilog');
-	logger.info(extensionID + ' is now active.');
 
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
@@ -75,16 +74,20 @@ export function activate(context: vscode.ExtensionContext) {
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 	// 转换ucf → xdc
-	let disposable3 = vscode.commands.registerCommand('extension.ucf_to_xdc_normal_order', () => {
-        ucf_to_xdc_normal_order(); // 调用函数
-    });
 	let disposable6 = vscode.commands.registerCommand('extension.ucf_to_xdc_sort_order', () => {
         ucf_to_xdc_sort_order(); // 调用函数
     });
 
+	// 获取配置中的 Hover.switch 值
+	const hoverSwitchValue = vscode.workspace.getConfiguration().get('Hover.switch');
+	
+	// 根据配置值决定是否调用 registerHoverProvider
+	// if (hoverSwitchValue === 'open') {
+	// 	registerHoverProvider(context);
+	// }
 	//代码悬停
     // 调用悬停提供者注册函数
-    registerHoverProvider(context);
+    // registerHoverProvider(context);
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
@@ -112,21 +115,23 @@ export function activate(context: vscode.ExtensionContext) {
 		// Configure Providers
 		/////////////////////////////////////////////
 
+
+		// 提供文档符号解析功能。 提供文档符号树，即在编辑器中显示的结构大纲。
 		let verilogDocumentSymbolProvider = new DocumentSymbolProvider.VerilogDocumentSymbolProvider(
 			logger.getChild('VerilogDocumentSymbolProvider'),
 			ctagsManager
 		);
-
+		// // 提供代码补全建议。如关键字、变量、函数等
 		let verilogCompletionItemProvider = new CompletionItemProvider.VerilogCompletionItemProvider(
 			logger.getChild('VerilogCompletionItemProvider'),
 			ctagsManager
 		);
-
+		// 在鼠标悬停时显示额外的信息，如符号定义、注释等。
 		let verilogHoverProvider = new HoverProvider.VerilogHoverProvider(
 			logger.getChild('VerilogHoverProvider'),
 			ctagsManager
 		);
-
+		// 允许用户跳转到符号的定义位置。
 		let verilogDefinitionProvider = new DefinitionProvider.VerilogDefinitionProvider(
 			logger.getChild('VerilogDefinitionProvider'),
 			ctagsManager
@@ -137,30 +142,25 @@ export function activate(context: vscode.ExtensionContext) {
 			{ scheme: 'file', language: 'verilog' },
 			{ scheme: 'file', language: 'systemverilog' },
 		];
-		selectors.forEach((selector) => {
-			context.subscriptions.push(
-			vscode.languages.registerDocumentSymbolProvider(selector, verilogDocumentSymbolProvider)
-			);
 
-			context.subscriptions.push(
-			vscode.languages.registerCompletionItemProvider(
+
+		selectors.forEach((selector) => {
+			context.subscriptions.push(vscode.languages.registerDocumentSymbolProvider(selector, verilogDocumentSymbolProvider));
+
+			context.subscriptions.push(vscode.languages.registerCompletionItemProvider(
 				selector,
 				verilogCompletionItemProvider,
-				'.',
-				'(',
-				'='
-			)
+				'.','(','=')
 			);
 
-			context.subscriptions.push(
-			vscode.languages.registerHoverProvider(selector, verilogHoverProvider)
-			);
+			if (hoverSwitchValue === 'open') {
+				context.subscriptions.push(vscode.languages.registerHoverProvider(selector, verilogHoverProvider));
+			}
 
-			context.subscriptions.push(
-			vscode.languages.registerDefinitionProvider(selector, verilogDefinitionProvider)
-			);
+			context.subscriptions.push(vscode.languages.registerDefinitionProvider(selector, verilogDefinitionProvider));
 		});
 		
+
 
 	// 定义跳转--------命令跳转方式
 		// 调用 gotoDefinition 命令注册函数
@@ -171,16 +171,6 @@ export function activate(context: vscode.ExtensionContext) {
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 	//modelsim-do 文件转换
-			// let disposable7 = vscode.commands.registerCommand('extension.extractData', () => {
-			// 	const folderPath = vscode.workspace.rootPath;
-			// 	if (!folderPath) {
-			// 		vscode.window.showErrorMessage('No folder opened in VSCode.');
-			// 		return;
-			// 	}
-		
-			// 	extractData(folderPath);
-			// });
-
 			let disposable7 = vscode.commands.registerCommand('extension.extractData', () => {
 				const folderPath = vscode.workspace.rootPath;
 				if (folderPath) {
@@ -255,6 +245,40 @@ export function activate(context: vscode.ExtensionContext) {
 			  });
 			}
 		  });
+
+		// //设置为顶级时的图标-当作仿真顶层	
+		// context.subscriptions.push(vscode.commands.registerCommand('verilogModuleTree.setAsTopLevel', (args) => {
+		// 	setFileAsTopLevel(args.filePaths, args.fileName);
+		// 	const filePath = args.filePaths[0];
+		// 	const config = vscode.workspace.getConfiguration();
+		// 	config.update('vivadoSim.simTopFile', filePath, vscode.ConfigurationTarget.Workspace);
+		// 	vscode.window.showInformationMessage(`已设置 ${args.fileName} 为仿真顶层文件`);
+		// 	findXprAndRunSimulation(false); // 设置为false表示不是第一次启动
+		// }));
+
+
+		//设置为顶级时的图标-当作仿真顶层	
+		context.subscriptions.push(vscode.commands.registerCommand('verilogModuleTree.setAsTopLevel', (args) => {
+			setFileAsTopLevel(args.filePaths, args.fileName);
+			const filePath = args.filePaths[0];
+			const config = vscode.workspace.getConfiguration();
+			// 使用正确的配置键名vivadoSim.setAsTopLevel更新仿真顶层文件路径
+			config.update('verilogModuleTree.setAsTopLevel', filePath, vscode.ConfigurationTarget.Workspace);
+			vscode.window.showInformationMessage(`已设置 ${args.fileName} 为仿真顶层文件`);
+			// 修改此处：使用path.basename去除文件后缀
+			const fileNameWithoutExt = path.basename(args.fileName, path.extname(args.fileName));
+			// 将去除后缀的文件名传递给仿真流程
+			findXprAndRunSimulation(false, fileNameWithoutExt); // 设置为false表示不是第一次启动
+		}));	
+
+		//新增：设置仿真顶层文件并传递给联合仿真
+		// context.subscriptions.push(vscode.commands.registerCommand('verilogModuleTree.setAsTopLevel', (args) => {
+		// 	const filePath = args.filePaths[0];
+		// 	const config = vscode.workspace.getConfiguration();
+		// 	config.update('vivadoSim.simTopFile', filePath, vscode.ConfigurationTarget.Workspace);
+		// 	vscode.window.showInformationMessage(`已设置 ${args.fileName} 为仿真顶层文件`);
+		// }));
+
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------
@@ -309,13 +333,88 @@ proRegMarkdown(context);
 //----------------------------------------------------------------------------------------------------------		
 //	FTP
 //----------------------------------------------------------------------------------------------------------		
-  ftpSet(context);
+ftpSet(context);
+
+
+//----------------------------------------------------------------------------------------------------------		
+//	VIVADO 独立 SIM（modelsim/questasim） 
+//----------------------------------------------------------------------------------------------------------		
+
+// context.subscriptions.push(
+// 	vscode.commands.registerCommand('extension.Vivado_Independent_modelsim_questasim', async () => {
+// 		console.log("开始独立仿真");
+// 		const result = await findXprFileAndSave();
+// 		if (result.xprFilePath) {
+// 			console.log(`找到的XPR文件路径: ${result.xprFilePath}`);
+// 		} else {
+// 			vscode.window.showInformationMessage('未找到XPR文件');
+// 		}
+// 	})
+// );
+
+// context.subscriptions.push(
+//   vscode.commands.registerCommand('extension.Vivado_Independent_modelsim_questasim', async () => {
+//     const result = await findXprFileAndSave();
+//     if (result.xprFilePath) {
+//       await processXprFile(result.xprFilePath);
+//     } else {
+//       vscode.window.showInformationMessage('未找到XPR文件');
+//     }
+//   })
+// );
+
+
+// context.subscriptions.push(
+//   vscode.commands.registerCommand('extension.Vivado_Independent_modelsim_questasim', async () => {
+// 	modelsimUnited();
+//   })
+// );
+
+
+// context.subscriptions.push(
+//   vscode.commands.registerCommand('extension.Vivado_Independent_modelsim_questasim', async () => {
+// 	findXprAndRunSimulation();
+//   })
+// );
+
+
+context.subscriptions.push(
+	vscode.commands.registerCommand('extension.Vivado_Independent_modelsim_questasim', async () => {
+	  findXprAndRunSimulation();
+	})
+  );
+  
 
 
 
 
+
+
+// ... existing code ...
+
+// 联合仿真相关命令
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+
+// // 注册联合仿真相关命令
+// context.subscriptions.push(
+// 	vscode.commands.registerCommand('verilog.startVivadoSim', async () => {
+// 		findXprAndRunSimulation();
+// 	})
+// );
+
+// context.subscriptions.push(
+// 	vscode.commands.registerCommand('verilog.runDoFile', async () => {
+// 		runTbDoFile();
+// 	})
+// );
+
+
+   // 注册命令视图
+   registerCmdModuleTree(context);
+   
+// ... existing code ...
 context.subscriptions.push(disposable);
 }
-
 // This method is called when your extension is deactivated
 export function deactivate() {}

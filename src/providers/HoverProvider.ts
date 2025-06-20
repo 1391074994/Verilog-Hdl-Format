@@ -43,27 +43,19 @@ export class VerilogHoverProvider implements vscode.HoverProvider {
     position: vscode.Position,
     _token: vscode.CancellationToken
   ): Promise<vscode.Hover | undefined> {
-    this.logger.info('Hover requested');
+    this.logger.info('请求悬停信息');
     let syms: Symbol[] = await this.ctagsManager.findSymbol(document, position);
     if (syms.length === 0) {
-      this.logger.warn('Hover object not found');
+      this.logger.warn('未找到悬停对象');
       return undefined;
     }
-
-    let code = syms[0].getHoverText();
-
+  
+    let code = syms[0].getHoverText(); // 现在这包括行号
+  
     let hoverText: vscode.MarkdownString = new vscode.MarkdownString();
     hoverText.appendCodeblock(code, document.languageId);
-
-    // TODO: provide hover defs for other ids in the hover
-
-    // console.log(
-    //   this.getWordRanges(
-    //     match.doc,
-    //     new vscode.Position(match.line, match.doc.lineAt(match.line).text.length)
-    //   )
-    // );
-    this.logger.info('Hover object returned');
+  
+    this.logger.info('返回悬停对象');
     return new vscode.Hover(hoverText);
   }
 }

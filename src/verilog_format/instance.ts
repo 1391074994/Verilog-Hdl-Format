@@ -64,84 +64,7 @@ export function extractModuleContent(code: string): string {
   return moduleContent;
 }
 
-
-
-// 模块例化转换函数
-export function converModuleRoutine(code: string): string {
-  // 提取变量名及其对应的行内注释，同时识别全行注释及其位置
-  const extractedData = extractVariablesAndFullLineComments(code);
-  console.log("extractedData",extractedData);
-  // 识别模块名称
-  const moduleNameMatch = code.match(/module\s+\s*(\w+)/);
-  const moduleName = moduleNameMatch ? moduleNameMatch[1] : '';
-
-  // 识别每一行的变量名
-  const variableNames = extractedData.variables.map(item => item.name);
-
-  // 认识到模块名称后的参数
-  // const parameterMatches = code.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g);
-     const parameterMatches = code.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|\$))/g);//只能匹配 parameter 开头的格式  ，另外一种只些一个parameter的暂时不支持。
-  const parameterPairs = Array.from(parameterMatches, match => ({param1: match[1], param2: match[2]}));
-
-  // 转换成目标格式
-  let convertedCode2 = `${moduleName}`;
-
-
-
-  if (parameterPairs.length > 0) {
-    convertedCode2 += "#(\n";
-    for (const pair of parameterPairs) {
-      convertedCode2 += `   .${pair.param1.padEnd(15)}(${pair.param2.padEnd(15)}),\n`;
-    }
-    convertedCode2 = convertedCode2.replace(/,\n$/, '\n');
-    convertedCode2 += ")\n";
-  }
-
-  convertedCode2 += ` u_${moduleName}(\n`;
-
-  // 处理首行全行注释，放在moduleName后面
-  if (extractedData.fullLineComments.length > 0 && extractedData.fullLineCommentPositions[0] === -1) {
-    convertedCode2 += `${extractedData.fullLineComments.shift()}\n`;
-    extractedData.fullLineCommentPositions.shift();
-  }
-
-  // 迭代处理变量及注释，先处理逗号，最后处理注释
-  let lastVariableIndex = 0;
-  for (let i = 0; i < extractedData.variables.length; i++) {
-    const { name } = extractedData.variables[i];
-    convertedCode2 += `    .${name.padEnd(35)}(${name.padEnd(26)})`;
-
-    // 添加逗号，除了最后一个变量
-    if (i !== variableNames.length - 1) {
-      convertedCode2 += ',';
-    }
-
-    // 添加行尾注释
-    const comment = extractedData.variables[i].comment;
-    console.log("comment",comment);
-    if (comment) {
-      convertedCode2 += ` // ${comment}`;
-    }
-
-    convertedCode2 += '\n';
-
-    // 检查是否有全行注释需要插入
-    while (lastVariableIndex < extractedData.fullLineCommentPositions.length && 
-           extractedData.fullLineCommentPositions[lastVariableIndex] === i) {
-      convertedCode2 += `${extractedData.fullLineComments[lastVariableIndex]}\n`;
-      lastVariableIndex++;
-    }
-  }
-
-  convertedCode2 += ");\n";
-
-  return convertedCode2;
-
-
-}
-
-
-
+ 
 
 
 //生成wire/reg
@@ -173,88 +96,113 @@ return convertedCode + '\n\n' ;
 
 
 
+export function converModuleRoutine(code: string): string {
+  if (!code) return "";
 
-// 提取变量名及其行内注释，同时识别全行注释及其位置
+  const lines = code.split('\n');
+  let convertedCode = '';
+  let lineComment = '';
+  let inMultilineComment = false;
+  let moduleName = '';
+  let parameterPairs: { param1: string, param2: string }[] = [];
+  let variables: { status: number, name: string, comment?: string }[] = [];
 
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].trim();
 
-// function extractVariablesAndFullLineComments(code: string): {variables: {name: string, comment?: string}[], fullLineComments: string[], fullLineCommentPositions: number[]} {
-//   const lines = code.split('\n');
-//   const variables: {name: string, comment?: string}[] = [];
-//   const fullLineComments: string[] = [];
-//   const fullLineCommentPositions: number[] = []; // 记录全行注释对应变量的位置
-//   let variableIndex = 0; // 当前处理到的变量索引
+    if (inMultilineComment) {
+      lineComment += line + '\n';
+      if (line.includes('*/')) {
+        inMultilineComment = false;
+        variables.push({
+          status: 0,
+          comment: lineComment.trim(),
+          name: ''
+        });
+        lineComment = ''; // Reset lineComment after processing
+      }
+      continue;
+    }
 
-//   // 特殊处理首行全行注释
-//   if (lines[0].trim().startsWith('//')) {
-//     fullLineComments.push(lines[0]);
-//     fullLineCommentPositions.push(-1); // 表示首行全行注释
-//   }
+    if (line.startsWith('module')) {
+      moduleName = line.match(/module\s+(\w+)/)?.[1] || '';
+      convertedCode += line + '\n';
+      continue;
+    }
 
-//   lines.forEach((line, index) => {
-//     const variableMatch = line.match(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)\s*(\w+)/);
-//     if (variableMatch) {
-//       const name = variableMatch[5];
-//       const commentMatch = line.match(/\/\/(.*)$/);
-//       const comment = commentMatch ? commentMatch[1].trim() : undefined;
-//       variables.push({name, comment});
-//       variableIndex++;
-//     } else if (line.trim().startsWith("//")) {
-//       // Adjusting to correctly place comments before the first variable or after any other variable
-//       fullLineCommentPositions.push(variableIndex > 0 ? variableIndex - 1 : -1); // Ensure -1 is only for the first comment
-//       fullLineComments.push(line);
-//     }
-//   });
+    if (line.includes('/*')) {
+      inMultilineComment = true;
+      lineComment = line + '\n'; // Start collecting multiline comment
+      continue;
+    }
 
-//   return { variables, fullLineComments, fullLineCommentPositions };
-// }
+    if (line.startsWith('//')) {
+      convertedCode += line + '\n';
+      variables.push({
+        status: 0,
+        comment: line.trim(),
+        name: ''
+      });
+      continue;
+    }
 
+    // if (line.includes('parameter')) {
+    //   const parameterMatches = Array.from(line.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|\$))/g));
+    //   parameterPairs = [...parameterPairs, ...parameterMatches.map(match => ({ param1: match[1], param2: match[2] }))];
+    //   continue;
+    // }
+    if (line.includes('parameter')) {
+      // 修改正则表达式以匹配多行parameter定义
+      const parameterMatches = Array.from(line.matchAll(/parameter\s+(\S+)\s*=\s*(\S+?)(?=(?:,|\s|$))/g));
+      parameterPairs = [...parameterPairs, ...parameterMatches.map(match => ({ param1: match[1], param2: match[2] }))];
 
-function extractVariablesAndFullLineComments(code: string): {variables: {name: string, comment?: string}[], fullLineComments: string[], fullLineCommentPositions: number[]} {
-  const lines = code.split(/\r?\n/);
-  const variables: {name: string, comment?: string}[] = [];
-  const fullLineComments: string[] = [];
-  const fullLineCommentPositions: number[] = []; // 记录全行注释对应变量的位置
-  let variableIndex = 0; // 当前处理到的变量索引
-
-  // 特殊处理首行全行注释
-  if (lines[0].trim().startsWith('//')) {
-    fullLineComments.push(lines[0]);
-    fullLineCommentPositions.push(-1); // 表示首行全行注释
-  }
-
-  lines.forEach((line, index) => {
-    const variableMatch = line.match(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)\s*(\w+)/);
+      // 如果当前行以逗号结尾，则继续处理下一行
+      if (!line.trim().endsWith(',')) {
+        continue;
+      }
+    }
+    const variableMatch = line.match(/\s*(input|output|inout)\s*(wire|reg|)?\s*(signed)?\s*((?:\[[^\]]+\])?)?\s*(\w+)/);
     if (variableMatch) {
       const name = variableMatch[5];
       const commentMatch = line.match(/\/\/(.*)$/);
-      const comment = commentMatch ? commentMatch[1].trim() : undefined;
-      variables.push({name, comment});
-      variableIndex++;
-    } else if (line.trim().startsWith("//")) {
-      // Adjusting to correctly place comments before the first variable or after any other variable
-      fullLineCommentPositions.push(variableIndex > 0 ? variableIndex - 1 : -1); // Ensure -1 is only for the first comment
-      fullLineComments.push(line);
+      const comment = commentMatch ? '// ' + commentMatch[1].trim() : undefined;
+      variables.push({ status: 1, name, comment });
     }
-  });
 
-  return { variables, fullLineComments, fullLineCommentPositions };
+    convertedCode += line + '\n';
+  }
+
+  convertedCode += `);`;
+
+  // 转换成目标格式
+  let finalConvertedCode = `${moduleName}`;
+
+  if (parameterPairs.length > 0) {
+    finalConvertedCode += "#(\n";
+    for (const pair of parameterPairs) {
+      finalConvertedCode += `   .${pair.param1.padEnd(15)}(${pair.param2.padEnd(15)}),\n`;
+    }
+    // finalConvertedCode = finalConvertedCode.replace(/,\n$/, '\n');
+    finalConvertedCode = finalConvertedCode.replace(/,\n$/, '\n'); // 移除最后一个逗号
+    finalConvertedCode += ")\n";
+  }
+
+  finalConvertedCode += ` u_${moduleName}(\n`;
+
+  for (let i = 0; i < variables.length; i++) {
+    const { status, name, comment } = variables[i];
+    if (status === 1) {
+      finalConvertedCode += `    .${name.padEnd(35)}(${name.padEnd(26)})${i !== variables.length - 1 ? ',' : ''}`;
+    }
+    if (comment) {
+      finalConvertedCode += comment;
+    }
+    finalConvertedCode += '\n';
+  }
+
+  finalConvertedCode += ");\n";
+
+  return finalConvertedCode;
 }
-
-
-
-
-
-
-
-
-
-
-
-// export function deactivate() {}
-
-
-
-
-
 
 

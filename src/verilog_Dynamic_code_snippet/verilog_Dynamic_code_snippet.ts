@@ -1,5 +1,5 @@
 
-// 动态代码片段会印象 VSCODE的IntelliSense 的功能，所以改成命令触发
+// 动态代码片段会影响 VSCODE的IntelliSense 的功能，所以改成命令触发
 
 import * as vscode from 'vscode';
 
@@ -96,7 +96,18 @@ export function registerDynamicSnippet(context: vscode.ExtensionContext) {
                 "endmodule"
             );
 
-            return [moduleSnippet, tbSnippet];
+            let logSnippet = new vscode.CompletionItem('log', vscode.CompletionItemKind.Snippet);
+            logSnippet.insertText = new vscode.SnippetString(
+                "/*****************************************************************\n" +
+                " * 文件名  : $TM_FILENAME \n" +
+                " * 日期    : $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND \n" +
+                " * 作者    :  " + userName + "\n" +
+                " * 修改日志  $1        \n" +
+                " *****************************************************************/\n" 
+            );
+
+
+            return [moduleSnippet, tbSnippet,logSnippet];
         }
     });
     context.subscriptions.push(disposable);

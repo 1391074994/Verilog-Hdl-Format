@@ -4,14 +4,15 @@
 
 
 import * as vscode from 'vscode';
-const upbound_width = vscode.workspace.getConfiguration().get('simpleAlign.num5.upbound') as number;//default :4
-const lowbound_width = vscode.workspace.getConfiguration().get('simpleAlign.num6.lowbound') as number;;//default :2
+const upboundWidth = vscode.workspace.getConfiguration().get('simpleAlign.upbound') as number;//default :4
+const lowboundWidth = vscode.workspace.getConfiguration().get('simpleAlign.lowbound') as number;;//default :2
+const up_low_increment= upboundWidth + lowboundWidth + 3;//3 = [:] 占了三个字符
 function parseBound(bound: string): string {
   // [7:0] => [   7:0]
   const match = /\[\s*(\S+)\s*:\s*(\S+)\s*\]/.exec(bound);
   if (match) {
-    const upbound = match[1].padStart(upbound_width);
-    const lowbound = match[2].padStart(lowbound_width);
+    const upbound = match[1].padStart(upboundWidth);
+    const lowbound = match[2].padStart(lowboundWidth);
     return `[${upbound}:${lowbound}]`;
   }
   return bound;
@@ -21,400 +22,713 @@ function parseBound(bound: string): string {
   function parseLine(line: string): string {
     let types = ['port', 'declaration', 'instance', 'assign'];
     // 正则表达式判断类型
-    let reg_port = /^\s*(input|output|inout)/;
-    let reg_declaration = /^\s*(wire|integer)/;
-    let define_reg = /^\s*(reg|wire|integer)/;
-    let reg_instance = /^\s*\./;
-    let reg_assign = /^\s*assign/;
-    // let reg_localparam = /^\s*localparam|parameter/;
-    // let reg_localparam = /^\s*(localparam|parameter)\b/;
-    let reg_localparam = /^\s*(localparam|parameter)\s+(\w+)\s*=\s*([^,;]+)\s*(,|;)?/;
-
+    let regPort = /^\s*(input|output|inout)/;
+    let defineReg = /^\s*(reg|wire|integer|logic)/;
+    let regInstance = /^\s*\./;
+    let regAssign = /^\s*assign/;
+    let regLocalparam = /^\s*(localparam|parameter)/;
 
 //******************************************************
 //******************************************************
-
-
-
-    // let reg_parameter = /^\s*parameter/;
-    let new_line = line;
-    // const width1 = 4;//input/output/reg/assign/---等前面的空格数 //default :4
-    // const width2 = 6;//signed 位置附件的空格数 //default :6
-    // const width3 = vscode.workspace.getConfiguration().get('simpleAlign.num3') as number;//default :17
-    // const width4 = 27;//default :27
+    let newLine = line;
     const width1 = vscode.workspace.getConfiguration().get('simpleAlign.num1') as number;//input/output/reg/assign/---等前面的空格数 //default :4
     const width2 = vscode.workspace.getConfiguration().get('simpleAlign.num2') as number;//signed 位置附件的空格数 //default :6
     const width3 = vscode.workspace.getConfiguration().get('simpleAlign.num3') as number;//default :17
     const width4 = vscode.workspace.getConfiguration().get('simpleAlign.num4') as number;//default :27
     
+    const width5 = vscode.workspace.getConfiguration().get('simpleAlign.num5') as number;
+    const width6 = vscode.workspace.getConfiguration().get('simpleAlign.num6') as number;
+    const width7 = vscode.workspace.getConfiguration().get('simpleAlign.num7') as number;
+    const width8 = vscode.workspace.getConfiguration().get('simpleAlign.num8') as number;
     
-    const width_always = vscode.workspace.getConfiguration().get('simpleAlign.width_always') as number;//always 位置附件的空格数 //default :4
-    const width_begin_end = vscode.workspace.getConfiguration().get('simpleAlign.width_begin_end') as number;//begin/end 位置附件的空格数 //default :8
-    const width_if = vscode.workspace.getConfiguration().get('simpleAlign.width_if') as number;//if 位置附件的空格数 //default :12
-    const width_else = vscode.workspace.getConfiguration().get('simpleAlign.width_else') as number;//else 位置附件的空格数 //default :12
-    const width_else_if = vscode.workspace.getConfiguration().get('simpleAlign.width_else_if') as number;//else if 位置附件的空格数 //default :12
-    // const width_always_valuation = vscode.workspace.getConfiguration().get('simpleAlign.width_always_valuation') as number;//always_valuation 位置附件的空格数 //default :16
-
-    // const width_always = 4;//always 位置附件的空格数 //default :4
-    // const width_begin_end = 8;//begin/end 位置附件的空格数 //default :4
-    // const width_if = 12;//if 位置附件的空格数 //default :4
-    // const width_else = 12;//else 位置附件的空格数 //default :4
-    // const width_else_if = 12;//else if 位置附件的空格数 //default :4
-    // const width_always_valuation = 16;//always_valuation 位置附件的空格数 //default :16
-
+    const width9 = vscode.workspace.getConfiguration().get('simpleAlign.num9') as number;
+    const width10 = vscode.workspace.getConfiguration().get('simpleAlign.num10') as number;
+    const width11 = vscode.workspace.getConfiguration().get('simpleAlign.num11') as number;
     
+    const width12 = vscode.workspace.getConfiguration().get('simpleAlign.num12') as number;
+    const width13 = vscode.workspace.getConfiguration().get('simpleAlign.num13') as number;
+    const width14 = vscode.workspace.getConfiguration().get('simpleAlign.num14') as number;
+    
+    const width15 = vscode.workspace.getConfiguration().get('simpleAlign.num15') as number;
+    const width16 = vscode.workspace.getConfiguration().get('simpleAlign.num16') as number;
+    const width17 = vscode.workspace.getConfiguration().get('simpleAlign.num17') as number;
+    let spacewidth = 1;
 // 提取注释
     let comments = /(\/\/.*)?$/.exec(line);
     if (comments) {
-      var line_no_comments = line.replace(comments[0], "");
+      var lineNoComments = line.replace(comments[0], "");
       var comment = comments[0];
     } else {
-      var line_no_comments = line;
+      var lineNoComments = line;
       var comment = "";
     }
 
-//=++++++++++++++++++++++++++++++++
-//方案1
-//=++++++++++++++++++++++++++++++++
-//如果 parseBound 的结果长度超过了 width3(17)，则会计算超出的字符数，并将其从 name 的空格数中减去，确保整行的长度不会超过规定的范围。
-    if (reg_port.test(line)) {
-      new_line = line_no_comments.replace(/^\s*(input|output|inout)\s*(reg|wire)?\s*(signed)?\s*(\[.*\])?\s*([^;]*\b)\s*(,|;)?.*$/, (_, output, reg, signed, bound, name, comma) => {
-        let output_width = 7;
-        let reg_width = 5;
-        output = output.padEnd(output_width);
-        if (reg != undefined)
-          reg = reg.padEnd(reg_width);
+
+    if (regPort.test(line)) {
+      newLine = lineNoComments.replace(/^\s*(input|output|inout)\s*(reg|wire|logic)?\s*(signed)?\s*(\[.*\])?\s*([^;]*\b)\s*(,|;|\)\s*;)?.*$/, (_, output, reg, signed, bound, name, comma) => {
+
+
+        output = output.padEnd(7);
+
+        if (reg !== undefined)
+            {reg = reg.padEnd(5 + spacewidth );}
         else
-          reg = "".padEnd(reg_width);
-        if (signed != undefined)
-          signed = signed.padEnd(width2+1);
+            {reg = "".padEnd( 5 + spacewidth);}
+
+
+        if (signed !== undefined)
+            {signed = signed.padEnd(6 + spacewidth + width2);}
         else
-          signed = "".padEnd(width2+1);
-        if (bound != undefined) {
-          let parsedBound = parseBound(bound).padEnd(width3);
-          let excessLength = Math.max(parsedBound.length - width3, 0);
-          name = name.trim().padEnd(width4 - excessLength);
-          bound = parsedBound;
+            {signed = "".padEnd( 6 + spacewidth + width2 );}
+
+        if (bound !== undefined) {
+            let parseBoundOut   = parseBound(bound);
+            let parsedBoundWith = parseBoundOut.length;//获取【：】所占的空格数；
+            bound = parseBoundOut.padEnd(parsedBoundWith + spacewidth + width3 );
+            name = name.trim().padEnd(width4);
         }
         else {
-          bound = "".padEnd(width3);
-          name = name.trim().padEnd(width4);
+            bound = "".padEnd( up_low_increment + width3 + spacewidth);
+            name = name.trim().padEnd(width4);
         }
-        if (comma == undefined)
-          comma = " ";
-        if (comment == undefined)
-          comment = "";
+
+        if (comma === undefined)
+          {comma = " ";}
+        if (comment === undefined)
+          {comment = "";}
         return "".padEnd(width1) + output + reg + signed + bound + name + comma + comment;
       });
     }
 
-// // wire
-//     else if (reg_declaration.test(line)) {
-//       new_line = line_no_comments.replace(/^\s*(wire)\s*(signed)?\s*(\[.*\])?\s*(.*)\s*;.*$/, (_, wire, signed, bound, name) => {
-//         wire = wire.padEnd(9);
-//         if (signed != undefined)
-//           signed = signed.padEnd(width2+4);
-//         else
-//           signed = "".padEnd(width2+4);
-//         if (bound != undefined) {
-//           let parsedBound = parseBound(bound).padEnd(width3);
-//           let excessLength = Math.max(parsedBound.length - width3, 0);
-//           name = name.trim().padEnd(width4 - excessLength);
-//           bound = parsedBound;
-//         }
-//         else {
-//           bound = "".padEnd(width3);
-//           name = name.trim().padEnd(width4);
-//         }
-//         if (comment == undefined)
-//           comment = "";
-//         return "".padEnd(width1) + wire + signed + bound + name + ";" + comment;
-//       });
-//     }
-    
-// reg
-    else if (define_reg.test(line)) {
-      new_line = line_no_comments.replace(/^\s*(reg|wire|integer)\s*(signed)?\s*(\[.*\])?\s*(\S+)\s*(\[.*\])?\s*(\S+)?\s*(\S+)?\s*;.*$/, (_, reg, signed, bound, name, shuzu,dengyu,num) => {
-        reg = reg.padEnd(9);
-        if (signed != undefined)
-          signed = signed.padEnd(width2+4);
-        else
-          signed = "".padEnd(width2+4);
-        
-        if (bound != undefined) //第一个[ : ]
-        bound = parseBound(bound).padEnd(width3);
-        else
-        bound = "".padEnd(width3);
 
-        if (bound != undefined )  
-            name = name.trim().padEnd(width4 - Math.max(0, parseBound(bound).length - width3)); //字符的数量
-        else
-            name = name.trim().padEnd(width4); //字符的数量
-    
-        if (shuzu != undefined)//第二个[ : ]
-            name = name.trim().padEnd(20 - Math.max(0, parseBound(shuzu).length - width3));//字符的数量
-          else
-            name = name.trim().padEnd(width4 - Math.max(0, parseBound(bound).length - width3) - 2);//字符的数量
 
-        if (shuzu != undefined) //第二个[ : ]
+else if (defineReg.test(line)) {
+  newLine = lineNoComments.replace(
+    /^\s*(reg|wire|integer|logic)\s*(signed)?\s*(\[.*\])?\s*(\S+)\s*(\[.*\])?\s*(\S+)?\s*(?:\s+(.*))?;.*$/,
+    (_, reg, signed, bound, name, shuzu, dengyu, varsOptional) => {
+      reg = reg.padEnd(7+spacewidth);
+      signed = signed ? signed.padEnd( 6 + width6 +spacewidth) : "".padEnd(6 + width6+spacewidth);
+
+      bound = bound ? parseBound(bound).padEnd(parseBound(bound).length + width7 + spacewidth) : "".padEnd(up_low_increment + width7 + spacewidth);//第一个[ : ]
+        if (shuzu != undefined)//第二个[ : ]存在
+            {
             shuzu = shuzu.padEnd(0); //字符的数量
-            // shuzu = shuzu.padEnd(width4 - Math.max(0, parseBound(bound).length - width3)); //字符的数量
-        else
+            name = name.trim().padEnd(20  - Math.max(0, parseBound(shuzu).length));
+        }//字符的数量
+          else//第二个[ : ]不存在
+            {
+            name = name.trim().padEnd(width8  + spacewidth  );//字符的数量
             shuzu = "".padEnd(0);
+        }
+      
+      dengyu = dengyu ? dengyu.padEnd(0) : "".padEnd(2); //dengyu
 
-        if (dengyu != undefined) //dengyu
-          dengyu = dengyu.padEnd(0);
-        else
-          dengyu = "".padEnd(2);//补的上面减2的值
+      // 处理可能存在的多个变量
+      let vars = varsOptional ? varsOptional.split(/\s+/).map((varItem: string) => varItem.padEnd(0)).join(' ') : "";
+      
+      if (comment === undefined) {
+        comment = "";
+      }
 
-          if (num != undefined) //
-            num = num.padEnd(0);
-          else
-            num = "".padEnd(0);
-    
-        if (comment == undefined)//注释
-          comment = "";
-        return "".padEnd(width1) + reg + signed + bound + name + shuzu + dengyu +  num + ";" + comment;
-      });
+      return "".padEnd(width5) + reg + signed + bound + name + shuzu + dengyu + vars + ";" + comment;
     }
+  );
+}
 
-// 是实例化
-    else if (reg_instance.test(line)) {
-      new_line = line_no_comments.replace(/^\s*\.\s*(\w*)\s*\((.*)\)\s*(,|;)?.*$/, (_, port_name, signal_name, comma) => {
-        port_name = port_name.padEnd(width3 + 18);
-        if (signal_name)
-          signal_name = signal_name.trim().padEnd(width4-1);
-        else
-          signal_name = "".padEnd(width4-1);
-        if (comma == undefined)
-          comma = " ";
-        if (comment == undefined)
-          comment = "";
-        return "".padEnd(width1) + "." + port_name + "(" + signal_name + ")" + comma + comment;
-      });
-    } 
+
+    // localparam|parameter
+    else if (regLocalparam.test(lineNoComments)) {
+        newLine = lineNoComments.replace(/^\s*(localparam|parameter)\s*(\[.*\])?\s*(\w+)\s*=\s*([^,;]+)\s*(,|;)?/, (_, declaration, range, signalName, expression,endingSymbol) => {
+            // localparam 的长度为10
+          declaration = declaration.padEnd(10+width10+spacewidth);
+          const rangePart = range ? parseBound(range).padEnd(9 + spacewidth) : "";
+          signalName = signalName.trim().padEnd(width11+spacewidth);
+          let assignOperator = "=".padEnd(2);
+          expression = expression.trim().padEnd(6);
+          if (endingSymbol === undefined) {
+            endingSymbol = "";
+          }
+          return "".padEnd(width9) + declaration + rangePart + signalName + assignOperator + expression +endingSymbol ;
+        });
+        newLine = newLine + comment;  
+      }
+
+
     
 // assign
-    else if (reg_assign.test(line)) {
-      new_line = line_no_comments.replace(/^\s*assign\s*(.*?)\s*=\s*(.*?);\s*.?$/, (_, signal_name, expression) => {
-        let assign_operator = "=".padEnd(2);//2的话 空格是1  值需要-1
-        signal_name = signal_name.trim().padEnd(width4-1);//这个决定了signal_name这个变量的最大字符个数
+    else if (regAssign.test(line)) {
+      newLine = lineNoComments.replace(/^\s*assign\s*(.*?)\s*=\s*(.*?);\s*.?$/, (_, signalName, expression) => {
+        let assignOperator = "=".padEnd(1+spacewidth);  
+        signalName = signalName.trim().padEnd(width14+spacewidth);//这个决定了signal_name这个变量的最大字符个数
         expression = expression.trim().padEnd(0); // ";"前的空格
-        if (comment == undefined)
-          comment = "";
-        return "".padEnd(width1) + "assign".padEnd(width3+19)  + signal_name /*+ "".padEnd(4) */+ assign_operator + "".padEnd(0) + expression + ";" + comment;
+        if (comment === undefined)
+          {comment = "";}
+        return "".padEnd(width12) + "assign".padEnd(width13+6+spacewidth)  + signalName + assignOperator + expression + ";" + comment;
       });
     } 
 
-// // localparam|parameter
-// else if (reg_localparam.test(line)) {
-//     new_line = line_no_comments.replace(/^\s*(localparam|parameter)\s+(\w+)\s*=\s*([^,;]+)\s*(,|;)?\s*(\/\/.*)?$/, (_, declaration, signal_name, expression, ending_symbol, comment) => {
-//     declaration = declaration.padEnd(width3+19);
-//     let assign_operator = "=".padEnd(2);//2的话 空格是1  值需要-1
-//     signal_name = signal_name.trim().padEnd(width4-1);//这个决定了signal_name这个变量的最大字符个数
-//     expression = expression.trim().padEnd(0);// ";"前的空格
-//     if (ending_symbol == undefined) {
-//       ending_symbol = "";
-//     }
-//     if (comment == undefined) {
-//       comment = "";
-//     }
-//     console.log("new_line",new_line);
-//     console.log("comment",comment);
-//     console.log("ending_symbol",ending_symbol);
-//     return "".padEnd(width1) + declaration + signal_name  + assign_operator  + expression + ending_symbol + comment;
-//   });
-// }
 
 
-// // localparam|parameter
-// else if (reg_localparam.test(line_no_comments)) {
-//   new_line = line_no_comments.replace(/^\s*(localparam|parameter)\s+(\w+)\s*=\s*([^,;]+)\s*(,|;)?/, (_, declaration, signal_name, expression, ending_symbol) => {
-//       declaration = declaration.padEnd(width3+19);
-//       let assign_operator = "=".padEnd(2);//2的话 空格是1  值需要-1
-//       signal_name = signal_name.trim().padEnd(width4-1);//这个决定了signal_name这个变量的最大字符个数
-//       expression = expression.trim().padEnd(0);// ";"前的空格
-//       if (ending_symbol == undefined) {
-//           ending_symbol = "";
-//       }
-//       return "".padEnd(width1) + declaration + signal_name + assign_operator + expression + ending_symbol;
-//   });
-//   new_line = new_line + comment; // 将注释添加回行的末尾
-// }
-
-// localparam|parameter
-else if (reg_localparam.test(line_no_comments)) {
-  new_line = line_no_comments.replace(/^\s*(localparam|parameter)\s+(\w+)\s*=\s*([^,;]+)\s*(,|;)?/, (_, declaration, signal_name, expression, ending_symbol) => {
-      declaration = declaration.padEnd(width3+19);
-      let assign_operator = "=".padEnd(2);//2的话 空格是1  值需要-1
-      signal_name = signal_name.trim().padEnd(width4-1);//这个决定了signal_name这个变量的最大字符个数
-      expression = expression.trim().padEnd(6);// ";"前的空格
-      if (ending_symbol == undefined) {
-          ending_symbol = "";
-      }
-      return "".padEnd(width1) + declaration + signal_name + assign_operator + expression + ending_symbol;
-  });
-  new_line = new_line + comment; // 将注释添加回行的末尾
-}
+    // 是实例化
+    else if (regInstance.test(line)) {
+        newLine = lineNoComments.replace(/^\s*\.\s*(\w*)\s*\((.*)\)\s*(,|;)?.*$/, (_, portName, signalName, comma) => {
+        portName = portName.padEnd(width16 + 18);
+        if (signalName)
+            {signalName = signalName.trim().padEnd(width17-1);}
+        else
+            {signalName = "".padEnd(width17-1);}
+        if (comma == undefined)
+            {comma = " ";}
+        if (comment == undefined)
+            {comment = "";}
+        return "".padEnd(width15) + "." + portName + "(" + signalName + ")" + comma + comment;
+        });
+    } 
 
 
-
-
-
-    else if (line_no_comments.trim().length > 0) {
+    else if (lineNoComments.trim().length > 0) {
       // 对齐注释
-      line_no_comments = line_no_comments.replace(/\t/g, "".padEnd(4));
-      line_no_comments = line_no_comments.trimEnd();
+      lineNoComments = lineNoComments.replace(/\t/g, "".padEnd(4));
+      lineNoComments = lineNoComments.trimEnd();
       if (comment.length > 0)
-        line_no_comments = line_no_comments.padEnd(68);
-      new_line = line_no_comments + comment;
+        {lineNoComments = lineNoComments.padEnd(68);}
+      newLine = lineNoComments + comment;
     }
 
-    return new_line;
+    return newLine;
 }
 
-function always_valuation_function(line: string): string {
-    let reg_always = /^\s*(always|always_comb|always_ff|always_latch)(.*)$/;
-    let reg_begin_end = /^\s*(begin|end)(.*)$/;
-    let reg_if = /^\s*if/;
-    let reg_else = /^\s*(else)\s*(begin)?\s*(.*)$/;
-    let reg_else_if = /^\s*else\s*if/;
-    const always_valuation = /^\s*(\w+)\s*<=\s*(.+)\s*;.*$/;
-    let new_line = line;
-
-    const width_always = vscode.workspace.getConfiguration().get('simpleAlign.width_always') as number;//always 位置附件的空格数 //default :4
-    const width_begin_end = vscode.workspace.getConfiguration().get('simpleAlign.width_begin_end') as number;//begin/end 位置附件的空格数 //default :8
-    const width_if = vscode.workspace.getConfiguration().get('simpleAlign.width_if') as number;//if 位置附件的空格数 //default :12
-    const width_else = vscode.workspace.getConfiguration().get('simpleAlign.width_else') as number;//else 位置附件的空格数 //default :12
-    const width_else_if = vscode.workspace.getConfiguration().get('simpleAlign.width_else_if') as number;//else if 位置附件的空格数 //default :12
-    const width_always_valuation = vscode.workspace.getConfiguration().get('simpleAlign.width_always_valuation') as number;//always_valuation 位置附件的空格数 //default :16
-
-    // const width_always = 4;//always 位置附件的空格数 //default :4
-    // const width_begin_end = 8;//begin/end 位置附件的空格数 //default :4
-    // const width_if = 12;//if 位置附件的空格数 //default :4
-    // const width_else = 12;//else 位置附件的空格数 //default :4
-    // const width_else_if = 12;//else if 位置附件的空格数 //default :4
-    // const width_always_valuation = 16;//always_valuation 位置附件的空格数 //default :16
-
-
-    // 提取注释
-    let comments = /(\/\/.*)?$/.exec(line);
-    if (comments) {
-    var line_no_comments = line.replace(comments[0], "");
-    var comment = comments[0];
-    } else {
-    var line_no_comments = line;
-    var comment = "";
-    }
-
-
-// always
-    if (reg_always.test(line)) {
-    new_line = line_no_comments.replace(/^\s*(always|always_comb|always_ff|always_latch)(.*)$/, (_, always_type, residue) => {
-        if (residue === undefined) {
-        residue = "";
+    // 简单对齐函数
+  export function simpleAlign() {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {return;}
+      const fileName = editor.document.fileName;
+      if (!(fileName.endsWith(".v") || fileName.endsWith(".sv"))) {return;}
+      const sel = editor.selection; // 只处理一个选择区域
+      editor.edit((builder) => {
+        for (let i = sel.start.line; i <= sel.end.line; i++) {
+          if (!editor) {continue;}
+          let line = editor.document.lineAt(i);
+          let newLine = parseLine(line.text);
+          if (newLine.localeCompare(line.text) !== 0) {
+            let lineRange = new vscode.Range(line.range.start, line.range.end);
+            builder.replace(lineRange, newLine);
+          }
         }
-        return "".padEnd(width_always) + always_type + residue + comment;
-    });
-    }
-
-    // begin|end
-    else if (reg_begin_end.test(line)) {
-    new_line = line_no_comments.replace(/^\s*(begin|end)(.*)$/, (_, variable, residue) => {
-        if (residue === undefined) {
-        residue = "";
-        }
-        return "".padEnd(width_begin_end) + variable + residue + comment;
-    });
-    }
-
-    // else if
-    else if (reg_else_if.test(line)) {
-        new_line = line_no_comments.replace(/^\s*(else)\s*(if)\s*(.*)$/, (_, variable, num_2_else, residue) => {
-        if (residue === undefined) {
-            residue = "";
-        }
-        return "".padEnd(width_else_if) + variable + " " + num_2_else + residue + comment;
-        });
-    }
-    // if
-    else if (reg_if.test(line) && !reg_else_if.test(line)) {
-        new_line = line_no_comments.replace(/^\s*(if)\s*(.*)$/, (_, variable, residue) => {
-        if (residue === undefined) {
-            residue = "";
-        }
-        return "".padEnd(width_if) + variable + residue + comment;
-        });
-    }
-    // // else
-    // else if (reg_else.test(line) && !reg_else_if.test(line)) {
-    //     new_line = line_no_comments.replace(/^\s*(else)\s*(.*)$/, (_, variable, residue) => {
-    //     if (residue === undefined) {
-    //         residue = "";
-    //     }
-    //     return "".padEnd(width_else) + variable + residue + comment;
-    //     });
-    // }
-
-    // else (begin)?
-    else if (reg_else.test(line)) {
-      new_line = line_no_comments.replace(/^\s*(else)\s*(begin)?\s*(.*)$/, (_, variable, n_begin, residue) => {
-      if (n_begin === undefined) {
-        n_begin = "";
-      }
-
-      if (residue === undefined) {
-          residue = "";
-      }
-      return "".padEnd(width_else) + variable + " " + n_begin + residue + comment;
       });
     }
 
 
 
-    else if (always_valuation.test(line)) {
-        new_line = line_no_comments.replace( /^\s*(\w+)\s*<=\s*(.+)\s*;.*$/, (_, variable, residue) => {
-          return "".padEnd(width_always_valuation) + variable + " <= " +  residue  + ";"+ comment;
-        });
+
+//************************************************************************************************* */
+// always 格式化--单独成行的格式
+    // 在always_valuation_func 下面的 console.log(alwaysBlocks); 下面 加上函数  直接修改编辑器内容
+    // 这里加一个格式化 函数识别 begin / end / if / else / else if  关键字和他们所在的行- 
+    // 定义 ： begin / end / if / else / else if  关键字所在的行叫关键字行，其他行 叫 代码行
+    // always 下面的第一个的行是关键字行：则 关键字行 的行前空格是为 always行前空格数 +4 
+    // 如果 关键字行 的下一行是 关键字行 或者 其他行，则也是在上一个关键字行行数的基础上+4
+    // 如果 其他行 的下一行是 关键字行，则关键字行的行前空格是为上一行行数-4
+    // 如果 其他行 的下一行是 其他行，则两个其他行的行前空格相同
+
+
+    // 当前行是 关键字行(非end) ，上一行为关键字行(非end) ，则当前行 == 上一行 + 4 
+    // 当前行是 非关键字行 ，上一行为关键字行 ，则当前行 == 上一行 + 4 
+
+    // 当前行是 关键字行 ，上一行为非关键字行 ，则当前行 == 上一行 - 4 
+    // 当前行是 非关键字行 ，上一行为非关键字行 ，则当前行 == 上一行  
+
+    // 当前行是 关键字行end  ， 上一行是非关键字行 ，则当前行 == 上一行 - 8
+    // 当前行是 关键字行end  ， 上一行是关键字行end，则当前行 == 上一行 - 8
+// c的格式逻辑不一样
+    //----
+// ************************************************************************************************* */
+    
+    
+const widthAlways = vscode.workspace.getConfiguration().get('simpleAlign.width_always') as number;//always 位置附件的空格数 //default :4
+export function always_valuation_func() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {return;}
+  const fileName = editor.document.fileName;
+  // 确保文件是Verilog或SystemVerilog类型
+  if (!(fileName.endsWith(".v") || fileName.endsWith(".sv"))) {return;}
+
+  // 获取所有选区的文本
+  const selectedTexts = editor.selections.map(selection => editor.document.getText(selection));
+
+  selectedTexts.forEach(async (selectedText, index) => {
+    //selectedText 是选择的文本 ， widthAlways外部传递进去的空格数，
+    const alwaysBlocksInfo  = findAllAlwaysBlocksWithSpacing(selectedText, widthAlways);
+    // console.log(`Always Blocks with ${widthAlways} spaces prepended:`);
+    // 调用新增的格式化控制结构缩进的函数
+    
+    
+    console.log("always块提取成功" );
+    console.log("alwaysBlocks",alwaysBlocksInfo );
+    console.log("alwaysBlocks0",alwaysBlocksInfo.blocks[0] );
+    // 对于每个always块调用formatControlStructureSpacing函数
+    let formattedText = '';
+    for (let i = 0; i < alwaysBlocksInfo.count; i++) {
+      const formattedBlock = formatControlStructureSpacing(alwaysBlocksInfo.blocks[i], widthAlways,alwaysBlocksInfo.hasBeginOrEndInAlways[i]);
+      console.log("Formatted Block:");
+      console.log(formattedBlock);
+      // formattedText +=  formattedBlock;
+        if( i === alwaysBlocksInfo.count -1  )
+          {formattedText += formattedBlock ;}
+        else 
+          // {formattedText += formattedBlock + '\n';}
+          {formattedText += formattedBlock + '\n';}
+
+      
+      console.log("formattedText:",formattedText);
+    }
+    console.log("Formatted Text:",formattedText);
+    // 将格式化后的内容写回编辑器
+    await editor.edit(editBuilder => {
+      // 使用editor.selections[index]来正确引用selection
+      editBuilder.replace(editor.selections[index], formattedText);
+    });
+
+});
+};
+
+/**
+ * 查找所有always块，并在每个块前添加指定数量的空格。
+ * 同时返回找到的always块的数量。
+ * @param {string} text - 用户选择的文本区域。
+ * @param {number} spaceCount - 在每个always块前添加的空格数。
+ * @returns {{blocks: string[], count: number}} - 包含所有找到的always块的文本数组及其数量的对象，每个块前带有指定数量的空格。
+ */
+
+
+
+// function findAllAlwaysBlocksWithSpacing(text: string, spaceCount: number): { blocks: string[], count: number, hasBeginOrEndInAlways: boolean[] } {
+//   const blocks: string[] = [];
+//   const hasBeginOrEndInAlways: boolean[] = []; // 新增标记位数组
+//   let currentBlock: string = '';
+//   let n: number = 0;
+//   let inAlwaysBlock: boolean = false;
+
+//   // 分割代码为行数组
+//   const lines = text.split('\n');
+
+//   for (let i = 0; i < lines.length; i++) {
+//     const line = lines[i];
+//     const trimmedLine = line.trim();
+
+//     if (trimmedLine.startsWith('always')) {
+//       // 遇到always关键字，开始新的块
+//       if (inAlwaysBlock) {
+//         // 如果已经在always块中，则结束当前块并重置状态
+//         blocks.push(' '.repeat(spaceCount) + currentBlock);
+//         currentBlock = '';
+//         n = 0;
+//       }
+//       inAlwaysBlock = true;
+//       currentBlock += line + '\n';
+
+//       // 检查always行内是否有begin或end关键字
+//       const hasBeginOrEnd = /^.*\b(begin|end)\b.*$/.test(trimmedLine);
+//       hasBeginOrEndInAlways.push(hasBeginOrEnd); // 添加标记位
+
+//       if (hasBeginOrEnd) {
+//         n++;
+//       } else if (/^.*\b(end)\b.*$/.test(trimmedLine)) {
+//         n--;
+//         if (n === 0) {
+//           // 计数器归零，结束当前块
+//           // 不再添加换行符到块的末尾
+//           blocks.push(currentBlock.trimStart());
+//           currentBlock = '';
+//           inAlwaysBlock = false;
+//         }
+//       }
+//     } else if (inAlwaysBlock) {
+//       // 使用正则表达式来检查行内是否有begin或end关键字
+//       if (/^.*\b(begin)\b.*$/.test(trimmedLine)) {
+//         n++;
+//         currentBlock += line + '\n';
+//         //n >1 的时候加回车 否则就是最后一个 不需要回车
+//       } else if (/^.*\b(end)\b.*$/.test(trimmedLine) && n > 1) {
+//         n--;
+//         currentBlock += line + '\n';
+//         if (n === 0 ) {
+//           inAlwaysBlock = false;
+//         }
+//         if (n === 0 && i === lines.length -1 ) {
+//           // 计数器归零，结束当前块
+//           // 不再添加换行符到块的末尾
+//           blocks.push(currentBlock.trimStart());
+//           currentBlock = '';
+//           // inAlwaysBlock = false;
+//         }
+
+//       //最后一个 不需要回车
+//       } else if (/^.*\b(end)\b.*$/.test(trimmedLine) && n === 1 && i === lines.length -1) {
+//         n--;
+//         currentBlock += line ;
+//         if (n === 0 && i === lines.length -1 ) {
+//           // 计数器归零，结束当前块
+//           // 不再添加换行符到块的末尾
+//           blocks.push(currentBlock.trimStart());
+//           currentBlock = '';
+//           inAlwaysBlock = false;
+//         }
+//       }
+//       else {
+//         currentBlock += line + '\n';
+//         // blocks.push(currentBlock);
+//         // currentBlock = '';
+//         // inAlwaysBlock = false;
+//       }
+//     } else {//不是always块内容
+//       hasBeginOrEndInAlways.push(false); // 添加标记位
+//         currentBlock += line + '\n';
+//         // blocks.push(currentBlock.trimStart());
+//         blocks.push(currentBlock);
+//         currentBlock = '';
+//         // inAlwaysBlock = false;
+//       // }
+
+//     }
+//   }
+
+
+//   return { blocks, count: blocks.length, hasBeginOrEndInAlways };
+// }
+
+
+
+function findAllAlwaysBlocksWithSpacing(text: string, spaceCount: number): { blocks: string[], count: number, hasBeginOrEndInAlways: boolean[] } {
+  const blocks: string[] = [];
+  const hasBeginOrEndInAlways: boolean[] = []; // 新增标记位数组
+  let currentBlock: string = '';
+  let n: number = 0;
+  let inAlwaysBlock: boolean = false;
+
+  // 分割代码为行数组
+  const lines = text.split('\n');
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+
+    if (trimmedLine.startsWith('always')) 
+        {
+        // 遇到always关键字，开始新的块
+        if (inAlwaysBlock) {
+          // 如果已经在always块中，则结束当前块并重置状态
+          blocks.push(' '.repeat(spaceCount) + currentBlock);
+          currentBlock = '';
+          n = 0;
+        }
+        inAlwaysBlock = true;
+        currentBlock += line + '\n';
+
+        // 检查always行内是否有begin或end关键字
+        const hasBeginOrEnd = /^.*\b(begin|end)\b.*$/.test(trimmedLine);
+        hasBeginOrEndInAlways.push(hasBeginOrEnd); // 添加标记位
+
+        if (hasBeginOrEnd) {
+          n++;
+        } else if (/^.*\b(end)\b.*$/.test(trimmedLine)) {
+          n--;
+          if (n === 0) {
+            // 计数器归零，结束当前块
+            // 不再添加换行符到块的末尾
+            blocks.push(currentBlock.trimStart());
+            currentBlock = '';
+            inAlwaysBlock = false;
+          }
+        }
+      } 
+    
+    else if (inAlwaysBlock) {
+      // 使用正则表达式来检查行内是否有begin或end关键字
+      if (/^.*\b(begin)\b.*$/.test(trimmedLine)) {
+        n++;
+        currentBlock += line + '\n';
+        //n >1 的时候加回车 否则就是最后一个 不需要回车
+      } else if (/^.*\b(end)\b.*$/.test(trimmedLine) && n > 1) {
+        n--;
+        currentBlock += line + '\n';
+      //最后一个 不需要回车
+      } else if (/^.*\b(end)\b.*$/.test(trimmedLine) && n === 1) {//这个块的最后一个end
+
+        if( i === lines.length -1){//这个块的最后一个end 并且也是最后一行
+          n--;
+          currentBlock += line ;
+          blocks.push(currentBlock.trimStart());
+          currentBlock = '';
+          inAlwaysBlock = false;
+        }
+        else{//不是最后一行
+          n--;
+          currentBlock += line ;
+          blocks.push(currentBlock.trimStart());
+          currentBlock = '';
+          inAlwaysBlock = false;
+        }
+      
+
       }
-    return new_line;
+      else {
+        currentBlock += line + '\n';
+        // blocks.push(currentBlock);
+        // currentBlock = '';
+        // inAlwaysBlock = false;
+      }
+    } 
+    
+    else {//不是always块内容
+        hasBeginOrEndInAlways.push(false); // 添加标记位
+        currentBlock += line + '\n';
+        // blocks.push(currentBlock.trimStart());
+        blocks.push(currentBlock);
+        currentBlock = '';
+        // inAlwaysBlock = false;
+      // }
+
+    }
+  }
+
+  return { blocks, count: blocks.length, hasBeginOrEndInAlways };
 }
 
 
-  // 简单对齐函数
- export function simpleAlign() {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
-    const fileName = editor.document.fileName;
-    if (!(fileName.endsWith(".v") || fileName.endsWith(".sv"))) return;
-    const sel = editor.selection; // 只处理一个选择区域
-    editor.edit((builder) => {
-      for (let i = sel.start.line; i <= sel.end.line; i++) {
-        if (!editor) continue;
-        let line = editor.document.lineAt(i);
-        let new_line = parseLine(line.text);
-        if (new_line.localeCompare(line.text) != 0) {
-          let line_range = new vscode.Range(line.range.start, line.range.end);
-          builder.replace(line_range, new_line);
+
+
+
+
+
+function  formatControlStructureSpacing(text: string, baseIndent: number, hasBeginOrEndInAlways: boolean): string {
+  console.log("text",text);
+  // const lines = text.split('\n');
+// // 分割并过滤空字符串
+//   const lines = text.split('\n').filter(line => line.trim() !== '');
+
+// 分割并过滤空字符串
+  const lines = text.split('\n').filter(line => line !== '');
+
+
+  // const lines = text;
+  const keywordRegex = /\b(always|if|else|else if)\b/;
+  const beginRegex = /\bbegin\b/;
+  const endRegex = /\bend\b/;
+
+  //识别lines里面有多少个begin和end 当begin 和end 相等时候输出 begin和end的有多少对的数量
+  // 计算 begin 和 end 的配对数量
+    let pairCo = 0;
+    let beginCount = 0;
+    let endCount = 0;
+    let pairs = 0;
+    let chazhi ;
+    let prevchazhi;
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (beginRegex.test(trimmedLine)) {
+        beginCount++;
+      } else if (endRegex.test(trimmedLine)) {
+        endCount++;
+      }
+    }
+
+    
+    if(beginCount === endCount){
+      pairs = beginCount;
+    }
+    else {
+      vscode.window.showErrorMessage('begin 和 end 的配对数量不匹配');
+    }
+    console.log("Pairs of begin and end:", pairs);
+
+
+
+
+
+  let prevIsKeyword = false;
+  let prevInBeginSta = false;
+  let prevIsEnd = false;
+  let prevIndent = baseIndent;
+  const newLines: string[] = [];
+//创建一个装数字的数组
+  const cntArr: number[] = [];
+
+  let cntBeginLinter=0;
+  let cntEndLinter=0;
+
+  let lastChazhi = 0 ; // 存储最近计算的 chazhi 值
+  let getData    = 0 ; 
+  let lastAdd: number | undefined; // 存储最近计算的 Add 值
+  let resultFloor:number | undefined;
+  if(!hasBeginOrEndInAlways){
+    // 其他情况按照常规格式化
+    // 第二种格式  always/if/else/else if/begin/ end单独成行的情况
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            const isKeywordLine = keywordRegex.test(line);
+            const isBeginLine = beginRegex.test(line);
+            const isEndLine = endRegex.test(line);
+            let currentIndent;
+            let prevInBegindent;
+            let currentBegindent;
+ 
+        
+            if(isBeginLine){//begin 行
+              if(prevIsKeyword){//上一行是关键字行
+                currentIndent = prevIndent + 4;
+                // cntBeginLinter = cntBeginLinter + 1;
+                cntArr[cntBeginLinter] = currentIndent;
+                cntBeginLinter++;
+              }
+              else //上一行是非关键字行--好像没有这样情况 --暂定
+              {
+                currentIndent = prevIndent;
+              }
+            }
+
+            else if (isEndLine) { // 当前行是end关键字行
+              //寻找存储的begin 的行前空格数
+              cntEndLinter = cntEndLinter + 1;
+
+            if(cntBeginLinter < pairs){
+                currentIndent = cntArr[cntBeginLinter-1 ];
+            }
+            // else {
+            //   for(let j= 0; j < pairs; j++){
+            //     if(cntEndLinter === j + 1 && cntArr[pairs -1 -j] !== undefined ){
+            //       currentIndent = cntArr[pairs -1 -j] ;
+            //       // currentIndent = 5 ;
+            //       break; // 找到对应的值后，退出循环
+            //     }
+            //   }
+            // }
+            else {
+              if(cntEndLinter <= pairs){
+                //只存一次这个值
+                if (lastChazhi === 0) {
+                  currentIndent = cntArr[cntBeginLinter - lastChazhi - 1];
+                  lastChazhi  = pairs - cntEndLinter;
+                  getData = cntBeginLinter;
+                  // lastAdd     = cntBeginLinter + cntEndLinter;
+                  // currentIndent = cntArr[lastChazhi - cntEndLinter-1];
+
+                  // 使用 Math.floor() 方法进行除法取整
+                  if(lastChazhi === 1 ){
+                    resultFloor = pairs - lastChazhi;
+                  }else {
+                    resultFloor = Math.floor(pairs / lastChazhi);
+                  }
+
+                }
+                else {
+                  getData= getData - resultFloor ;
+                  
+                  // currentIndent = cntArr[lastChazhi - cntEndLinter - 1];
+                  currentIndent = cntArr[ getData - 1];
+                }
+              }
+            }
+
+          }
+
+
+
+
+            else if (isKeywordLine) {//always|if|else|else if)行 --简称 关键字AA行
+              if (prevIsKeyword || prevInBeginSta) {//上一行为也是 关键字AA行
+                currentIndent = prevIndent + 4;
+              }
+              else if(prevIsEnd){//上一行是end行
+                currentIndent = prevIndent - 4;
+              } else {//上一行为非关键字行，减小缩进（确保至少为baseIndent）
+                currentIndent = Math.max(prevIndent - 4, baseIndent);
+              }
+            } 
+   
+            else {
+              // 当前行是非关键字行
+              if (prevIsKeyword || prevInBeginSta) {// 上一行为关键字行，增加缩进
+                currentIndent = prevIndent + 4;
+              } else {
+                // 上一行为非关键字行，保持当前缩进
+                currentIndent = prevIndent;
+              }
+            }
+
+
+            // 更新状态
+            prevIsKeyword = isKeywordLine ;
+            prevIsEnd = isEndLine;
+            prevInBeginSta = isBeginLine;
+
+            // prevchazhi = lastChazhi;
+            prevIndent = currentIndent;
+            newLines.push(' '.repeat(currentIndent) + line);
+
+        }
+        return newLines.join('\n');
+      }
+// 根据标记位调整格式化
+// 第一种格式  always/if/else/else if 后面有begin/ end -(c的写法)
+
+  else if (hasBeginOrEndInAlways) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      const isKeywordLine = keywordRegex.test(line);
+      const isEndLine = endRegex.test(line);
+      let currentIndent;
+
+
+      if (isKeywordLine) {
+        if (prevIsKeyword) {
+          // 当前行是关键字行（非end），上一行为关键字行，增加缩进
+          currentIndent = prevIndent + 4;
+        } 
+        else if(prevIsEnd){
+          currentIndent = prevIndent;
+        }
+        else {
+          // 当前行是关键字行（非end），上一行为非关键字行，减小缩进（确保至少为baseIndent）
+          currentIndent = Math.max(prevIndent - 4, baseIndent);
+        }
+      } else if (isEndLine) {// 当前行是end关键字行
+          
+
+        
+        if (prevIsKeyword || (i > 0 && endRegex.test(lines[i - 1].trim()))) {// 上一行为关键字行或也是end，缩进减4
+          
+          currentIndent = Math.max(prevIndent - 4, baseIndent); // 修改这里，缩进不变
+        } else if(prevIsEnd){
+          currentIndent = Math.max(prevIndent - 4, baseIndent);
+        } else {
+          // 其他情况
+          currentIndent = Math.max(prevIndent - 4, baseIndent);
+        }
+      } else {
+        // 当前行是非关键字行
+        if (prevIsKeyword) {
+          // 上一行为关键字行，增加缩进
+          currentIndent = prevIndent + 4;
+        } else {
+          // 上一行为非关键字行，保持当前缩进
+          currentIndent = prevIndent;
         }
       }
-    });
-  }
- export function always_valuation_func() {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) return;
-    const fileName = editor.document.fileName;
-    if (!(fileName.endsWith(".v") || fileName.endsWith(".sv"))) return;
-    const sel = editor.selection; // 只处理一个选择区域
-    editor.edit((builder) => {
-      for (let i = sel.start.line; i <= sel.end.line; i++) {
-        if (!editor) continue;
-        let line = editor.document.lineAt(i);
-        let new_line = always_valuation_function(line.text);
-        if (new_line.localeCompare(line.text) != 0) {
-          let line_range = new vscode.Range(line.range.start, line.range.end);
-          builder.replace(line_range, new_line);
-        }
-      }
-    });
-  }
+
+      // 更新状态
+      prevIsKeyword = isKeywordLine ;
+      prevIsEnd = isEndLine;
+      prevIndent = currentIndent;
+      newLines.push(' '.repeat(currentIndent) + line);
+    }
+  } 
+return newLines.join('\n');
+  
+}
+
+
+
+
+
+

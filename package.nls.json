@@ -7,7 +7,7 @@
     "openFileInNewEditor":"open File In sidebar Editor",
     "openFileInMainEditor":"open File In Main New Editor",
     "Open File in Explorer":"Open File in Windows Explorer",
-    "Open File in VSCode Explorer":"Open File in VSCode Explorer"
-    
-
+    "Open File in VSCode Explorer":"Open File in VSCode Explorer",
+    "setAsTopLevel":"A Set FPGA Tree as Top Level",
+    "Vivado_WebShowLog":"Vivado_WebShowLog"
 }

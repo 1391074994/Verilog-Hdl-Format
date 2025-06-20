@@ -5,9 +5,9 @@
 		"body": [
 			"`timescale 1ns / 1ps " ,
 			"//****************************************VSCODE PLUG-IN**********************************// " ,
-			"//---------------------------------------------------------------------------------------- " 
+			"//---------------------------------------------------------------------------------------- " ,
 			"// IDE :                   VSCODE      " ,
-			"// VSCODE plug-in version: Verilog-Hdl-Format-2.4.20240526",
+			"// VSCODE plug-in version: Verilog-Hdl-Format-3.6.20250614",
 			"// VSCODE plug-in author : Jiang Percy " ,
 			"//---------------------------------------------------------------------------------------- " ,
 			"//****************************************Copyright (c)***********************************// " ,
@@ -47,7 +47,7 @@
 			"//****************************************VSCODE PLUG-IN**********************************// " ,
 			"//---------------------------------------------------------------------------------------- " ,
 			"// IDE :                   VSCODE       " ,
-			"// VSCODE plug-in version: Verilog-Hdl-Format-2.4.20240526" ,
+			"// VSCODE plug-in version: Verilog-Hdl-Format-3.6.20250614" ,
 			"// VSCODE plug-in author : Jiang Percy " ,
 			"//---------------------------------------------------------------------------------------- " ,
 			"//****************************************Copyright (c)***********************************// " ,
@@ -115,7 +115,7 @@
 		"prefix": "separate",
 		"body": [
 				"//=======================================================================================",
-				"// $1                                                                                    "
+				"// $1                                                                                    ",
 				"//======================================================================================="
 	],
 	"description": "annotation"
@@ -133,36 +133,43 @@
 
 
 
-	"jishuqi": {
-		"prefix": "jishuqi",
+	"adder": {
+		"prefix": "adder",
 		"body": [
-            "    reg                [  $2:0]         $1_cnt                       ;",
+            "    reg                [  $2 7:0]         $1_cnt                       ;",
             "    always @(posedge clk or negedge rst_n)",
             "        begin",
             "            if(!rst_n)",
             "                $1_cnt <= 'd0   ;",
-            "            else if($1_cnt <= 'd7 )",
+            "            else if($1_cnt >= 'd100 )",
+            "                $1_cnt <= 0  ;",
+            "            else",
             "                $1_cnt <= $1_cnt + 1'b1;",
+            "        end",
+            "    $3"
+	],
+	"description": "adder"
+	},
+
+	"subtractor": {
+		"prefix": "subtractor",
+		"body": [
+            "    reg                [  $2 7:0]         $1_cnt                       ;",
+            "    always @(posedge clk or negedge rst_n)",
+            "        begin",
+            "            if(!rst_n || $3)",
+            "                $1_cnt <= 'd100   ;",
+            "            else if($1_cnt > 0 )",
+            "                $1_cnt <= $1_cnt - 1'b1;",
             "            else",
             "                $1_cnt <= $1_cnt  ;",
             "        end",
             "    $3"
 	],
-	"description": "jishuqi"
+	"description": "subtractor"
 	},
 	
-	"log": {
-		"prefix": "change_log",
-		"body": [
-			"/*****************************************************************"
-			" * 文件名: $TM_FILENAME "
-			" * 日期  $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND  "
-			" * 作者: "
-			" * 修改日志: $1        "
-			" *****************************************************************/"
-	],
-	"description": "change_log"
-	},
+
 
 
 	"shangshenyan": {
@@ -174,7 +181,7 @@
         "            if(!rst_n)                                             ",     
         "                $1_hop <= 2'b00;                                   ",                          
         "            else                                                   ",                       
-        "                $1_hop <= {$1_hop[1:0],$1} ;                       ",                                               
+        "                $1_hop <= {$1_hop[0],$1} ;                         ",                                               
         "        end                                                        "                           
 	],
 	"description": "shangshenyan"
@@ -249,7 +256,19 @@
 	"description": "Insert an dapai"
 	},
 
-
+	"dapai": {
+          "prefix": "modelsim_tcl_cmd_1",
+          "body": [
+			"project compileall ",
+			"vsim -gui work.tb -novopt",
+			"do wave.do ",
+			"log -r */ ",
+			"radix hex",
+			"run 100ns"
+			
+	],
+	"description": "modelsim 独立仿真脚本`"
+	},
 
 
     "assign": {
@@ -261,8 +280,9 @@
 	"alwaysposclk": {
 		"prefix": ["alclk", "alwaysposclk"],
 		"body": [
-			"always @(posedge clk $1) begin",
-			"\t$2",
+			"always @(posedge clk ) ",
+			"begin",
+			"\t$1",
 			"end"
 		],
 		"description": "always @(posedge clk)"
@@ -270,8 +290,9 @@
 	"alwaysnegclk": {
 		"prefix": ["alnegclk", "alwaysnegclk"],
 		"body": [
-			"always @(negedge clk $1) begin",
-			"\t$2",
+			"always @(negedge clk )", 
+			"begin",
+			"\t$1",
 			"end"
 		],
 		"description": "always @(negedge clk)"
@@ -280,7 +301,6 @@
 		"prefix": "begin",
 		"body": [
 			"begin",
-			"\t$1",
 			"end"
 		],
 		"description": "Insert a begin ... end block"
@@ -333,14 +353,14 @@
 	"input": {
 		"prefix": "input",
 		"body": [
-			"input $1;"
+			"input $1,"
 		],
 		"description": "input input_name;"
 	},
 	"output": {
 		"prefix": "output",
 		"body": [
-			"output $1;"
+			"output $1,"
 		],
 		"description": "output output_name;"
 	},
@@ -513,6 +533,75 @@
 		"prefix": "genvar",
 		"body": "genvar $1",
 		"description": "genvar i"
+	},
+	"$display": {
+		"prefix": "display",
+		"body": "display",
+		"description": "$display"
+	},
+	"$clog": {
+		"prefix": "clog",
+		"body": "clog",
+		"description": "$clog"
+	},
+	"$strobe": {
+		"prefix": "strobe",
+		"body": "strobe",
+		"description": "$strobe"
+	},
+	"$monitor": {
+		"prefix": "monitor",
+		"body": "monitor",
+		"description": "$monitor"
+	},
+	"$write": {
+		"prefix": "write",
+		"body": "write",
+		"description": "$write"
+	},
+	"$fwrite": {
+		"prefix": "fwrite",
+		"body": "fwrite",
+		"description": "$fwrite"
+	},
+	"$fdisplay": {
+		"prefix": "fdisplay",
+		"body": "fdisplay",
+		"description": "$fdisplay"
+	},
+	"$error": {
+		"prefix": "error",
+		"body": "error",
+		"description": "$error"
+	},
+	"$warning": {
+		"prefix": "warning",
+		"body": "warning",
+		"description": "$warning"
+	},
+	"$fatal": {
+		"prefix": "fatal",
+		"body": "fatal",
+		"description": "$fatal"
+	},
+	"$fopen": {
+		"prefix": "fopen",
+		"body": "fopen",
+		"description": "$fopen"
+	},
+	"$fread": {
+		"prefix": "fread",
+		"body": "fread",
+		"description": "$fread"
+	},
+	"$fclose": {
+		"prefix": "fclose",
+		"body": "fclose",
+		"description": "$fclose"
+	},
+	"$fflush": {
+		"prefix": "fflush",
+		"body": "fflush",
+		"description": "$fflush"
 	}
-
 }

@@ -2,7 +2,7 @@
   "name": "Verilog-Hdl-Format",
   "displayName": "Verilog Hdl Format",
   "description": "FPGA 代码格式化,文件树显示,一键例化,语法高亮,语法跳转,代码补全,定义悬停,代码错误检查等功能",
-  "version": "2.5.20240605",
+  "version": "3.6.20250620",
   "publisher": "Jiang-Percy",
   "engines": {
     "vscode": "^1.74.3"
@@ -69,6 +69,11 @@
           "title": "Refresh Verilog Modules"
         },
         {
+          "id": "cmdModuleTree",
+          "name": "VERILOG SIM CMD",
+          "title": "uinited vivado sim command"
+        },
+        {
           "id": "feedback",
           "name": "BUG反馈/修改建议→联系qq群:819816965",
           "visibility": "collapsed"
@@ -95,6 +100,11 @@
         {
           "when": "resourceLangId == verilog",
           "command": "extension.gotoDefinitionreg",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == verilog",
+          "command": "bitBackup.Vivado_WebShowLog",
           "group": "navigation"
         }
       ],
@@ -125,17 +135,23 @@
           "command": "verilogModuleTree.openFileInMainEditor",
           "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
           "group": "navigation"
+        },
+        {
+          "command": "verilogModuleTree.setAsTopLevel",
+          "when": "view == verilogModuleTree && viewItem == verilogModuleNode",
+          "group": "navigation",
+          "title": "Set as Top Level"
         }
       ]
     },
     "commands": [
       {
         "command": "verilog-simplealign.simple_align",
-        "title": "verilog"
+        "title": "extension.formatSelection"
       },
       {
         "command": "verilog-simplealign.always_valuation_func",
-        "title": "always_valuation_func"
+        "title": "formatAlwaysBlock"
       },
       {
         "command": "extension.createModule",
@@ -152,10 +168,6 @@
       {
         "command": "extension.testbench",
         "title": "Convert_testbench"
-      },
-      {
-        "command": "extension.ucf_to_xdc_normal_order",
-        "title": "Convert UCF to XDC NORMAL ORDER"
       },
       {
         "command": "extension.ucf_to_xdc_sort_order",
@@ -195,6 +207,10 @@
         "title": "%openFileInMainEditor%"
       },
       {
+        "command": "verilogModuleTree.setAsTopLevel",
+        "title": "%setAsTopLevel%"
+      },
+      {
         "command": "extension.gotoDefinitionModule",
         "title": "%gotoDefinitionModule%"
       },
@@ -228,7 +244,7 @@
       },
       {
         "command": "bitBackup.Vivado_WebShowLog",
-        "title": "Vivado_WebShowLog"
+        "title": "%Vivado_WebShowLog%"
       },
       {
         "command": "extension.processLtxFile",
@@ -253,6 +269,20 @@
       {
         "command": "ftp-extension.getFtpConfig",
         "title": "getFtpConfig"
+      },
+      {
+        "command": "extension.Vivado_Independent_modelsim_questasim",
+        "title": "Vivado_Independent"
+      },
+      {
+        "command": "verilog.startVivadoSim",
+        "title": "Start Vivado Simulation",
+        "category": "VERILOG SIM CMD"
+      },
+      {
+        "command": "verilog.runDoFile",
+        "title": "Run tb.do",
+        "category": "VERILOG SIM CMD"
       }
     ],
     "grammars": [
@@ -300,6 +330,11 @@
         "language": "systemverilog",
         "scopeName": "source.systemverilog",
         "path": "./syntaxes/systemverilog.tmLanguage.json"
+      },
+      {
+        "language": "txt",
+        "scopeName": "source.txt",
+        "path": "./syntaxes/txt.tmLanguage.json"
       }
     ],
     "languages": [
@@ -401,6 +436,17 @@
           ".do"
         ],
         "configuration": "./config/language-configuration_tcl.json"
+      },
+      {
+        "id": "txt",
+        "aliases": [
+          "TXT",
+          "txt"
+        ],
+        "extensions": [
+          ".txt",".text",".log","txt","text","cf","cnf","conf","cfg","unx","eds","log","ini","out","err","inf","info","tmp","temp","file","repo","plain","desktop","properties"
+        ],
+        "configuration": "./config/txt.language-configuration.json"
       }
     ],
     "configuration": {
@@ -464,6 +510,12 @@
             "type": "string"
           }
         },
+        "Increment.num": {
+          "type": "number",
+          "title": "Increment.num",
+          "default": 1,
+          "description": "Your Increment/decrementnum"
+        },
         "simpleAlign.num1": {
           "type": "number",
           "title": "simpleAlign.num1",
@@ -473,13 +525,13 @@
         "simpleAlign.num2": {
           "type": "number",
           "title": "simpleAlign.num2",
-          "default": 6,
+          "default": 1,
           "description": "Your simpleAlign.num2."
         },
         "simpleAlign.num3": {
           "type": "number",
           "title": "simpleAlign.num3",
-          "default": 17,
+          "default": 5,
           "description": "Your simpleAlign.num3."
         },
         "simpleAlign.num4": {
@@ -488,13 +540,91 @@
           "default": 27,
           "description": "Your simpleAlign.num4."
         },
-        "simpleAlign.num5.upbound": {
+        "simpleAlign.num5": {
+          "type": "number",
+          "title": "simpleAlign.num5",
+          "default": 4,
+          "description": "Your simpleAlign.num5."
+        },
+        "simpleAlign.num6": {
+          "type": "number",
+          "title": "simpleAlign.num6",
+          "default": 4,
+          "description": "Your simpleAlign.num6."
+        },
+        "simpleAlign.num7": {
+          "type": "number",
+          "title": "simpleAlign.num7",
+          "default": 7,
+          "description": "Your simpleAlign.num7."
+        },
+        "simpleAlign.num8": {
+          "type": "number",
+          "title": "simpleAlign.num8",
+          "default": 25,
+          "description": "Your simpleAlign.num8."
+        },
+        "simpleAlign.num9": {
+          "type": "number",
+          "title": "simpleAlign.num9",
+          "default": 4,
+          "description": "Your simpleAlign.num9."
+        },
+        "simpleAlign.num10": {
+          "type": "number",
+          "title": "simpleAlign.num10",
+          "default": 25,
+          "description": "Your simpleAlign.num10."
+        },
+        "simpleAlign.num11": {
+          "type": "number",
+          "title": "simpleAlign.num11",
+          "default": 27,
+          "description": "Your simpleAlign.num11."
+        },
+        "simpleAlign.num12": {
+          "type": "number",
+          "title": "simpleAlign.num12",
+          "default": 4,
+          "description": "Your simpleAlign.num12."
+        },
+        "simpleAlign.num13": {
+          "type": "number",
+          "title": "simpleAlign.num13",
+          "default": 29,
+          "description": "Your simpleAlign.num13."
+        },
+        "simpleAlign.num14": {
+          "type": "number",
+          "title": "simpleAlign.num14",
+          "default": 27,
+          "description": "Your simpleAlign.num14."
+        },
+        "simpleAlign.num15": {
+          "type": "number",
+          "title": "simpleAlign.num15",
+          "default": 4,
+          "description": "Your simpleAlign.num15."
+        },
+        "simpleAlign.num16": {
+          "type": "number",
+          "title": "simpleAlign.num16",
+          "default": 17,
+          "description": "Your simpleAlign.num16."
+        },
+        "simpleAlign.num17": {
+          "type": "number",
+          "title": "simpleAlign.num17",
+          "default": 27,
+          "description": "Your simpleAlign.num17."
+        },
+        "simpleAlign.upbound": {
           "type": "number",
           "title": "upbound.width",
           "default": 4,
           "description": "Your simpleAlign.upbound."
         },
-        "simpleAlign.num6.lowbound": {
+        "simpleAlign.lowbound": {
           "type": "number",
           "title": "lowbound.width",
           "default": 2,
@@ -506,35 +636,15 @@
           "default": 4,
           "description": "Your simpleAlign.width_always."
         },
-        "simpleAlign.width_begin_end": {
-          "type": "number",
-          "title": "simpleAlign.width_begin_end",
-          "default": 8,
-          "description": "Your simpleAlign.width_begin_end."
-        },
-        "simpleAlign.width_if": {
-          "type": "number",
-          "title": "simpleAlign.width_if",
-          "default": 12,
-          "description": "Your simpleAlign.width_if."
-        },
-        "simpleAlign.width_else": {
-          "type": "number",
-          "title": "simpleAlign.width_else",
-          "default": 12,
-          "description": "Your simpleAlign.width_else."
-        },
-        "simpleAlign.width_else_if": {
-          "type": "number",
-          "title": "simpleAlign.width_else_if",
-          "default": 12,
-          "description": "Your simpleAlign.width_else_if."
-        },
-        "simpleAlign.width_always_valuation": {
-          "type": "number",
-          "title": "simpleAlign.width_always_valuation",
-          "default": 16,
-          "description": "Your simpleAlign.width_always_valuation."
+        "Hover.switch": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "open",
+            "close"
+          ],
+          "default": "open",
+          "description": "Hover switch"
         },
         "FPGA_verilog.linting.path": {
           "scope": "window",
@@ -711,6 +821,14 @@
           ],
           "default": "internal",
           "description": "Choose whether to use internal or external ctags.exe."
+        },
+        "vivado.bat.path": {
+          "type": "string",
+          "title": "vivado.bat.path",
+          "default": [
+            "C:/Xilinx/Vivado/2018.3/bin/vivado.bat"
+          ],
+          "description": "Your vivado.bat path"
         },
         "VivadoSimPath.path": {
           "scope": "window",

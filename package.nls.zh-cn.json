@@ -7,5 +7,7 @@
     "openFileInNewEditor":"在侧边栏编辑器打开",
     "openFileInMainEditor":"在主界面新的编辑器打开",
     "Open File in Explorer":"在windows文件资源管理器显示",
-    "Open File in VSCode Explorer":"在VSCODE文件资源管理器显示"
+    "Open File in VSCode Explorer":"在VSCODE文件资源管理器显示",
+    "setAsTopLevel":"设置FPGA顶层/仿真顶层",
+    "Vivado_WebShowLog":"打开并刷新文件备份WEB_LOG"
 }

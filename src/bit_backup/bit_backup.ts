@@ -11,7 +11,7 @@ import { format as formatDate } from 'date-fns';
 import { parseStringPromise } from 'xml2js';
 import { glob } from 'glob';
 import { exec, spawn } from 'child_process';
-import { getFtpConfig, uploadFile, uploadFileCommand } from './ftpSet';
+import { getFtpConfig, uploadFile,uploadFolder, uploadFileCommand } from './ftpSet';
 
 
 /**
@@ -374,15 +374,14 @@ interface FtpConfig {
   localPath: string;
 }
 
+let webviewPanel: vscode.WebviewPanel | undefined;
     
-
 
 
 
 //============================================================================
 // 下面的是 刷新WEB功能 +  每个版本的程序的.Tcl脚本的创建功能
 //============================================================================
-let webviewPanel: vscode.WebviewPanel | undefined;
 export async function refreshWebview(context: vscode.ExtensionContext): Promise<void> {
   const currentWorkspaceFolder = vscode.workspace.workspaceFolders?.[0];
 
@@ -391,33 +390,25 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
     return;
   }
 
+  let ftpConfig = await getFtpConfig();
+
   const runsImpl1FolderPath = await findRunsFolder(currentWorkspaceFolder.uri.fsPath);
   if (runsImpl1FolderPath) {
     const bitFolderPath = path.join(runsImpl1FolderPath, 'bit');
-    const backupLogFilePaths = await findBackupLogFilesRecursively(bitFolderPath);
-    // console.log('backupLogFilePaths:', backupLogFilePaths);
+    const backupLogFilePaths = await findAndSortBackupLogFilesRecursively(bitFolderPath);
 
-    if (backupLogFilePaths.length > 0) {
-
-            let htmlContent = `<!DOCTYPE html>
-            <!DOCTYPE html>
-
-            <html lang="en">
-
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Bit Backup Log Viewer</title>
-              
-
-              <!-- CSS Reset -->
-              <style>
-                html {
-                  font-size: 16px;
-                  line-height: 1.5;
-                }
-              </style>
-
+    let htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bit Backup Log Viewer</title>
+      <style>
+        /* 你的CSS样式 */
+        html {
+          font-size: 16px;
+                  line-height: 0.5;/*行间距*/
+                </style>
               <!-- Custom styles -->
               <style>
                 :root {
@@ -428,7 +419,6 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
                   --highlight-color: #65b679; /* 示例高亮颜色，可根据需要自定义 */
                 }
-
                 body {
                   font-family: var(--font-family);
                   margin: 0;
@@ -472,7 +462,7 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   box-sizing: border-box;
                   font-family: monospace;
                   font-size: 16px;/*中间文本显示的字体大小*/
-                  line-height: 1.4;
+                  line-height: 1.0;/*容器行间距*/
                   overflow-x: auto;
                   padding: 5px;
                   background-color: #3f3f3f;
@@ -553,145 +543,111 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
                   }
                 }
               </style>
+      <script>
+        const vscode = acquireVsCodeApi();
 
-              <script>
-                const vscode = acquireVsCodeApi();
+        function triggerProcessLtxFile(filePath) {
+          vscode.postMessage({
+            command: 'processLtxFile',
+            filePath: encodeURIComponent(filePath)
+          });
+        }
 
-                function triggerProcessLtxFile(filePath) {
-                  vscode.postMessage({
-                    command: 'processLtxFile',
-                    filePath: encodeURIComponent(filePath)
-                  });
-                }
-              </script>
+        function triggerDuplicateProcessLtxFile(filePath) {
+          vscode.postMessage({
+            command: 'DuplicateProcessLtxFile',
+            filePath: encodeURIComponent(filePath)
+          });
+        }
 
+     <!--ftp -->
+        function ftpUpload(filePath) {
+          vscode.postMessage({
+            command: 'ftp-extension.upload',
+            filePath: encodeURIComponent(filePath)
+          });
+        }
 
-              <script>
-              function triggerDuplicateProcessLtxFile(filePath) {
-                vscode.postMessage({
-                  command: 'DuplicateProcessLtxFile',
-                  filePath: encodeURIComponent(filePath)
-                });
-              }
-            </script>
+        function ftpFolderUpload(filePath) {
+          vscode.postMessage({
+            command: 'ftp-folder.upload',
+            filePath: encodeURIComponent(filePath)
+          });
+        }
 
-            <!--ftp -->
-              <script>
-              function ftpUpload(filePath) {
-                vscode.postMessage({
-                  command: 'ftp-extension.upload',
-                  filePath: encodeURIComponent(filePath)
-                });
-              }
+        function submitFtpConfig() {
+          const host = document.getElementById('ftpHost').value;
+          const remotePath = document.getElementById('remotePath').value;
+          const user = document.getElementById('ftpUser').value;
+          const password = document.getElementById('ftpPassword').value;
+          vscode.postMessage({
+            command: 'setFtpConfig',
+            config: { host, remotePath, user, password }
+          });
+        }
 
-              function submitFtpConfig() {
-                const host = document.getElementById('ftpHost').value;
-                const remotePath = document.getElementById('remotePath').value;
-                const user = document.getElementById('ftpUser').value;
-                const password = document.getElementById('ftpPassword').value;
-                vscode.postMessage({
-                  command: 'setFtpConfig',
-                  config: { host,remotePath, user, password }
-                });
-              }
-              
-            </script>
-            
+        function handleButtonClick() {
+          vscode.postMessage({ command: 'triggerBackBitltxTcl' });
+        }
 
-            <script>
-            function handleButtonClick() {
-              vscode.postMessage({ command: 'triggerBackBitltxTcl' });
-            }
-            </script>
+        function printSuccessMessage() {
+          vscode.postMessage({
+            command: 'bit_backup'
+          });
+        }
+      </script>
+    </head>
+    <body>
+      <h2><i class="fas fa-file-code"></i> 程序备份 / FTP上传 / VIVADO_TCL脚本 </h2>
+      <div id="fixed-buttons">
+        <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="handleButtonClick()"> 临时备份最新Bit文件/创建刷新ILA脚本</button>
+        <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 10px;" onclick="printSuccessMessage()">程序备份</button>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 0.5em;">FTP 配置</h3>
+        <div style="display: flex; align-items: flex-start; padding: 0 10px;">
+          <div style="margin-right: 10px;">
+            <label for="ftpHost">FTP 服务器IP地址:</label>
+            <input type="text" id="ftpHost" name="ftpHost" value="${ftpConfig.host || '192.168.0.100'}">
+          </div>
+          <div style="margin-right: 10px;">
+            <label for="remotePath">FTP 服务器路径地址:</label>
+            <input type="text" id="remotePath" name="remotePath" value="${ftpConfig.remotePath || '/sdcard/app'}">
+          </div>
+          <div style="margin-right: 10px;">
+            <label for="ftpUser">FTP 用户名:</label>
+            <input type="text" id="ftpUser" name="ftpUser" value="${ftpConfig.user || 'default_user'}">
+          </div>
+          <div>
+            <label for="ftpPassword">FTP 密码:</label>
+            <input type="password" id="ftpPassword" name="ftpPassword" value="${ftpConfig.password || 'default_password'}">
+          </div>
+        </div>
+        <br>
+        <button onclick="submitFtpConfig()">保存 FTP 配置</button>
+      </div>
+      ${backupLogFilePaths.length > 0 ? generateBackupLogContainers(backupLogFilePaths) : '<p>未找到备份日志文件，请点击程序备份！！！</p>'}
+    </body>
+    </html>`;
 
-            <script>
-            function printSuccessMessage() {
-              vscode.postMessage({
-                command: 'bit_backup'
-              });
-            }
-          </script>
-
-
-
-            </head>
-
-            <body>
-              <h2><i class="fas fa-file-code"></i> 程序备份 / FTP上传 / VIVADO_TCL脚本 </h2>
-
-              <div id="fixed-buttons">
-              <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="handleButtonClick()"> 临时备份最新Bit文件/创建刷新ILA脚本</button>
-              <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 10px;" onclick="printSuccessMessage()">程序备份</button>
-
-
-            </div>
-
-
-            <div>
-              <h3 style="margin-bottom: 0.5em;">FTP 配置</h3>
-              <div style="display: flex; align-items: flex-start; padding: 0 10px;">
-                <div style="margin-right: 10px;">
-                  <label for="ftpHost">FTP 服务器IP地址:</label>
-                  <input type="text" id="ftpHost" name="ftpHost" value="192.168.0.100">
-                  </div>
-                  <div>
-                  <div style="margin-right: 10px;">
-                    <label for="remotePath">FTP 服务器路径地址:</label>
-                    <input type="text" id="remotePath" name="remotePath" value="/sdcard/app">
-                  </div>
-                </div>
-                <div style="margin-right: 10px;">
-                  <label for="ftpUser">FTP 用户名:</label>
-                  <input type="text" id="ftpUser" name="ftpUser" value="default_user">
-                </div>
-                <div>
-                  <label for="ftpPassword">FTP 密码:</label>
-                  <input type="password" id="ftpPassword" name="ftpPassword" value="default_password">
-                </div>
-              </div>
-              <br>
-              <button onclick="submitFtpConfig()">保存 FTP 配置</button>
-            </div>
-
-
-              <!-- Generate backup log containers HTML string -->
-              ${generateBackupLogContainers(backupLogFilePaths)}
-            </body>
-
-            </html>
-            `;
-
-            if (webviewPanel) {
-              webviewPanel.webview.html = htmlContent; // Refresh the existing webview
-            } else {
-              webviewPanel = vscode.window.createWebviewPanel(
-                'bitBackupLogViewer',
-                'Bit Backup Log Viewer',
-                vscode.ViewColumn.One,
-                { enableScripts: true, retainContextWhenHidden: true }
-              );
-
-
-      
-      // const webviewPanel = vscode.window.createWebviewPanel(
-      //   'bitBackupLogViewer',
-      //   'Bit Backup Log Viewer',
-      //   vscode.ViewColumn.One,
-      //   { enableScripts: true, retainContextWhenHidden: true }
-      // );
-
-
-
-
+              if (webviewPanel) {
+                webviewPanel.reveal(vscode.ViewColumn.Active); // 确保面板在当前活动窗口中显示
+                webviewPanel.webview.html = htmlContent; // 刷新现有的webview
+              } else {
+                webviewPanel = vscode.window.createWebviewPanel(
+                  'bitBackupLogViewer',
+                  'Bit Backup Log Viewer',
+                  vscode.ViewColumn.Active, // 确保面板在当前活动窗口中打开
+                  { enableScripts: true, retainContextWhenHidden: true }
+                );
 
       webviewPanel.webview.html = htmlContent;
 
-      let ftpConfig = { host: '192.168.0.100', user: '', password: '', remotePath: '/sdcard/app', localPath: '' }; // Initialize with default values
+      // let ftpConfig = { host: '192.168.0.100', user: '', password: '', remotePath: '/sdcard/app', localPath: '' }; // Initialize with default values
+        // 获取FTP配置
       webviewPanel.webview.onDidReceiveMessage(
         async (message) => {
-          // console.log('Received message:', message);
-      
-          // Double-decode if the path was double-encoded
+          // 处理消息的逻辑
           const filePath = decodeURIComponent(decodeURIComponent(message.filePath));
           const openfolderPath = decodeURIComponent(decodeURIComponent(message.folderPath));
           let choose = 1;
@@ -706,7 +662,7 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
           else if(message.command === 'DuplicateProcessLtxFile'){
             choose = 2;
             console.log('Processing LTX file:', filePath);
-            await processLtxFile(filePath,choose);
+            await processLtxFile(filePath, choose);
           }
 
           //备份 impl_1到 bit\a_impl_1_back 下 然后创建单独的刷新ila界面的tcl脚本
@@ -737,35 +693,17 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
           }
       // FTP
 
-      
-      // else if (message.command === 'ftp-extension.upload') {
-      //   const { bitFilePath, ltxFilePath, bitFileName, ltxFileName } = extractBitAndLtxFilePaths(filePath) || {};
-      //   if (!bitFilePath || !ltxFilePath || !bitFileName || !ltxFileName) {
-      //     return;
-      //   }
-      //   const customConfig = {
-      //     host: '192.168.3.3',
-      //     user: 'your-custom-user',
-      //     password: 'your-custom-password',
-      //     remotePath: "/" + bitFileName,
-      //     localPath: bitFilePath,
-      //   };
-      //   const ftpConfig = await getFtpConfig(customConfig);
-      //   await uploadFile(ftpConfig);
-      // }
-
-
-      //   else if (message.command === 'setFtpConfig') {
-      //     const { host, user, password } = message.config;
-      //     // Use the FTP configuration information entered by the user
-      //     console.log('Received FTP Config:', { host, user, password });
-      //     // Here you can save the configuration to the extension's global state or perform other actions
-      //   } 
-
-
-
       else if (message.command === 'setFtpConfig') {
         const { host,remotePath, user, password } = message.config;
+        const webConfig: FtpConfig = {
+          host: message.config.host,
+          user: message.config.user,
+          password: message.config.password,
+          remotePath: message.config.remotePath,
+          localPath: message.config.localPath,
+        };
+        await getFtpConfig(webConfig);
+        // console.log('getFtp web Config:', webConfig);
         ftpConfig = { ...ftpConfig, host,remotePath,user, password }; // Update the FTP configuration
         console.log('Updated FTP Config:', ftpConfig);
       }
@@ -783,6 +721,25 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
 
         console.log('Uploading files to FTP:', uploadConfig);
         await uploadFile(uploadConfig);
+      }
+      //share upload 
+      else if (message.command === 'ftp-folder.upload') {
+        const { bitFilePath, ltxFilePath, bitFileName, ltxFileName } = extractBitAndLtxFilePaths(filePath) || {};
+        if (!bitFilePath || !ltxFilePath || !bitFileName || !ltxFileName) {
+          return;
+        }
+          // 获取文件夹路径，去掉文件名
+        const bitFolder = path.dirname(bitFilePath);
+
+        // const uploadConfig = {
+        //   ...ftpConfig,
+        //   remotePath: ftpConfig.remotePath +'/'+ bitFileName,
+        //   localPath: bitFilePath,
+        // };
+
+        // console.log('Uploading files to FTP:', uploadConfig);
+        // const ftpConfig = await getFtpConfig();
+        await uploadFolder(ftpConfig, bitFolder);
       }
     
 
@@ -806,14 +763,68 @@ export async function refreshWebview(context: vscode.ExtensionContext): Promise<
     }
 
     } else {
-      vscode.window.showWarningMessage('未在bit文件夹及其子文件夹中找到backup_log.txt');
+    // 即使没有找到 runs/impl_1 文件夹，也打开 Webview 并显示提示信息
+    let htmlContent = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Bit Backup Log Viewer</title>
+      <style>
+        /* 你的CSS样式 */
+        html {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+        body {
+          font-family: var(--font-family);
+          margin: 0;
+          padding: 32px;
+          background-color: var(--background-color);
+        }
+        h2 {
+          color: var(--secondary-color);
+          font-size: 24px;
+          font-weight: 600;
+          margin-bottom: 1em;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
+        }
+        .message {
+          font-size: 18px;
+          color: var(--text-color);
+          text-align: center;
+          margin-top: 20px;
+        }
+      </style>
+    </head>z
+    <body>
+      <h2><i class="fas fa-file-code"></i> 程序备份 / FTP上传 / VIVADO_TCL脚本 </h2>
+      <div class="message">未找到 runs/impl_1 文件夹。</div>
+    </body>
+    </html>`;
+
+    if (webviewPanel) {
+      webviewPanel.reveal(vscode.ViewColumn.Active);
+      webviewPanel.webview.html = htmlContent;
+    } else {
+      webviewPanel = vscode.window.createWebviewPanel(
+        'bitBackupLogViewer',
+        'Bit Backup Log Viewer',
+        vscode.ViewColumn.Active,
+        { enableScripts: true, retainContextWhenHidden: true }
+      );
+
+      webviewPanel.webview.html = htmlContent;
+
+      webviewPanel.onDidDispose(() => {
+        webviewPanel = undefined;
+      });
     }
-  } else {
-    vscode.window.showWarningMessage('在工作区层次结构中未找到runs/impl_1文件夹');
   }
 }
-
-
 
 
 
@@ -927,9 +938,10 @@ function generateBackupLogContainers(backupLogFilePaths: string[]): string {
             <button class="folder-button second-button" data-tooltip="${logFileFolder}" onclick="vscode.postMessage({command: 'openFolder', folderPath: '${encodeURIComponent(logFileFolder)}'})">Open</button>
             </div>
             <pre>${backupLogContent}</pre>
-            <button class="folder-button first-button" style="display: inline-block; margin-top: 0em;" onclick="triggerProcessLtxFile('${encodeURIComponent(ltxFilePath)}')">Produce bit_ltx_run.tcl</button>
+          <!--  <button class="folder-button first-button" style="display: inline-block; margin-top: 0em;" onclick="triggerProcessLtxFile('${encodeURIComponent(ltxFilePath)}')">Produce bit_ltx_run.tcl</button> -->
             <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="triggerDuplicateProcessLtxFile('${encodeURIComponent(ltxFilePath)}')"> Refresh Vivado Itx</button>
             <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="ftpUpload('${encodeURIComponent(ltxFilePath)}')"> FTP Upload</button>
+            <button class="folder-button third-button" style="display: inline-block; margin-top: 0em; margin-left: 5px;" onclick="ftpFolderUpload('${encodeURIComponent(ltxFilePath)}')"> Share Upload</button>
           </div>
         `;
         // 
@@ -970,7 +982,46 @@ async function findBackupLogFilesRecursively(dirPath: string): Promise<string[]>
 }
 
 
+//排序函数 按照时间最新往下排序
+async function sortBackupLogsByDate(backupLogFilePaths: string[]): Promise<string[]> {
+  async function extractDate(filePath: string): Promise<string> {
+    try {
+      const content = await fs.promises.readFile(filePath, 'utf-8');
+      const lines = content.split('\n');
+      // 假设日志第一行是日期，格式为YYYY-MM-DD
+      const dateMatch = lines[0].match(/^\d{4}-\d{2}-\d{2}_\d{2}\.\d{2}\.\d{2}/);
+      if (dateMatch) {
+        return dateMatch[0];
+      }
+      throw new Error(`无法从文件${filePath}的第一行解析日期`);
+    } catch (error) {
+      console.error(`读取或解析文件${filePath}时出错: ${error}`);
+      return '1970-01-01'; // 默认最早日期，确保错误文件排在最后
+    }
+  }
 
+  return await Promise.all(
+    backupLogFilePaths.map(async (filePath) => [await extractDate(filePath), filePath])
+  ).then((datesWithPath) => {
+    // 按日期降序排列，最新的日期在前
+    datesWithPath.sort((a, b) => b[0].localeCompare(a[0]));
+    return datesWithPath.map(([, path]) => path);
+  });
+}
+
+// 在获取所有backup_log.txt文件路径后，调用此函数进行排序
+async function findAndSortBackupLogFilesRecursively(dirPath: string): Promise<string[]> {
+  try {
+    // 检查目录是否存在
+    await fs.promises.access(dirPath, fs.constants.F_OK);
+    const backupLogFilePaths = await findBackupLogFilesRecursively(dirPath);
+    return sortBackupLogsByDate(backupLogFilePaths);
+  } catch (error) {
+    // 如果目录不存在，返回错误信息
+    return vscode.window.showWarningMessage(`目录 ${dirPath} 不存在,第一次使用请首先运行命令Vivado_Bitbackup`);
+  }
+  //
+}
 
 
 // 定义函数来解析.ltx文件并执行替换操作
@@ -1534,22 +1585,31 @@ async function processLtxFile(filePath: string, choose: number) {
  * @param {string} projectPath Vivado 项目路径
  * @param {string} questasimInstallPath QuestaSim 安装路径
  */
+const vivadoLibraryPath =   vscode.workspace.getConfiguration().get('vivadoLibrary.path') as string;
+const vivadoSimtype =   vscode.workspace.getConfiguration().get('vivadoSim.type') as string;
+let   vivadoBatPath = vscode.workspace.getConfiguration('vivado').get('bat.path'); 
+const questasimInstallPath =   vscode.workspace.getConfiguration().get('VivadoSimPath.path') as string;
 
 
+// 定义全局变量
+let globalVivadoLibraryPath: string | undefined;
+let globalVivadoSimType: string | undefined;
+let globalVivadoBatPath: string | undefined;
+let globalQuestasimInstallPath: string | undefined;
 
-  async function executeVivadoTcl(projectPath: any, questasimInstallPath: any) {
-    const vivadoLibraryPath =   vscode.workspace.getConfiguration().get('vivadoLibrary.path') as string;
-    const vivadoSimtype =   vscode.workspace.getConfiguration().get('vivadoSim.type') as string;
-    console.log('vivadoSimtype:', vivadoSimtype); 
+
+  async function executeVivadoTcl(projectPath: any, globalQuestasimInstallPath: any) {
+
+    console.log('globalVivadoSimType:', globalVivadoSimType); 
     // 把vivadoLibraryPath里面的反斜杠转换成正斜杠
-    const vivadoLibraryPathconverted = vivadoLibraryPath.replace(/\\/g, '/');
+    const vivadoLibraryPathconverted = globalVivadoLibraryPath.replace(/\\/g, '/');
     //把questasimInstallPath里面的反斜杠转换成正斜杠
-    const questasimInstallPathconverted = questasimInstallPath.replace(/\\/g, '/');
+    const questasimInstallPathconverted = globalQuestasimInstallPath.replace(/\\/g, '/');
 
   try {
     let command = "";
     // vivadoSimtype = questasim 选择第一个cmd , = modelsim 选择第二个cmd
-    if (vivadoSimtype === 'questasim') {
+    if (globalVivadoSimType === 'questasim') {
       console.log('vivadoSimtype === questasim');
       command = `
           open_project ${projectPath}
@@ -1572,38 +1632,43 @@ async function processLtxFile(filePath: string, choose: number) {
 
     };
 
-    // console.log('command:', command);
-    // const command = `
-    //       open_project ${projectPath}
-    //       update_compile_order -fileset sources_1
-    //       set_property target_simulator Questa [current_project]
-    //       set_property compxlib.questa_compiled_library_dir ${vivadoLibraryPathconverted} [current_project]
-    //       launch_simulation -install_path ${questasimInstallPathconverted}
-    //       exit
-    //       `;
-    // const command = `
-    //       open_project ${projectPath}
-    //       update_compile_order -fileset sources_1
-    //       set_property target_simulator ModelSim [current_project]
-    //       set_property compxlib.modelsim_compiled_library_dir  ${vivadoLibraryPathconverted} [current_project]
-    //       launch_simulation -install_path ${questasimInstallPathconverted}
-    //       exit
-    //       `;
+     
+    console.log('globalVivadoBatPath:', globalVivadoBatPath);
 
       const tempFilePath = path.join(currentFolderPath ?? '', 'temp.tcl');
       await fs.promises.writeFile(tempFilePath, command);
 
+
       const { stdout, stderr } = await new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-        exec(`vivado -mode tcl -source ${tempFilePath}`, { cwd: currentFolderPath }, (error: any, stdout: any, stderr: any) => {
-          // console.log('stdout:', stdout);
+        exec(`${globalVivadoBatPath} -mode tcl -source ${tempFilePath}`, { cwd: currentFolderPath }, (error: any, stdout: any, stderr: any) => {
+        //   exec(`vivado -mode tcl -source ${tempFilePath}`, { cwd: currentFolderPath }, (error: any, stdout: any, stderr: any) => {
           if (error) {
             reject(error);
+            vscode.window.showErrorMessage("运行vivado出错:",error);
+            console.error('运行vivado出错:', error);
+            return;
           } else {
             resolve({ stdout, stderr });
-            // console.log('stderr:', stderr);
           }
         });
       });
+
+
+    // const { stdout, stderr } = await new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
+    //   // 更新启动Vivado的命令，添加/wait参数使CMD窗口等待子进程结束后自动关闭
+    //   exec(`powershell -Command "& {Start-Process ${globalVivadoBatPath} -ArgumentList '-mode tcl -source ${tempFilePath}' -Verb RunAs -Wait}"`, { cwd: currentFolderPath }, (error: any, stdout: any, stderr: any) => {
+    //     console.log('stdout:', stdout);
+    //     if (error) {
+    //       console.error('Error:', error);
+    //       reject(error);
+    //     } else {
+    //       resolve({ stdout, stderr });
+    //     }
+    //   });
+    // });
+
+
+
 
       // 解析并提取 "Launching behavioral simulation in" 后面的路径信息
       let simulationPath: string | undefined;
@@ -1620,8 +1685,27 @@ async function processLtxFile(filePath: string, choose: number) {
       }
 
 
+      // // 删除临时文件
+      // await fs.promises.unlink(tempFilePath);
+
       // 删除临时文件
-      await fs.promises.unlink(tempFilePath);
+      try {
+        // 检查文件是否存在
+        if (await fs.promises.access(tempFilePath, fs.constants.F_OK).then(() => true, () => false)) {
+          await fs.promises.unlink(tempFilePath);
+        } else {
+          console.log(`文件 ${tempFilePath} 不存在，无需删除.`);
+        }
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          console.log(`文件 ${tempFilePath} 不存在，无需删除.`);
+        } else if (error.code === 'EBUSY' || error.code === 'ENOTEMPTY') {
+          console.warn(`文件 ${tempFilePath} 正在被使用，稍后重试删除.`);
+          // 可以在这里添加重试逻辑
+        } else {
+          console.error(`删除文件 ${tempFilePath} 时出现未知错误:`, error);
+        }
+      }   
 
       return { stdout, stderr, simulationPath };
     } catch (error: any) {
@@ -1702,9 +1786,10 @@ async function processLtxFile(filePath: string, choose: number) {
  * @param {ExtensionContext} context 插件上下文
  */
 
-
+// const questasimInstallPath =   vscode.workspace.getConfiguration().get('VivadoSimPath.path') as string;
 
 import { extractData } from './utils';
+
 
 
 export async function vivadoQuestsimModelsim(context: { subscriptions: any[]; }) {
@@ -1712,38 +1797,55 @@ export async function vivadoQuestsimModelsim(context: { subscriptions: any[]; })
   //获取不带文件名的目录路径
   const currentWorkspaceFolder = vscode.workspace.workspaceFolders?.[0];
   console.log('currentWorkspaceFolder:', currentWorkspaceFolder);
-  const questasimInstallPath =   vscode.workspace.getConfiguration().get('VivadoSimPath.path') as string;
-  // console.log(`questasimInstallPath: ${questasimInstallPath}`);
+          //QuestaSim 安装路径
 
-  // const runsImpl1FolderPath = await findRunsFolder(currentWorkspaceFolder!.uri.fsPath);
+
   const currentPath= currentWorkspaceFolder!.uri.fsPath;
   const xprPath = await findSIMFolder(currentWorkspaceFolder!.uri.fsPath);
-  // console.log('currentPath:', currentPath);
-  // console.log('xprPath:', xprPath);
 
 //把projectPath 里面的\转换成/
   const projectPath = xprPath?.replace(/\\/g, '/');
-
   console.log(`projectPath: ${projectPath}`);
-  
+  let xprFile  = projectPath ;
+
+  const part  = await getVivadoVersionFromXprFile(xprFile);
+  console.log('vivado version =', part);
+
+  const config = await getsimConfig();
+ // 将结果赋值给全局变量
+ globalVivadoLibraryPath = config.vivadoLibraryPath;
+ globalVivadoSimType = config.vivadoSimType;
+ globalVivadoBatPath = config.vivadoBatPath;
+ globalQuestasimInstallPath = config.questasimInstallPath;
+
+ console.log('globalVivadoLibraryPath:', globalVivadoLibraryPath);
+ console.log('globalVivadoSimType:', globalVivadoSimType);
+ console.log('globalVivadoBatPath:', globalVivadoBatPath);
+ console.log('globalQuestasimInstallPath:', globalQuestasimInstallPath);
+
+
 
   try {
-    // const projectPath = 'D:/Desktop/led/led.xpr'; // 获取项目路径
-    // const questasimInstallPath = 'C:/questasim64_10.6c/win64'; // QuestaSim 安装路径
-
-
     // 假设 executeVivadoTcl 是一个异步函数，用于执行 Vivado TCL 脚本并返回仿真路径
-    const { stdout, stderr, simulationPath } = await executeVivadoTcl(projectPath, questasimInstallPath);
+    const { stdout, stderr, simulationPath } = await executeVivadoTcl(projectPath, globalQuestasimInstallPath);
 
+    // let simulationPath = "f:/CETC2/CETC_WORK/CETC_WORK/11-YM_23005/pro/YM23005-SPM0513/YM23005-SPM/YM23005.sim/sim_1/behav/questa";
+
+    //产生tb.do文件
     if (simulationPath) {
-      console.log(`Extracted simulation path: ${simulationPath}`);
-      // const vsimCommand = `vsim -c -do ${simulationPath}/\\tb.do`; // 构造执行 tb.do 文件的命令
-      // exec(`questasim "  `, { cwd: simulationPath }, (error, stdout, stderr) => {
+      await extractData(simulationPath);
+    } else {
+      vscode.window.showErrorMessage('simulationPath is no open.');
+    }
+
+//启动仿真
+    if (simulationPath) {
+      console.log(`simulation path: ${simulationPath}`);
 
       const vivadoSimtype =   vscode.workspace.getConfiguration().get('vivadoSim.type') as string;
       console.log('vivadoSimtype:', vivadoSimtype); 
-
-      exec(`${vivadoSimtype} "  `, { cwd: simulationPath }, (error, stdout, stderr) => {
+      const command = `${vivadoSimtype} -do "do {tb.do}"`;
+      exec( command , { cwd:  `${simulationPath}` }, (error, stdout, stderr) => {
 
         if (error) {
           console.error(`Error: ${error}`);
@@ -1756,26 +1858,7 @@ export async function vivadoQuestsimModelsim(context: { subscriptions: any[]; })
       console.warn('Failed to extract simulation path from Vivado output.');
     }
 
-
-
-    
-    //产生tb.do文件
-    if (simulationPath) {
-      extractData(simulationPath);
-    } else {
-      vscode.window.showErrorMessage('simulationPath is no open.');
-    }
-
-
-    //复制 do tb.do 到剪切板
-    const doTbDo = `do tb.do`;
-    // 将脚本地址写入剪切板-然后用户取VIVADO的TCL栏取黏贴脚本
-    vscode.env.clipboard.writeText(doTbDo);
-    vscode.window.showInformationMessage('脚本地址已经写入剪切板-请用户在仿真软件的TCL栏粘贴脚本');
-
-    // simulationPath往上一级路径-注意 undefined 情况
-    // const simulationPath_up_one_dir = path.join(simulationPath, '..');
-
+    //备份 vivado.log 到 simulationPath_up_one_dir【simulationPath往上一级路径】
     if (typeof simulationPath === 'string') {
       const simulationPath_up_one_dir = path.join(simulationPath, '..');
 
@@ -1803,3 +1886,100 @@ export async function vivadoQuestsimModelsim(context: { subscriptions: any[]; })
     vscode.window.showErrorMessage(`Error executing Vivado commands: ${error.message}`);
   }
 };
+
+
+  /**
+   * 
+   * @param xprFilePath xpr 的文件
+   * @returns 寻找xpr 里面的vivado的版本
+   */
+  function getVivadoVersionFromXprFile(xprFilePath: string ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      // const regex = /"Part"\s+Val\s*=\s*"([^"]*)"/;
+      const regex = /Product Version: Vivado\s*v([\d]+\.[\d]+(\.[\d]+)?)/g;
+      console.log('vivadoVersion-xprFilePath:', xprFilePath);
+      fs.readFile(xprFilePath, 'utf-8', (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        // console.log('vivadoVersion-data:', data);
+        const match = regex.exec(data);
+        console.log('vivadoVersion-match:', match);
+        // console.log('vivadoVersion=====', match[1]);
+        if (match) {
+          resolve(match[1]);
+        } else {
+          reject(new Error('Failed to extract Part value from .xpr file.'));
+        }
+      });
+    });
+  }
+
+
+
+  // 获取当前工作区的根目录
+function getWorkspaceRoot(): string | undefined {
+  return vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+}
+
+// 确保配置文件夹存在
+async function ensureConfigFolderExists(): Promise<void> {
+  const workspaceRoot = getWorkspaceRoot();
+  if (!workspaceRoot) {
+    throw new Error("No workspace folder is open.");
+  }
+  const configFolderPath = path.join(workspaceRoot, '.vscode');
+  try {
+    await fs.promises.mkdir(configFolderPath, { recursive: true });
+  } catch (err:any) {
+    if (err.code !== 'EEXIST') {
+      throw err;
+    }
+  }
+}
+
+// 获取或创建配置文件路径
+let configCreated = false;
+
+async function getConfigFilePath(): Promise<string> {
+  const workspaceRoot = getWorkspaceRoot();
+  console.log("aaaaaaaaaaaaaaa",workspaceRoot);
+  if (!workspaceRoot) {
+    throw new Error("No workspace folder is open.");
+  }
+  const configFilePath = path.join(workspaceRoot, '.vscode', 'sim.json');
+  await ensureConfigFolderExists(); // 确保config文件夹存在
+  return configFilePath;
+}
+
+
+/**
+ * 获取仿真的默认配置值，如果用户有自定义配置，则使用自定义配置，否则使用默认配置
+ * @returns vivadoLibraryPath, vivadoSimType, vivadoBatPath, questasimInstallPath
+ */
+
+export async function getsimConfig(): Promise<{ vivadoLibraryPath: string, vivadoSimType: string, vivadoBatPath: string, questasimInstallPath: string }> {
+  const configFile = await getConfigFilePath();
+  const defaultConfig = {
+    vivadoLibraryPath: vscode.workspace.getConfiguration().get('vivadoLibrary.path') as string,
+    vivadoSimType: vscode.workspace.getConfiguration().get('vivadoSim.type') as string,
+    vivadoBatPath: vscode.workspace.getConfiguration('vivado').get('bat.path') as string,
+    questasimInstallPath: vscode.workspace.getConfiguration().get('VivadoSimPath.path') as string
+  };
+
+  try {
+    await fs.promises.access(configFile);
+    const fileContent = await fs.promises.readFile(configFile, 'utf8');
+    const config = JSON.parse(fileContent);
+    return config;
+  } catch (error) {
+    if (error instanceof Error && error.code === 'ENOENT') {
+      await fs.promises.writeFile(configFile, JSON.stringify(defaultConfig, null, 2));
+      vscode.window.showInformationMessage('modelsim/questasim and vivado sim config data is OK !.');
+      return defaultConfig;
+    } else {
+      throw error;
+    }
+  }
+}

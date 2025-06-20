@@ -7,13 +7,66 @@ import * as path from 'path';
  * 提取数据
  * @param folderPath 包含需要处理的文件的文件夹路径
  */
-function extractData(folderPath: string) {
+
+function extractData(folderPath: string): Promise<void> {
+    // 创建 wave.do 文件并写入内容
+    const waveFilePath = path.join(folderPath, 'wave.do');
+
+    if (fs.existsSync(waveFilePath)) {
+        return new Promise((resolve) => {
+            // 创建5秒超时的Promise
+            const timeoutPromise = new Promise<string>((resolveTimeout) => {
+                setTimeout(() => {
+                    resolveTimeout('取消');
+                }, 10000);
+            });
+
+            // 创建用户选择的Promise
+            const userChoicePromise = vscode.window.showInformationMessage(
+                'wave.do 文件已存在，是否要更新为加入默认的顶层仿真信号？', 
+                '更新', '取消'
+            );
+
+            // 竞争Promise：优先处理用户选择或超时
+            Promise.race([userChoicePromise, timeoutPromise]).then((choice) => {
+                if (choice === '更新') {
+                    fs.writeFileSync(waveFilePath, `if { [catch {[add wave *]}] } {}\nadd wave /glbl/GSR`);
+                    continueProcessing(folderPath, waveFilePath);
+                } else {
+                    // 超时或用户选择取消
+                    vscode.window.showInformationMessage('wave.do 文件未更新（10秒内未选择或已自动取消）。');
+                }
+                resolve();
+            });
+        });
+    } else {
+        fs.writeFileSync(waveFilePath, `if { [catch {[add wave *]}] } {}\nadd wave /glbl/GSR`);
+        continueProcessing(folderPath, waveFilePath);
+        return Promise.resolve();
+    }
+}
+
+
+function continueProcessing(folderPath: string, waveFilePath: string) {
+    // 获取 compile\.do, elaborate\.do, simulate\.do 文件里面内容然后写入 tb.do
     const compileFiles = getFilesWithPattern(folderPath, /compile\.do$/i);
     const elaborateFiles = getFilesWithPattern(folderPath, /elaborate\.do$/i);
     const simulateFiles = getFilesWithPattern(folderPath, /simulate\.do$/i);
 
     const tbFilePath = path.join(folderPath, 'tb.do');
     fs.writeFileSync(tbFilePath, ''); // 清空 tb.do 文件
+
+
+
+    fs.writeFileSync(waveFilePath, `if { [catch {[add wave *]}] } {}\nadd wave /glbl/GSR`);
+
+//获取 compile\.do , elaborate\.do ,   simulate\.do文件里面内容然后写入tb.do
+    // const compileFiles = getFilesWithPattern(folderPath, /compile\.do$/i);
+    // const elaborateFiles = getFilesWithPattern(folderPath, /elaborate\.do$/i);
+    // const simulateFiles = getFilesWithPattern(folderPath, /simulate\.do$/i);
+
+    // const tbFilePath = path.join(folderPath, 'tb.do');
+    // fs.writeFileSync(tbFilePath, ''); // 清空 tb.do 文件
 
     compileFiles.forEach(file => {
         const fileContent = fs.readFileSync(file, 'utf8');
@@ -76,7 +129,7 @@ function extractData(folderPath: string) {
 
     fs.appendFileSync(tbFilePath, codeSnippet);
 
-    vscode.window.showInformationMessage('tb.do Data extraction completed.');
+    vscode.window.showInformationMessage('联合仿真脚本 tb.do 已经生成.');
 }
 
 function getFilesWithPattern(folderPath: string, pattern: RegExp): string[] {

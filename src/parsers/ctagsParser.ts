@@ -77,14 +77,25 @@ export class Symbol {
     );
   }
 
+  // getHoverText(): string {
+  //   let code = this.doc
+  //     .lineAt(this.line)
+  //     .text.trim()
+  //     .replace(/\s{2,}/g, ' ') // trim long whitespace from formatting
+  //     .replace(/,$/, '') // remove trailing commas
+  //     .replace(/#\($/, '') // remove trailing #(
+  //     .trim();
+  //   return code;
+  // }
+
   getHoverText(): string {
-    let code = this.doc
+    let code = `${this.line + 1}: ${this.doc
       .lineAt(this.line)
       .text.trim()
-      .replace(/\s{2,}/g, ' ') // trim long whitespace from formatting
-      .replace(/,$/, '') // remove trailing commas
-      .replace(/#\($/, '') // remove trailing #(
-      .trim();
+      .replace(/\s{2,}/g, ' ') // 去除多余的空格
+      // .replace(/,$/, '') // 删除尾部逗号
+      .replace(/#\($/, '') // 删除尾部#(
+      .trim()}`;
     return code;
   }
 

@@ -7,6 +7,8 @@ const vscode = require('vscode');
  * Support functions
  * Modified version of https://stackoverflow.com/questions/12504042/what-is-a-method-that-can-be-used-to-increment-letters
  */
+
+
 function nextChar(c) {
     var isLowerCase = false;
     if (c == c.toLowerCase()) {
@@ -91,6 +93,8 @@ Number.prototype.pad = function (paddingLength) {
     return sign + s;
 }
 
+
+const stepNum = vscode.workspace.getConfiguration().get('Increment.num') as number;
 export function doSelection(action) {
     const config = vscode.workspace.getConfiguration('increment-selection');
 
@@ -105,29 +109,36 @@ export function doSelection(action) {
     }
     var firstSelection = editor.document.getText(selections[0]);
 
+    // Read the step configuration
+    const step = config.step || stepNum;
+
     // If it is a number or nothing has been selected
     if (!isNaN(parseInt(firstSelection)) || firstSelection.length == 0) {
 
-        //default behaviour if no selection are made
+        // Default behavior if no selection is made
         if (firstSelection.length == 0) {
-            firstSelection = "0"
+            firstSelection = "0";
         }
 
         var paddingLength = getPaddingLength(firstSelection);
 
         firstSelection = parseInt(firstSelection);
 
+        let isFirstSelection = true; // 添加一个标志来跟踪是否是第一次选择
+
         editor.edit(function (edit) {
             selections.forEach(function (selection) {
-                edit.replace(selection, String(
-                    action === 'increment'
-                        ? (firstSelection++).pad(paddingLength)
-                        : (firstSelection--).pad(paddingLength)
-                ));
+                // 对于第一个选择，不改变 firstSelection 的值
+                let value = isFirstSelection ? firstSelection.toString().padStart(paddingLength, '0') :
+                    (action === 'increment'
+                        ? (firstSelection += step).toString().padStart(paddingLength, '0')
+                        : (firstSelection -= step).toString().padStart(paddingLength, '0'));
+
+                edit.replace(selection, value);
+                isFirstSelection = false; // 处理完第一个选择后，设置为 false
             })
         });
-    }
-    else { // if it is a char
+    } else { // if it is a char
         editor.edit(function (edit) {
             selections.forEach(function (selection) {
                 edit.replace(selection, String(firstSelection));
@@ -136,6 +147,7 @@ export function doSelection(action) {
         });
     }
 }
+
 
 export function reverse(){
     var editor = vscode.window.activeTextEditor;
@@ -164,38 +176,3 @@ export function reverse(){
 }
 
 
-//---------------------------------------------------------------------------------------------
-
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-// export function Increment_Selection(context) {
-
-//     // Use the console to output diagnostic information (console.log) and errors (console.error)
-//     // This line of code will only be executed once when your extension is activated
-//     // console.log('Congratulations, your extension "increment-selection" is now active!');
-
-//     // The command has been defined in the package.json file
-//     // Now provide the implementation of the command with  registerCommand
-//     // The commandId parameter must match the command field in package.json
-//     let incrementSelection = vscode.commands.registerCommand('extension.incrementSelection', function () {
-//         doSelection('increment');
-//     });
-
-//     let decrementSelection = vscode.commands.registerCommand('extension.decrementSelection', function () {
-//         doSelection('decrement');
-
-//     });
-
-//     let reverseSelection = vscode.commands.registerCommand('extension.reverseSelection', function () {
-//         reverse();
-//     });
-
-//     context.subscriptions.push(incrementSelection, decrementSelection, reverseSelection);
-// }
-// exports.activate = activate;
-
-// // this method is called when your extension is deactivated
-// function deactivate() {
-// }
-// exports.deactivate = deactivate;

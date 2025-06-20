@@ -2,6 +2,66 @@
 
 # Verilog Hdl Format Change Log
 
+## [0.3.6] - 2025-06-20
+1. 加入了.txt/.log等文件高亮
+2. 加入了sv的logic识别
+3. 加入了文件树里面的联合仿真模式，以及创建tb.do
+
+## [0.3.5] - 2025-02-20
+1. 文件树设置顶层的配置文件夹可能不存在修复
+
+## [0.3.4] - 2025-02-16
+1. 修改例化模块的参数最后一行的BUG修复
+2. 文件树的功能可以设置顶层
+
+## [0.3.3] - 2025-01-20
+1. 修改仿真文件里面 每次启动都需要创建wave.do √
+2. 修改tb的模块名称为sim_****,tb 会把//后面的也识别进去 √ 
+3. begin/end 之前不要空格 √
+4. web界面在处于打开的状态下，再次运行命令，不能切换到这个界面- √
+5. 增加快捷键-打开web界面 √
+6. 在web功能里面：优化不存在bit文件夹的时候给出信息提示 √
+
+## [0.3.2] - 2024-12-18
+
+1. 加入了FTP上传文件夹的功能；win11 和win10互相传输出BUG 舍弃
+2. 加入了共享上传文件夹的功能；
+
+## [0.3.1] - 2024-11-09
+
+1. 优化了代码格式化的配置；
+
+## [0.3.0] - 2024-10-11
+
+1. 优化了always的格式化操作
+2. 修改部分代码片段
+2. 修改仿真加入本地配置文件，可以自定义工程仿真的配置文件
+
+## [0.2.9] - 2024-08-18
+
+1. 优化了always的格式化操作
+
+## [0.2.8] - 2024-08-17
+
+1. 增加了数字递增递减的步进
+2. 优化了文档
+3. 增加了常见打印函数
+4. 优化了vivado联合仿真
+
+## [0.2.7] - 2024-07-16
+
+1. 优化web界面排序方式为最新的开始往下排序
+2. 文件树例化识别#前面不存在空格识别失败bug修复
+3. VHDL文件树识别优化
+4. 优化定义悬停和加入悬停开关-定义悬停优化
+
+## [0.2.6] - 2024-06-22
+
+1. FTP的BIT备份界面优化
+2. 优化代码格式化的inout的端口为);结束的情况或丢失的情况，
+3. wire 的格式里面多个变量的情况例如 “wireA = BRAM_INF_CX1_addr[0] & asd;//48948“情况的时候后面的注释会丢失的情况
+4. 文件树显示加入了systemverilog和vhdl的显示 ，支持VHDL和verilog systemverilog 的混合文件树显示
+
 ## [0.2.5] - 2024-06-05
 
 1. FTP下载优化
@@ -148,82 +208,3 @@
 ## [0.0.1] - 2023-09-16
 
 1. 第一版-公开
-
-# ENGLISH
-
-## Verilog Hdl Format Change Log
-
-## [0.1.3] - 2024-03-16
-
-1. Fixed a situation where the parametrically instantiated PIN corner could not jump in the case of defined jump
-2. Added code format space number configuration function: 6 position space number can be configured. See the documentation for details.
-3. Add the always module format, and the number of formatted Spaces can be configured, the command: verilog-simplealign.always_valuation_func; Keyboard shortcut ctrl + U.
-4. Fixed (added) one-click instantiation and one-click TB parameter passing.
-
-## [0.1.2] - 2024-03-12
-
-1. Added the function of verilog file tree custom mask folder name: The Verilog files of IP/ or some backup files are blocked in the opened folder, so that the TOP layer of the file tree is displayed more cleaner.The default is to mask (ip and core folder). Configuration location: Settings → Extension Settings → Verilog-HDL-Format Plug-in Settings → verilog Module Finder: Exclude Folders
-2. Company Name and User Name can be displayed normally in the comment header file after optimization and modification. Configuration location: Settings → Extension Settings → verilog-hdl-format plug-in Settings → Extension: Company Name and Extension: User Name
-3. This plugin (and) the Verilog HDL/SystemVerilog/Bluespec SystemVerilog 】 at the same time use the conflict has been repaired.
-
-## [0.1.1] - 2024-03-11
-
-1. Optimize the jump mode, the mouse in the position of the variable directly right click the mouse to select the corresponding command can jump.
-
-## [0.1.0] - 2024-03-10
-
-1. Optimize the definition jump and the instantiated port jump, after which variables are selected.
-
-## [0.0.9] - 2024-03-08
-
-1. Add verilog definition jump, instantiate alias jump, instantiate port jump.
-2. Add Chinese localization package
-
-## [0.0.8] - 2024-03-06
-
-1. Add right mouse button refresh function to file tree
-2. Fix the BUG where // paramater is lost
-3. The file tree opens the file as a new editor
-
-## [0.0.7] - 2024-02-06
-
-1. File tree made the file name "IP", or "CORE" name mask selection, in the Settings check or not, the default enable mask
-
-[0.0.6] - 2024-01-17
-
-1. Added verilog file tree display. The command Find Verilog Modules is required to trigger and refresh
-
-## [0.0.5] - 2023-12-21
-
-1. Changed the comment mode of tcl,xdc,ucf,do files to "#"
-2. Fixed a BUG where reg had "=" after it and couldn't be formatted
-   Added the ability to use multiple cursors to increase, decrease, or reverse selection
-3. Fix the final ")); "during instantiation In the ";" It's going to be swallowed up.
-4. Fix ifdef and other highlighting issues
-
-## [0.0.4] - 2023-12-16
-
-1. Fixed the BUG of quick conversion function of vivado simulation file.
-2. Fixed the case where parameter and localparam could not be formatted with ",",
-3. Added the function of code format bit width setting. If the bit width in [] is relatively wide, please modify the simpleAlign.num value under the setting
-
-## [0.0.3] - 2023-10-30
-
-1. Change the plugin name Verilog Hdl Farmat → Verilog Hdl Format
-2. Fixed parameter and localparam hovering bugs and other display bugs
-3. Optimized the abnormal case of no hover display in the case of a large number of rows
-4. Optimized paramater formatting
-5. Add syntax highlighting of tcl and modelsim's.do files
-6. Repair the assign localparam, abnormal behind the parameter annotation
-7. Added vivado simulation file fast conversion function can be compile.do, elaborate.do, simulate.do into tb.do simulation when one key do tb.do fast simulation + user configuration interface
-
-## [0.0.2] - 2023-09-26
-
-Add the code snippet always,dapai.assign
-2. Fixed code hover number display bug and definition display bug
-3. Join the Verilog HDL/SystemVerilog/Bluespec SystemVerilog linter, syntax checking function
-4. Modify the code-color style for verilog highlighting
-
-## [0.0.1] - 2023-09-16
-
-1. First version - Public
